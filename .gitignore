@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+app/node_modules/
+appium-tests/node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# React Native
+app/.bundle/
+app/ios/build/
+app/ios/Pods/
+app/android/.gradle/
+app/android/app/build/
+app/android/build/
+app/android/local.properties
+*.jks
+*.keystore
+!debug.keystore
+
+# Native automation
+ios-tests/**/DerivedData/
+ios-tests/**/.build/
+android-tests/**/build/
+android-tests/**/.gradle/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS & IDE
+.DS_Store
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs & coverage
+*.log
+npm-debug.log*
+coverage/
+.nyc_output/
+
+# Appium / WebdriverIO
+appium-tests/logs/
+appium-tests/screenshots/
+appium-tests/allure-results/
+appium-tests/allure-report/
+
+# Misc
+*.pem
+*.p8
+*.p12
+*.mobileprovision

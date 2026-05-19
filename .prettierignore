@@ -1,0 +1,12 @@
+node_modules
+app/node_modules
+appium-tests/node_modules
+app/ios/Pods
+app/android/build
+app/android/.gradle
+coverage
+dist
+build
+package-lock.json
+app/package-lock.json
+appium-tests/package-lock.json
