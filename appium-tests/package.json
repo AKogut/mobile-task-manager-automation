@@ -1,0 +1,26 @@
+{
+  "name": "@mobile-task-manager/appium-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cross-platform E2E tests with Appium and WebdriverIO",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "wdio run ./wdio.conf.ts",
+    "test:ios": "wdio run ./wdio.conf.ts --capabilities=ios",
+    "test:android": "wdio run ./wdio.conf.ts --capabilities=android"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.15.29",
+    "@wdio/appium-service": "^9.14.0",
+    "@wdio/cli": "^9.14.0",
+    "@wdio/globals": "^9.14.0",
+    "@wdio/local-runner": "^9.14.0",
+    "@wdio/mocha-framework": "^9.14.0",
+    "@wdio/spec-reporter": "^9.14.0",
+    "appium": "^2.19.0",
+    "appium-uiautomator2-driver": "^4.2.1",
+    "appium-xcuitest-driver": "^9.2.0",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "mobile-task-manager-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "React Native task manager with cross-platform and native mobile test automation",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm run lint --prefix app && eslint appium-tests --max-warnings 0",
+    "lint:fix": "npm run lint --prefix app -- --fix && eslint appium-tests --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --prefix app && npm run typecheck --prefix appium-tests",
+    "app:start": "npm run start --prefix app",
+    "app:ios": "npm run ios --prefix app",
+    "app:android": "npm run android --prefix app",
+    "app:test": "npm run test --prefix app",
+    "e2e": "npm run test --prefix appium-tests"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/node": "^22.15.29",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
+  },
+  "engines": {
+    "node": ">=22.11.0"
+  }
+}
