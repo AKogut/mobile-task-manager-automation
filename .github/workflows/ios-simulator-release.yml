@@ -1,0 +1,76 @@
+name: iOS Simulator App Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-ios-simulator-app:
+    name: Build iOS Simulator app
+    runs-on: macos-latest
+
+    env:
+      IOS_APP_ZIP: MobileTaskManager-ios-simulator.zip
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Install CocoaPods dependencies
+        working-directory: app/ios
+        run: |
+          bundle install
+          bundle exec pod install
+
+      - name: Build iOS Simulator app
+        working-directory: app/ios
+        run: |
+          xcodebuild \
+            -workspace MobileTaskManager.xcworkspace \
+            -scheme MobileTaskManager \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build/ios-simulator \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package iOS Simulator app
+        run: |
+          mkdir -p release-assets
+          APP_PATH="app/ios/build/ios-simulator/Build/Products/Debug-iphonesimulator/MobileTaskManager.app"
+          test -d "${APP_PATH}"
+          ditto -c -k --sequesterRsrc --keepParent "${APP_PATH}" "release-assets/${IOS_APP_ZIP}"
+
+      - name: Upload iOS Simulator app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-app
+          path: release-assets/${{ env.IOS_APP_ZIP }}
+
+      - name: Attach iOS Simulator app to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/${{ env.IOS_APP_ZIP }}
+          generate_release_notes: true
