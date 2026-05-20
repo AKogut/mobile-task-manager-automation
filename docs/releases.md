@@ -61,8 +61,9 @@ This artifact works only on **iOS Simulator**. It does not install on a physical
 From the repository root:
 
 ```bash
-cd app/ios
+cd app
 bundle install
+cd ios
 bundle exec pod install
 
 xcodebuild \
