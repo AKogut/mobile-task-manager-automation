@@ -30,6 +30,8 @@ mobile-task-manager-automation/
 ```
 
 See [docs/architecture.md](./docs/architecture.md) for diagrams and design decisions.
+See [docs/build-and-run.md](./docs/build-and-run.md) for local build, simulator, and device commands.
+See [docs/releases.md](./docs/releases.md) for publishing downloadable Android APKs through GitHub Releases.
 
 ## Features (roadmap)
 
