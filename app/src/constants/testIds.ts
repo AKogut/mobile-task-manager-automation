@@ -47,15 +47,49 @@ export const TestIds = {
   mainSessionCard: 'main-session-card',
   mainSessionTitle: 'main-session-title',
   mainSessionDescription: 'main-session-description',
+  mainHeroSummary: 'main-hero-summary',
+  mainHeroUpNextCard: 'main-hero-up-next-card',
+  mainHeroUpNextTitle: 'main-hero-up-next-title',
+  mainHeroUpNextMeta: 'main-hero-up-next-meta',
   mainSectionTitle: 'main-section-title',
   taskListSection: 'task-list-section',
   taskListTitle: 'task-list-title',
   taskEmptyStateCard: 'task-empty-state-card',
   taskEmptyStateTitle: 'task-empty-state-title',
   taskEmptyStateDescription: 'task-empty-state-description',
+  taskAddButton: 'task-add-button',
+  taskAddButtonText: 'task-add-button-text',
+  taskToggleButton: 'task-toggle-button',
+  taskToggleButtonText: 'task-toggle-button-text',
   taskItemTitle: 'task-item-title',
   taskItemDescription: 'task-item-description',
   taskItemMetadata: 'task-item-metadata',
+  taskItemDaysRemaining: 'task-item-days-remaining',
+  taskDetailsScreen: 'task-details-screen',
+  taskDetailsBackButton: 'task-details-back-button',
+  taskDetailsHomeButton: 'task-details-home-button',
+  taskDetailsTitle: 'task-details-title',
+  taskDetailsDescription: 'task-details-description',
+  taskDetailsMetadata: 'task-details-metadata',
+  taskDetailsCalendarCard: 'task-details-calendar-card',
+  taskDetailsCompleteButton: 'task-details-complete-button',
+  taskDetailsEditButton: 'task-details-edit-button',
+  taskDetailsDeleteButton: 'task-details-delete-button',
+  taskFormScreen: 'task-form-screen',
+  taskFormBackButton: 'task-form-back-button',
+  taskFormTitle: 'task-form-title',
+  taskTitleInput: 'task-title-input',
+  taskDescriptionInput: 'task-description-input',
+  taskDueDateInput: 'task-due-date-input',
+  taskDueDateCalendarButton: 'task-due-date-calendar-button',
+  taskDueDateCalendarPanel: 'task-due-date-calendar-panel',
+  taskDueDateCalendarPreview: 'task-due-date-calendar-preview',
+  taskDueDateQuickOption: 'task-due-date-quick-option',
+  taskPriorityOption: 'task-priority-option',
+  taskTitleError: 'task-title-error',
+  taskDueDateError: 'task-due-date-error',
+  taskSubmitButton: 'task-submit-button',
+  taskSubmitButtonText: 'task-submit-button-text',
   mainFeatureBullet: 'main-feature-bullet',
   mainFeatureText: 'main-feature-text',
   homeScreen: 'home-screen',
@@ -71,4 +105,12 @@ export function testIdForFeature(index: number): string {
 
 export function testIdForTask(index: number): string {
   return `task-list-item-${index}`;
+}
+
+export function testIdForPriority(priority: string): string {
+  return `task-priority-option-${priority}`;
+}
+
+export function testIdForDueDateOption(option: string): string {
+  return `task-due-date-quick-option-${option}`;
 }
