@@ -48,6 +48,14 @@ export const TestIds = {
   mainSessionTitle: 'main-session-title',
   mainSessionDescription: 'main-session-description',
   mainSectionTitle: 'main-section-title',
+  taskListSection: 'task-list-section',
+  taskListTitle: 'task-list-title',
+  taskEmptyStateCard: 'task-empty-state-card',
+  taskEmptyStateTitle: 'task-empty-state-title',
+  taskEmptyStateDescription: 'task-empty-state-description',
+  taskItemTitle: 'task-item-title',
+  taskItemDescription: 'task-item-description',
+  taskItemMetadata: 'task-item-metadata',
   mainFeatureBullet: 'main-feature-bullet',
   mainFeatureText: 'main-feature-text',
   homeScreen: 'home-screen',
@@ -59,4 +67,8 @@ export const TestIds = {
 
 export function testIdForFeature(index: number): string {
   return `main-feature-row-${index}`;
+}
+
+export function testIdForTask(index: number): string {
+  return `task-list-item-${index}`;
 }

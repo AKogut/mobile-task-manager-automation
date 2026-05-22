@@ -1,6 +1,8 @@
 import { APP_NAME, APP_TAGLINE } from '@/constants/app';
-import { TestIds, testIdForFeature } from '@/constants/testIds';
+import { TestIds, testIdForTask } from '@/constants/testIds';
 import { useAuthStore } from '@/features/auth/authStore';
+import { selectHasTasks, useTaskStore } from '@/features/tasks/taskStore';
+import type { Task } from '@/features/tasks/taskTypes';
 import type { AuthenticatedStackParamList } from '@/navigation/RootNavigator';
 import { getPalette } from '@/theme/palette';
 import { useNavigation } from '@react-navigation/native';
@@ -15,19 +17,19 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const FEATURES = [
-  'Authentication with session persistence',
-  'Task CRUD, search, filters, and sorting',
-  'Local storage with AsyncStorage',
-  'Appium + WebdriverIO cross-platform E2E',
-  'Native iOS tests with Swift + XCUITest',
-  'Native Android tests with Kotlin + Espresso',
-] as const;
-
 type HomeNavigation = NativeStackNavigationProp<
   AuthenticatedStackParamList,
   'Main'
 >;
+
+function formatTaskMetadata(task: Task): string {
+  const status = task.completed ? 'Completed' : 'Open';
+  const priority = `${task.priority.charAt(0).toUpperCase()}${task.priority.slice(
+    1,
+  )} priority`;
+
+  return `${status} - ${priority} - Due ${task.dueDate}`;
+}
 
 export function HomeScreen() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -35,6 +37,8 @@ export function HomeScreen() {
   const palette = getPalette(isDarkMode);
   const navigation = useNavigation<HomeNavigation>();
   const user = useAuthStore(state => state.user);
+  const tasks = useTaskStore(state => state.tasks);
+  const hasTasks = useTaskStore(selectHasTasks);
 
   return (
     <ScrollView
@@ -121,27 +125,70 @@ export function HomeScreen() {
         style={[styles.sectionTitle, { color: palette.text }]}
         testID={TestIds.mainSectionTitle}
       >
-        Planned capabilities
+        Tasks
       </Text>
-      {FEATURES.map((feature, index) => (
-        <View
-          key={feature}
-          style={[styles.featureRow, { borderColor: palette.border }]}
-          testID={testIdForFeature(index)}
+
+      <View style={styles.taskListSection} testID={TestIds.taskListSection}>
+        <Text
+          style={[styles.taskListTitle, { color: palette.muted }]}
+          testID={TestIds.taskListTitle}
         >
+          {hasTasks ? `${tasks.length} saved tasks` : 'No saved tasks'}
+        </Text>
+
+        {hasTasks ? (
+          tasks.map((task, index) => (
+            <View
+              key={task.id}
+              style={[
+                styles.taskCard,
+                { backgroundColor: palette.card, borderColor: palette.border },
+              ]}
+              testID={testIdForTask(index)}
+            >
+              <Text
+                style={[styles.taskTitle, { color: palette.text }]}
+                testID={`${TestIds.taskItemTitle}-${index}`}
+              >
+                {task.title}
+              </Text>
+              <Text
+                style={[styles.taskDescription, { color: palette.muted }]}
+                testID={`${TestIds.taskItemDescription}-${index}`}
+              >
+                {task.description}
+              </Text>
+              <Text
+                style={[styles.taskMetadata, { color: palette.accent }]}
+                testID={`${TestIds.taskItemMetadata}-${index}`}
+              >
+                {formatTaskMetadata(task)}
+              </Text>
+            </View>
+          ))
+        ) : (
           <View
-            accessibilityLabel={`${feature} indicator`}
-            style={[styles.bullet, { backgroundColor: palette.accent }]}
-            testID={`${TestIds.mainFeatureBullet}-${index}`}
-          />
-          <Text
-            style={[styles.featureText, { color: palette.muted }]}
-            testID={`${TestIds.mainFeatureText}-${index}`}
+            style={[
+              styles.emptyStateCard,
+              { backgroundColor: palette.card, borderColor: palette.border },
+            ]}
+            testID={TestIds.taskEmptyStateCard}
           >
-            {feature}
-          </Text>
-        </View>
-      ))}
+            <Text
+              style={[styles.emptyStateTitle, { color: palette.text }]}
+              testID={TestIds.taskEmptyStateTitle}
+            >
+              No tasks yet
+            </Text>
+            <Text
+              style={[styles.emptyStateDescription, { color: palette.muted }]}
+              testID={TestIds.taskEmptyStateDescription}
+            >
+              Created tasks will appear here once task creation is available.
+            </Text>
+          </View>
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -206,21 +253,42 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 8,
   },
-  featureRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  taskListSection: {
     gap: 12,
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  bullet: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 6,
+  taskListTitle: {
+    fontSize: 14,
+    fontWeight: '600',
   },
-  featureText: {
-    flex: 1,
+  taskCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    gap: 8,
+    padding: 16,
+  },
+  taskTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  taskDescription: {
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  taskMetadata: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  emptyStateCard: {
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    gap: 8,
+    padding: 20,
+  },
+  emptyStateTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  emptyStateDescription: {
     fontSize: 15,
     lineHeight: 22,
   },
