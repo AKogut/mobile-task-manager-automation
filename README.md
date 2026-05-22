@@ -59,6 +59,8 @@ See [docs/releases.md](./docs/releases.md) for publishing downloadable Android A
 ### Prerequisites
 
 - **Node.js** 22.11+ ([nvm](https://github.com/nvm-sh/nvm): `nvm use`)
+- **JDK** 17 for Android (`.java-version`)
+- **Ruby** 3.2.2 for CocoaPods (`.ruby-version`)
 - **Xcode** (iOS) with CocoaPods
 - **Android Studio** with SDK and emulator
 - **Watchman** (recommended on macOS)
