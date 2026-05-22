@@ -1,35 +1,22 @@
 # Appium E2E Tests
 
-Cross-platform end-to-end tests powered by **Appium 2** and **WebdriverIO 9** with **TypeScript**.
+Cross-platform end-to-end automation written in **TypeScript** using **Appium** and **WebdriverIO**.
 
-## Structure
+## Planned structure
 
 ```text
 appium-tests/
 ├── page-objects/     # Screen objects and reusable selectors
-├── specs/            # Mocha test suites
+├── specs/            # Login, task CRUD, settings
 └── wdio.conf.ts      # WebdriverIO runner configuration
 ```
 
-## Prerequisites
+## Integration
 
-- Node.js 22+
-- Appium 2 (`npx appium driver install uiautomator2 xcuitest`)
-- Built app artifacts for iOS and/or Android (see `app/` README)
-- Running simulator or emulator
+- E2E tests target the iOS and Android apps built from `app/`
+- Mirror `testID` values used by React Native screens
+- Run via WebdriverIO against local simulators/emulators or CI device runners
 
-## Commands
+## Status
 
-```bash
-npm install
-npm run typecheck
-npm run test
-npm run test:ios
-npm run test:android
-```
-
-## Conventions
-
-- Prefer `testID` accessibility identifiers shared with native test suites
-- Keep selectors in page objects, not in spec files
-- One spec file per user-facing flow (auth, tasks, settings)
+Scaffolding is in place. Appium dependencies, configuration, and TypeScript test sources will be added in the **cross-platform E2E automation** milestone.

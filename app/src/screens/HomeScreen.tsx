@@ -1,5 +1,12 @@
 import { APP_NAME, APP_TAGLINE } from '@/constants/app';
+import { TestIds, testIdForFeature } from '@/constants/testIds';
+import { useAuthStore } from '@/features/auth/authStore';
+import type { AuthenticatedStackParamList } from '@/navigation/RootNavigator';
+import { getPalette } from '@/theme/palette';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,14 +24,21 @@ const FEATURES = [
   'Native Android tests with Kotlin + Espresso',
 ] as const;
 
+type HomeNavigation = NativeStackNavigationProp<
+  AuthenticatedStackParamList,
+  'Main'
+>;
+
 export function HomeScreen() {
   const isDarkMode = useColorScheme() === 'dark';
   const insets = useSafeAreaInsets();
-
-  const palette = isDarkMode ? darkPalette : lightPalette;
+  const palette = getPalette(isDarkMode);
+  const navigation = useNavigation<HomeNavigation>();
+  const user = useAuthStore(state => state.user);
 
   return (
     <ScrollView
+      accessibilityLabel="Authenticated main screen"
       contentContainerStyle={[
         styles.content,
         {
@@ -33,16 +47,52 @@ export function HomeScreen() {
           backgroundColor: palette.background,
         },
       ]}
-      testID="home-screen"
+      testID={TestIds.mainScreen}
     >
-      <View style={styles.header}>
-        <Text style={[styles.eyebrow, { color: palette.accent }]}>
-          Portfolio project
-        </Text>
-        <Text style={[styles.title, { color: palette.text }]}>{APP_NAME}</Text>
-        <Text style={[styles.subtitle, { color: palette.muted }]}>
-          {APP_TAGLINE}
-        </Text>
+      <View style={styles.headerRow} testID={TestIds.mainHeaderRow}>
+        <View style={styles.header} testID={TestIds.mainHeader}>
+          <Text
+            style={[styles.eyebrow, { color: palette.accent }]}
+            testID={TestIds.mainEyebrow}
+          >
+            Signed in
+          </Text>
+          <Text
+            style={[styles.title, { color: palette.text }]}
+            testID={TestIds.mainTitle}
+          >
+            {APP_NAME}
+          </Text>
+          <Text
+            style={[styles.subtitle, { color: palette.muted }]}
+            testID={TestIds.mainSubtitle}
+          >
+            {APP_TAGLINE}
+          </Text>
+        </View>
+        <Pressable
+          accessibilityLabel="Open settings"
+          accessibilityRole="button"
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+          style={({ pressed }) => [
+            styles.settingsButton,
+            {
+              borderColor: palette.border,
+              backgroundColor: palette.card,
+              opacity: pressed ? 0.85 : 1,
+            },
+          ]}
+          testID={TestIds.settingsOpenButton}
+        >
+          <Text
+            style={[styles.settingsButtonText, { color: palette.text }]}
+            testID={TestIds.settingsOpenButtonText}
+          >
+            Settings
+          </Text>
+        </Pressable>
       </View>
 
       <View
@@ -50,27 +100,44 @@ export function HomeScreen() {
           styles.card,
           { backgroundColor: palette.card, borderColor: palette.border },
         ]}
+        testID={TestIds.mainSessionCard}
       >
-        <Text style={[styles.cardTitle, { color: palette.text }]}>
-          Bootstrap complete
+        <Text
+          style={[styles.cardTitle, { color: palette.text }]}
+          testID={TestIds.mainSessionTitle}
+        >
+          Welcome, {user?.name ?? 'User'}
         </Text>
-        <Text style={[styles.cardBody, { color: palette.muted }]}>
-          The repository is ready for feature development and automation suites.
-          Upcoming work covers navigation, state management, forms, and CI
-          pipelines.
+        <Text
+          style={[styles.cardBody, { color: palette.muted }]}
+          testID={TestIds.mainSessionDescription}
+        >
+          You are authenticated as {user?.email}. Your session is stored locally
+          and will be restored on the next app launch.
         </Text>
       </View>
 
-      <Text style={[styles.sectionTitle, { color: palette.text }]}>
+      <Text
+        style={[styles.sectionTitle, { color: palette.text }]}
+        testID={TestIds.mainSectionTitle}
+      >
         Planned capabilities
       </Text>
-      {FEATURES.map(feature => (
+      {FEATURES.map((feature, index) => (
         <View
           key={feature}
           style={[styles.featureRow, { borderColor: palette.border }]}
+          testID={testIdForFeature(index)}
         >
-          <View style={[styles.bullet, { backgroundColor: palette.accent }]} />
-          <Text style={[styles.featureText, { color: palette.muted }]}>
+          <View
+            accessibilityLabel={`${feature} indicator`}
+            style={[styles.bullet, { backgroundColor: palette.accent }]}
+            testID={`${TestIds.mainFeatureBullet}-${index}`}
+          />
+          <Text
+            style={[styles.featureText, { color: palette.muted }]}
+            testID={`${TestIds.mainFeatureText}-${index}`}
+          >
             {feature}
           </Text>
         </View>
@@ -79,31 +146,20 @@ export function HomeScreen() {
   );
 }
 
-const lightPalette = {
-  background: '#F4F6FB',
-  card: '#FFFFFF',
-  text: '#0F172A',
-  muted: '#475569',
-  accent: '#2563EB',
-  border: '#E2E8F0',
-} as const;
-
-const darkPalette = {
-  background: '#0B1220',
-  card: '#111827',
-  text: '#F8FAFC',
-  muted: '#94A3B8',
-  accent: '#60A5FA',
-  border: '#1E293B',
-} as const;
-
 const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     paddingHorizontal: 24,
     gap: 16,
   },
+  headerRow: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
+  },
   header: {
+    flex: 1,
     gap: 8,
   },
   eyebrow: {
@@ -120,6 +176,16 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
+  },
+  settingsButton: {
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  settingsButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   card: {
     borderRadius: 16,
