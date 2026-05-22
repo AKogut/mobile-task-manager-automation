@@ -267,4 +267,4 @@ cd ../..
 npm run android
 ```
 
-This repo also pins JDK 17 in `app/android/gradle.properties` via `org.gradle.java.home`. If your JDK 17 path differs, copy `app/android/local.properties.example` to `local.properties` and update the path.
+This repo pins the Android JDK major version in `.java-version`, and GitHub Actions reads the same file through `actions/setup-java`. Do not commit `org.gradle.java.home` with a local absolute path; if you need one-off local Gradle overrides, keep them outside version control.
