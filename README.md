@@ -68,18 +68,10 @@ See [docs/releases.md](./docs/releases.md) for publishing downloadable Android A
 ### Install
 
 ```bash
-# Root tooling (Husky, ESLint, Prettier)
-npm install
-
-# React Native app
-cd app && npm install
-
-# iOS native dependencies
-cd ios && bundle install && bundle exec pod install && cd ../..
-
-# Appium test package (when running E2E)
-cd ../appium-tests && npm install
+npm run setup
 ```
+
+This installs root tooling, React Native app dependencies, Ruby gems, and iOS CocoaPods.
 
 ### Run the app
 
@@ -89,6 +81,13 @@ From the repository root:
 npm run app:start    # Metro bundler
 npm run app:ios      # iOS Simulator
 npm run app:android  # Android Emulator
+```
+
+One-shot setup and run commands:
+
+```bash
+npm run app:ios:setup
+npm run app:android:setup
 ```
 
 Or from `app/`:

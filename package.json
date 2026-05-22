@@ -5,16 +5,21 @@
   "description": "React Native task manager with cross-platform and native mobile test automation",
   "scripts": {
     "prepare": "husky",
-    "lint": "npm run lint --prefix app && eslint appium-tests --max-warnings 0",
-    "lint:fix": "npm run lint --prefix app -- --fix && eslint appium-tests --fix",
+    "setup": "npm install && npm install --prefix app && npm run app:pods",
+    "setup:android": "npm install && npm install --prefix app",
+    "setup:ios": "npm run setup",
+    "lint": "npm run lint --prefix app",
+    "lint:fix": "npm run lint --prefix app -- --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "npm run typecheck --prefix app && npm run typecheck --prefix appium-tests",
+    "typecheck": "npm run typecheck --prefix app",
     "app:start": "npm run start --prefix app",
+    "app:pods": "cd app/ios && bundle install && bundle exec pod install",
     "app:ios": "npm run ios --prefix app",
+    "app:ios:setup": "npm run setup:ios && npm run app:ios",
     "app:android": "npm run android --prefix app",
-    "app:test": "npm run test --prefix app",
-    "e2e": "npm run test --prefix appium-tests"
+    "app:android:setup": "npm run setup:android && npm run app:android",
+    "app:test": "npm run test --prefix app"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
