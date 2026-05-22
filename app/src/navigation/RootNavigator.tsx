@@ -10,9 +10,12 @@ import {
 
 import { TestIds } from '@/constants/testIds';
 import { selectIsAuthenticated, useAuthStore } from '@/features/auth/authStore';
+import { AddTaskScreen } from '@/screens/AddTaskScreen';
+import { EditTaskScreen } from '@/screens/EditTaskScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { LoginScreen } from '@/screens/LoginScreen';
 import { SettingsScreen } from '@/screens/SettingsScreen';
+import { TaskDetailsScreen } from '@/screens/TaskDetailsScreen';
 import { getPalette } from '@/theme/palette';
 
 export type RootStackParamList = {
@@ -22,6 +25,9 @@ export type RootStackParamList = {
 
 export type AuthenticatedStackParamList = {
   Main: undefined;
+  AddTask: undefined;
+  TaskDetails: { taskId: string };
+  EditTask: { taskId: string };
   Settings: undefined;
 };
 
@@ -33,6 +39,12 @@ function AuthenticatedNavigator() {
   return (
     <AuthenticatedStack.Navigator screenOptions={{ headerShown: false }}>
       <AuthenticatedStack.Screen name="Main" component={HomeScreen} />
+      <AuthenticatedStack.Screen name="AddTask" component={AddTaskScreen} />
+      <AuthenticatedStack.Screen
+        name="TaskDetails"
+        component={TaskDetailsScreen}
+      />
+      <AuthenticatedStack.Screen name="EditTask" component={EditTaskScreen} />
       <AuthenticatedStack.Screen name="Settings" component={SettingsScreen} />
     </AuthenticatedStack.Navigator>
   );
