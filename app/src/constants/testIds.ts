@@ -65,6 +65,11 @@ export const TestIds = {
   taskItemDescription: 'task-item-description',
   taskItemMetadata: 'task-item-metadata',
   taskItemDaysRemaining: 'task-item-days-remaining',
+  taskSearchInput: 'task-search-input',
+  taskStatusFilterButton: 'task-status-filter-button',
+  taskPriorityFilterButton: 'task-priority-filter-button',
+  taskSortButton: 'task-sort-button',
+  taskNoResultsCard: 'task-no-results-card',
   taskDetailsScreen: 'task-details-screen',
   taskDetailsBackButton: 'task-details-back-button',
   taskDetailsHomeButton: 'task-details-home-button',
@@ -113,4 +118,16 @@ export function testIdForPriority(priority: string): string {
 
 export function testIdForDueDateOption(option: string): string {
   return `task-due-date-quick-option-${option}`;
+}
+
+export function testIdForStatusFilter(filter: string): string {
+  return `task-status-filter-button-${filter}`;
+}
+
+export function testIdForPriorityFilter(priority: string): string {
+  return `task-priority-filter-button-${priority}`;
+}
+
+export function testIdForTaskSort(sort: string): string {
+  return `task-sort-button-${sort}`;
 }

@@ -24,6 +24,19 @@ import {
   taskSchema,
   type TaskFormValues,
 } from '@/features/tasks/taskSchema';
+import {
+  addDays,
+  addMonths,
+  formatCalendarMonth,
+  formatDateInputValue,
+  getCalendarDates,
+  parseDateInputValue,
+  startOfMonth,
+} from '@/features/tasks/taskDates';
+import {
+  formatPriorityLabel,
+  getPriorityColors,
+} from '@/features/tasks/taskPriority';
 import { getPalette } from '@/theme/palette';
 
 type TaskFormProps = {
@@ -39,13 +52,6 @@ type DueDatePreview = {
   month: string;
   day: string;
   year: string;
-};
-
-type CalendarDate = {
-  key: string;
-  date: Date;
-  day: number;
-  isCurrentMonth: boolean;
 };
 
 const quickDueDateOptions = [
@@ -72,82 +78,6 @@ const quickDueDateOptions = [
 ] as const;
 
 const calendarWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-function formatPriorityLabel(priority: TaskFormValues['priority']): string {
-  return `${priority.charAt(0).toUpperCase()}${priority.slice(1)}`;
-}
-
-function addDays(date: Date, days: number): Date {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-
-  return nextDate;
-}
-
-function addMonths(date: Date, months: number): Date {
-  const nextDate = new Date(date);
-  nextDate.setMonth(nextDate.getMonth() + months);
-
-  return nextDate;
-}
-
-function formatDateInputValue(date: Date): string {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-}
-
-function parseDateInputValue(value: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-
-  if (!match) {
-    return null;
-  }
-
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  const date = new Date(year, month - 1, day);
-
-  if (
-    date.getFullYear() !== year ||
-    date.getMonth() !== month - 1 ||
-    date.getDate() !== day
-  ) {
-    return null;
-  }
-
-  return date;
-}
-
-function startOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
-}
-
-function formatCalendarMonth(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    year: 'numeric',
-  });
-}
-
-function getCalendarDates(visibleMonth: Date): CalendarDate[] {
-  const monthStart = startOfMonth(visibleMonth);
-  const gridStart = addDays(monthStart, -monthStart.getDay());
-
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = addDays(gridStart, index);
-
-    return {
-      key: formatDateInputValue(date),
-      date,
-      day: date.getDate(),
-      isCurrentMonth: date.getMonth() === visibleMonth.getMonth(),
-    };
-  });
-}
 
 function parseDueDatePreview(dueDate: string): DueDatePreview {
   const date = parseDateInputValue(dueDate);
@@ -339,6 +269,7 @@ export function TaskForm({
               <View style={styles.priorityRow}>
                 {taskPriorities.map(priority => {
                   const isSelected = value === priority;
+                  const priorityColors = getPriorityColors(priority, palette);
 
                   return (
                     <Pressable
@@ -355,10 +286,10 @@ export function TaskForm({
                         styles.priorityOption,
                         {
                           backgroundColor: isSelected
-                            ? palette.accent
+                            ? priorityColors.background
                             : palette.inputBackground,
                           borderColor: isSelected
-                            ? palette.accent
+                            ? priorityColors.border
                             : palette.border,
                           opacity: pressed ? 0.85 : 1,
                         },
@@ -369,7 +300,7 @@ export function TaskForm({
                         style={[
                           styles.priorityText,
                           isSelected
-                            ? styles.priorityTextSelected
+                            ? { color: priorityColors.text }
                             : { color: palette.text },
                         ]}
                       >

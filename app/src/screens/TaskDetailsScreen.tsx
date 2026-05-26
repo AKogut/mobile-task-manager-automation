@@ -13,8 +13,12 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TestIds } from '@/constants/testIds';
+import { formatDueDateParts } from '@/features/tasks/taskDates';
+import {
+  formatPriorityLabel,
+  getPriorityColors,
+} from '@/features/tasks/taskPriority';
 import { selectTaskById, useTaskStore } from '@/features/tasks/taskStore';
-import type { Task } from '@/features/tasks/taskTypes';
 import type { AuthenticatedStackParamList } from '@/navigation/RootNavigator';
 import { getPalette } from '@/theme/palette';
 
@@ -22,49 +26,6 @@ type TaskDetailsScreenProps = NativeStackScreenProps<
   AuthenticatedStackParamList,
   'TaskDetails'
 >;
-
-type DueDateParts = {
-  weekday: string;
-  month: string;
-  day: string;
-  year: string;
-};
-
-function formatPriority(priority: Task['priority']): string {
-  return `${priority.charAt(0).toUpperCase()}${priority.slice(1)}`;
-}
-
-function parseDueDate(dueDate: string): DueDateParts {
-  const date = new Date(`${dueDate}T00:00:00.000Z`);
-
-  if (Number.isNaN(date.getTime())) {
-    return {
-      weekday: 'Due',
-      month: 'Date',
-      day: '--',
-      year: dueDate,
-    };
-  }
-
-  return {
-    weekday: date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      timeZone: 'UTC',
-    }),
-    month: date.toLocaleDateString('en-US', {
-      month: 'short',
-      timeZone: 'UTC',
-    }),
-    day: date.toLocaleDateString('en-US', {
-      day: '2-digit',
-      timeZone: 'UTC',
-    }),
-    year: date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      timeZone: 'UTC',
-    }),
-  };
-}
 
 export function TaskDetailsScreen({
   navigation,
@@ -155,7 +116,8 @@ export function TaskDetailsScreen({
     );
   }
 
-  const dueDate = parseDueDate(task.dueDate);
+  const dueDate = formatDueDateParts(task.dueDate);
+  const priorityColors = getPriorityColors(task.priority, palette);
 
   return (
     <ScrollView
@@ -248,15 +210,18 @@ export function TaskDetailsScreen({
               style={[
                 styles.priorityChip,
                 {
-                  backgroundColor: palette.inputBackground,
-                  borderColor: palette.border,
+                  backgroundColor: priorityColors.background,
+                  borderColor: priorityColors.border,
                 },
               ]}
             >
               <Text
-                style={[styles.priorityChipText, { color: palette.accent }]}
+                style={[
+                  styles.priorityChipText,
+                  { color: priorityColors.text },
+                ]}
               >
-                {formatPriority(task.priority)} priority
+                {formatPriorityLabel(task.priority)} priority
               </Text>
             </View>
           </View>
