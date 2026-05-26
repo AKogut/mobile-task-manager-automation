@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { TASKS_STORAGE_KEY } from '@/constants/tasks';
+import { createTaskId } from '@/features/tasks/taskIds';
 import type { Task } from '@/features/tasks/taskTypes';
 
 export type TaskDraft = Omit<Task, 'id' | 'completed'>;
@@ -16,10 +17,6 @@ type TaskState = {
   toggleTaskCompleted: (taskId: string) => void;
   clearTasks: () => void;
 };
-
-function createTaskId(): string {
-  return `task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
 
 export const useTaskStore = create<TaskState>()(
   persist(

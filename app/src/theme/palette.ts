@@ -10,6 +10,15 @@ export const lightPalette = {
   errorBorder: '#FECACA',
   inputBackground: '#FFFFFF',
   disabled: '#94A3B8',
+  priorityLowBackground: '#ECFDF5',
+  priorityLowBorder: '#A7F3D0',
+  priorityLowText: '#047857',
+  priorityMediumBackground: '#FFFBEB',
+  priorityMediumBorder: '#FDE68A',
+  priorityMediumText: '#B45309',
+  priorityHighBackground: '#FEF2F2',
+  priorityHighBorder: '#FCA5A5',
+  priorityHighText: '#B91C1C',
 } as const;
 
 export const darkPalette = {
@@ -24,6 +33,15 @@ export const darkPalette = {
   errorBorder: '#7F1D1D',
   inputBackground: '#1E293B',
   disabled: '#64748B',
+  priorityLowBackground: '#052E1A',
+  priorityLowBorder: '#166534',
+  priorityLowText: '#86EFAC',
+  priorityMediumBackground: '#422006',
+  priorityMediumBorder: '#92400E',
+  priorityMediumText: '#FCD34D',
+  priorityHighBackground: '#450A0A',
+  priorityHighBorder: '#991B1B',
+  priorityHighText: '#FCA5A5',
 } as const;
 
 export type Palette = {
@@ -38,6 +56,15 @@ export type Palette = {
   errorBorder: string;
   inputBackground: string;
   disabled: string;
+  priorityLowBackground: string;
+  priorityLowBorder: string;
+  priorityLowText: string;
+  priorityMediumBackground: string;
+  priorityMediumBorder: string;
+  priorityMediumText: string;
+  priorityHighBackground: string;
+  priorityHighBorder: string;
+  priorityHighText: string;
 };
 
 export function getPalette(isDarkMode: boolean): Palette {

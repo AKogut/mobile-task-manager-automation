@@ -65,7 +65,9 @@ describe('taskStore', () => {
     });
 
     const state = useTaskStore.getState();
-    expect(task.id).toMatch(/^task-/);
+    expect(task.id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
     expect(task.completed).toBe(false);
     expect(state.tasks[0]).toEqual(task);
     expect(state.tasks[1]).toEqual(sampleTask);
@@ -130,6 +132,24 @@ describe('taskStore', () => {
     expect(persistedState).not.toContain('deleteTask');
     expect(persistedState).not.toContain('toggleTaskCompleted');
     expect(persistedState).not.toContain('clearTasks');
+  });
+
+  it('rehydrates tasks from AsyncStorage', async () => {
+    useTaskStore.setState(initialTaskState);
+
+    await AsyncStorage.setItem(
+      TASKS_STORAGE_KEY,
+      JSON.stringify({
+        state: {
+          tasks: sampleTasks,
+        },
+        version: 0,
+      }),
+    );
+
+    await useTaskStore.persist.rehydrate();
+
+    expect(useTaskStore.getState().tasks).toEqual(sampleTasks);
   });
 
   it('clears all tasks', () => {

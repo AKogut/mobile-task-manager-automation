@@ -1,20 +1,39 @@
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
+  FlatList,
+  type ListRenderItemInfo,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { APP_NAME } from '@/constants/app';
-import { TestIds, testIdForTask } from '@/constants/testIds';
+import {
+  TestIds,
+  testIdForPriorityFilter,
+  testIdForStatusFilter,
+  testIdForTask,
+  testIdForTaskSort,
+} from '@/constants/testIds';
 import { useAuthStore } from '@/features/auth/authStore';
+import {
+  formatDaysRemaining,
+  formatDueLabel,
+  parseUtcDueDate,
+  startOfToday,
+} from '@/features/tasks/taskDates';
+import {
+  formatPriorityLabel,
+  getPriorityColors,
+  priorityRank,
+} from '@/features/tasks/taskPriority';
 import { selectHasTasks, useTaskStore } from '@/features/tasks/taskStore';
 import type { Task } from '@/features/tasks/taskTypes';
 import type { AuthenticatedStackParamList } from '@/navigation/RootNavigator';
@@ -31,73 +50,35 @@ type TaskStats = {
   completed: number;
 };
 
-function formatPriority(priority: Task['priority']): string {
-  return `${priority.charAt(0).toUpperCase()}${priority.slice(1)}`;
-}
+type TaskStatusFilter = 'all' | 'open' | 'completed';
+type TaskPriorityFilter = 'all' | Task['priority'];
+type TaskSortOption = 'dueDate' | 'priority' | 'status';
+
+const statusFilters: Array<{ label: string; value: TaskStatusFilter }> = [
+  { label: 'All', value: 'all' },
+  { label: 'Open', value: 'open' },
+  { label: 'Done', value: 'completed' },
+];
+
+const priorityFilters: Array<{ label: string; value: TaskPriorityFilter }> = [
+  { label: 'All', value: 'all' },
+  { label: 'Low', value: 'low' },
+  { label: 'Medium', value: 'medium' },
+  { label: 'High', value: 'high' },
+];
+
+const sortOptions: Array<{ label: string; value: TaskSortOption }> = [
+  { label: 'Due date', value: 'dueDate' },
+  { label: 'Priority', value: 'priority' },
+  { label: 'Status', value: 'status' },
+];
 
 function formatTaskMetadata(task: Task): string {
   const status = task.completed ? 'Completed' : 'Open';
 
-  return `${status} - ${formatPriority(task.priority)} priority - Due ${
+  return `${status} - ${formatPriorityLabel(task.priority)} priority - Due ${
     task.dueDate
   }`;
-}
-
-function startOfToday(): Date {
-  const today = new Date();
-
-  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
-}
-
-function parseDueDate(dueDate: string): Date | null {
-  const date = new Date(`${dueDate}T00:00:00.000Z`);
-
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-}
-
-function getTimeGreeting(): string {
-  const hour = new Date().getHours();
-
-  if (hour < 12) {
-    return 'Good morning';
-  }
-
-  if (hour < 18) {
-    return 'Good afternoon';
-  }
-
-  return 'Good evening';
-}
-
-function formatDueLabel(dueDate: string): string {
-  const date = parseDueDate(dueDate);
-
-  if (!date) {
-    return 'No due date';
-  }
-
-  const millisecondsPerDay = 24 * 60 * 60 * 1000;
-  const days = Math.round(
-    (date.getTime() - startOfToday().getTime()) / millisecondsPerDay,
-  );
-
-  if (days === 0) {
-    return 'Due today';
-  }
-
-  if (days === 1) {
-    return 'Due tomorrow';
-  }
-
-  if (days > 1) {
-    return `Due in ${days} days`;
-  }
-
-  return 'Overdue';
 }
 
 function countOpenTasksDueToday(tasks: Task[]): number {
@@ -108,7 +89,7 @@ function countOpenTasksDueToday(tasks: Task[]): number {
       return false;
     }
 
-    const dueDate = parseDueDate(task.dueDate);
+    const dueDate = parseUtcDueDate(task.dueDate);
 
     return dueDate !== null && dueDate.getTime() === today;
   }).length;
@@ -131,33 +112,6 @@ function getTodayTasksMessage(
   }
 
   return `You have ${openCount} open task${openCount === 1 ? '' : 's'} waiting.`;
-}
-
-function formatDaysRemaining(dueDate: string): string {
-  const date = parseDueDate(dueDate);
-
-  if (!date) {
-    return 'No deadline';
-  }
-
-  const millisecondsPerDay = 24 * 60 * 60 * 1000;
-  const days = Math.round(
-    (date.getTime() - startOfToday().getTime()) / millisecondsPerDay,
-  );
-
-  if (days === 0) {
-    return 'Due today';
-  }
-
-  if (days === 1) {
-    return '1 day left';
-  }
-
-  if (days > 1) {
-    return `${days} days left`;
-  }
-
-  return `Overdue by ${Math.abs(days)} day${days === -1 ? '' : 's'}`;
 }
 
 function getTaskStats(tasks: Task[]): TaskStats {
@@ -184,6 +138,70 @@ function getNextTask(tasks: Task[]): Task | null {
   );
 }
 
+function getTimeGreeting(): string {
+  const hour = new Date().getHours();
+
+  if (hour < 12) {
+    return 'Good morning';
+  }
+
+  if (hour < 18) {
+    return 'Good afternoon';
+  }
+
+  return 'Good evening';
+}
+
+function getVisibleTasks(
+  tasks: Task[],
+  searchQuery: string,
+  statusFilter: TaskStatusFilter,
+  priorityFilter: TaskPriorityFilter,
+  sortOption: TaskSortOption,
+): Task[] {
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  return tasks
+    .filter(task => {
+      if (statusFilter === 'open' && task.completed) {
+        return false;
+      }
+
+      if (statusFilter === 'completed' && !task.completed) {
+        return false;
+      }
+
+      if (priorityFilter !== 'all' && task.priority !== priorityFilter) {
+        return false;
+      }
+
+      if (normalizedQuery.length === 0) {
+        return true;
+      }
+
+      return `${task.title} ${task.description}`
+        .toLowerCase()
+        .includes(normalizedQuery);
+    })
+    .sort((first, second) => {
+      if (sortOption === 'priority') {
+        return (
+          priorityRank[second.priority] - priorityRank[first.priority] ||
+          first.dueDate.localeCompare(second.dueDate)
+        );
+      }
+
+      if (sortOption === 'status') {
+        return (
+          Number(first.completed) - Number(second.completed) ||
+          first.dueDate.localeCompare(second.dueDate)
+        );
+      }
+
+      return first.dueDate.localeCompare(second.dueDate);
+    });
+}
+
 export function HomeScreen() {
   const isDarkMode = useColorScheme() === 'dark';
   const insets = useSafeAreaInsets();
@@ -193,6 +211,11 @@ export function HomeScreen() {
   const tasks = useTaskStore(state => state.tasks);
   const hasTasks = useTaskStore(selectHasTasks);
   const toggleTaskCompleted = useTaskStore(state => state.toggleTaskCompleted);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<TaskStatusFilter>('all');
+  const [priorityFilter, setPriorityFilter] =
+    useState<TaskPriorityFilter>('all');
+  const [sortOption, setSortOption] = useState<TaskSortOption>('dueDate');
   const entrance = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -223,231 +246,254 @@ export function HomeScreen() {
   const userName = user?.name ?? 'User';
   const dueTodayCount = countOpenTasksDueToday(tasks);
   const todayTasksMessage = getTodayTasksMessage(stats.open, dueTodayCount);
+  const visibleTasks = useMemo(
+    () =>
+      getVisibleTasks(
+        tasks,
+        searchQuery,
+        statusFilter,
+        priorityFilter,
+        sortOption,
+      ),
+    [priorityFilter, searchQuery, sortOption, statusFilter, tasks],
+  );
 
-  return (
-    <ScrollView
-      accessibilityLabel="Authenticated main screen"
-      contentContainerStyle={[
-        styles.content,
-        {
-          paddingTop: insets.top + 24,
-          paddingBottom: insets.bottom + 24,
-          backgroundColor: palette.background,
-        },
-      ]}
-      testID={TestIds.mainScreen}
-    >
-      <Animated.View style={[styles.animatedContent, animatedStyle]}>
-        <View style={styles.topActionsRow} testID={TestIds.mainHeaderRow}>
-          <View style={styles.header} testID={TestIds.mainHeader}>
-            <Text
-              style={[styles.appLabel, { color: palette.muted }]}
-              testID={TestIds.mainEyebrow}
-            >
-              {APP_NAME}
-            </Text>
-          </View>
-          <Pressable
-            accessibilityLabel="Open settings"
-            accessibilityRole="button"
-            onPress={() => {
-              navigation.navigate('Settings');
-            }}
-            style={({ pressed }) => [
-              styles.settingsButton,
-              {
-                borderColor: palette.border,
-                backgroundColor: palette.card,
-                opacity: pressed ? 0.85 : 1,
-              },
-            ]}
-            testID={TestIds.settingsOpenButton}
-          >
-            <Text
-              style={[styles.settingsButtonText, { color: palette.text }]}
-              testID={TestIds.settingsOpenButtonText}
-            >
-              Settings
-            </Text>
-          </Pressable>
-        </View>
+  const renderTask = ({ item: task, index }: ListRenderItemInfo<Task>) => {
+    const priorityColors = getPriorityColors(task.priority, palette);
 
+    return (
+      <View
+        style={[
+          styles.taskCard,
+          {
+            backgroundColor: palette.card,
+            borderColor: palette.border,
+          },
+        ]}
+        testID={testIdForTask(index)}
+      >
         <View
           style={[
-            styles.heroCard,
+            styles.taskAccent,
             {
-              backgroundColor: palette.card,
-              borderColor: palette.border,
+              backgroundColor: task.completed
+                ? palette.disabled
+                : priorityColors.accent,
             },
           ]}
-          testID={TestIds.mainSessionCard}
-        >
-          <View style={styles.heroTopRow}>
-            <View style={styles.heroCopy}>
+        />
+        <View style={styles.taskContent}>
+          <View style={styles.taskTopRow}>
+            <View style={styles.taskTitleGroup}>
               <Text
-                style={[styles.heroGreeting, { color: palette.text }]}
-                testID={TestIds.mainTitle}
+                style={[
+                  styles.taskTitle,
+                  { color: task.completed ? palette.muted : palette.text },
+                  task.completed ? styles.completedTaskTitle : null,
+                ]}
+                testID={`${TestIds.taskItemTitle}-${index}`}
               >
-                {getTimeGreeting()}, {userName}
+                {task.title}
               </Text>
               <Text
-                style={[styles.heroSummary, { color: palette.text }]}
-                testID={TestIds.mainSessionTitle}
+                style={[styles.taskDescription, { color: palette.muted }]}
+                testID={`${TestIds.taskItemDescription}-${index}`}
               >
-                {todayTasksMessage}
-              </Text>
-              <Text
-                style={[styles.heroHint, { color: palette.muted }]}
-                testID={TestIds.mainSubtitle}
-              >
-                Stay focused and clear one thing at a time.
+                {task.description || 'No description provided.'}
               </Text>
             </View>
-            <Pressable
-              accessibilityLabel="Add task"
-              accessibilityRole="button"
-              onPress={() => {
-                navigation.navigate('AddTask');
-              }}
-              style={({ pressed }) => [
-                styles.heroAddButton,
+            <View
+              style={[
+                styles.statusPill,
                 {
-                  backgroundColor: palette.accent,
-                  opacity: pressed ? 0.9 : 1,
+                  backgroundColor: task.completed
+                    ? palette.inputBackground
+                    : palette.accent,
+                  borderColor: task.completed ? palette.border : palette.accent,
                 },
               ]}
-              testID={TestIds.taskAddButton}
             >
               <Text
-                style={styles.heroAddButtonText}
-                testID={TestIds.taskAddButtonText}
+                style={[
+                  styles.statusPillText,
+                  task.completed
+                    ? { color: palette.muted }
+                    : styles.statusPillTextOpen,
+                ]}
               >
-                Add
+                {task.completed ? 'Done' : 'Open'}
               </Text>
-            </Pressable>
+            </View>
           </View>
 
-          {nextTask ? (
+          <View style={styles.taskMetaRow}>
+            <View
+              style={[
+                styles.priorityPill,
+                {
+                  backgroundColor: priorityColors.background,
+                  borderColor: priorityColors.border,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.priorityPillText,
+                  { color: priorityColors.text },
+                ]}
+              >
+                {formatPriorityLabel(task.priority)} priority
+              </Text>
+            </View>
+            <Text
+              style={[styles.taskMetadata, { color: palette.accent }]}
+              testID={`${TestIds.taskItemMetadata}-${index}`}
+            >
+              {formatTaskMetadata(task)}
+            </Text>
+          </View>
+
+          <View
+            style={[
+              styles.daysRemainingPill,
+              {
+                backgroundColor: task.completed
+                  ? palette.inputBackground
+                  : palette.errorBackground,
+                borderColor: task.completed
+                  ? palette.border
+                  : palette.errorBorder,
+              },
+            ]}
+            testID={`${TestIds.taskItemDaysRemaining}-${index}`}
+          >
+            <Text
+              style={[
+                styles.daysRemainingText,
+                { color: task.completed ? palette.muted : palette.error },
+              ]}
+            >
+              {task.completed ? 'Finished' : formatDaysRemaining(task.dueDate)}
+            </Text>
+          </View>
+
+          <View style={styles.taskActionRow}>
             <Pressable
-              accessibilityLabel={`Open ${nextTask.title} details`}
+              accessibilityLabel={`Open ${task.title} details`}
               accessibilityRole="button"
               onPress={() => {
-                navigation.navigate('TaskDetails', { taskId: nextTask.id });
+                navigation.navigate('TaskDetails', { taskId: task.id });
               }}
               style={({ pressed }) => [
-                styles.upNextCard,
+                styles.detailsButton,
                 {
                   backgroundColor: palette.inputBackground,
                   borderColor: palette.border,
-                  opacity: pressed ? 0.9 : 1,
+                  opacity: pressed ? 0.85 : 1,
                 },
               ]}
-              testID={TestIds.mainHeroUpNextCard}
             >
-              <Text style={[styles.upNextKicker, { color: palette.accent }]}>
-                Up next
-              </Text>
-              <Text
-                style={[styles.upNextTitle, { color: palette.text }]}
-                testID={TestIds.mainHeroUpNextTitle}
-              >
-                {nextTask.title}
-              </Text>
-              <Text
-                style={[styles.upNextMeta, { color: palette.muted }]}
-                testID={TestIds.mainHeroUpNextMeta}
-              >
-                {formatDueLabel(nextTask.dueDate)} ·{' '}
-                {formatPriority(nextTask.priority)} priority
+              <Text style={[styles.detailsButtonText, { color: palette.text }]}>
+                View details
               </Text>
             </Pressable>
-          ) : (
-            <View
-              style={[
-                styles.upNextCard,
+            <Pressable
+              accessibilityLabel={
+                task.completed
+                  ? `Mark ${task.title} incomplete`
+                  : `Mark ${task.title} completed`
+              }
+              accessibilityRole="button"
+              onPress={() => {
+                toggleTaskCompleted(task.id);
+              }}
+              style={({ pressed }) => [
+                styles.completeButton,
                 {
-                  backgroundColor: palette.inputBackground,
                   borderColor: palette.border,
+                  opacity: pressed ? 0.85 : 1,
                 },
               ]}
+              testID={`${TestIds.taskToggleButton}-${index}`}
             >
-              <Text style={[styles.upNextKicker, { color: palette.accent }]}>
-                Up next
+              <Text
+                style={[styles.completeButtonText, { color: palette.text }]}
+                testID={`${TestIds.taskToggleButtonText}-${index}`}
+              >
+                {task.completed ? 'Reopen' : 'Complete'}
               </Text>
-              <Text style={[styles.upNextTitle, { color: palette.text }]}>
-                Nothing scheduled yet
-              </Text>
-              <Text style={[styles.upNextMeta, { color: palette.muted }]}>
-                Add a task with a due date to see it here.
-              </Text>
-            </View>
-          )}
-
-          <View style={styles.statsRow}>
-            <View
-              style={[
-                styles.statCard,
-                {
-                  backgroundColor: palette.inputBackground,
-                  borderColor: palette.border,
-                },
-              ]}
-            >
-              <Text style={[styles.statValue, { color: palette.text }]}>
-                {stats.total}
-              </Text>
-              <Text style={[styles.statLabel, { color: palette.muted }]}>
-                Total
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.statCard,
-                {
-                  backgroundColor: palette.inputBackground,
-                  borderColor: palette.border,
-                },
-              ]}
-            >
-              <Text style={[styles.statValue, { color: palette.text }]}>
-                {stats.open}
-              </Text>
-              <Text style={[styles.statLabel, { color: palette.muted }]}>
-                Open
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.statCard,
-                {
-                  backgroundColor: palette.inputBackground,
-                  borderColor: palette.border,
-                },
-              ]}
-            >
-              <Text style={[styles.statValue, { color: palette.text }]}>
-                {stats.completed}
-              </Text>
-              <Text style={[styles.statLabel, { color: palette.muted }]}>
-                Done
-              </Text>
-            </View>
+            </Pressable>
           </View>
         </View>
+      </View>
+    );
+  };
 
-        <View style={styles.sectionHeader}>
-          <View>
+  const header = (
+    <Animated.View style={[styles.animatedContent, animatedStyle]}>
+      <View style={styles.topActionsRow} testID={TestIds.mainHeaderRow}>
+        <View style={styles.header} testID={TestIds.mainHeader}>
+          <Text
+            style={[styles.appLabel, { color: palette.muted }]}
+            testID={TestIds.mainEyebrow}
+          >
+            {APP_NAME}
+          </Text>
+        </View>
+        <Pressable
+          accessibilityLabel="Open settings"
+          accessibilityRole="button"
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+          style={({ pressed }) => [
+            styles.settingsButton,
+            {
+              borderColor: palette.border,
+              backgroundColor: palette.card,
+              opacity: pressed ? 0.85 : 1,
+            },
+          ]}
+          testID={TestIds.settingsOpenButton}
+        >
+          <Text
+            style={[styles.settingsButtonText, { color: palette.text }]}
+            testID={TestIds.settingsOpenButtonText}
+          >
+            Settings
+          </Text>
+        </Pressable>
+      </View>
+
+      <View
+        style={[
+          styles.heroCard,
+          {
+            backgroundColor: palette.card,
+            borderColor: palette.border,
+          },
+        ]}
+        testID={TestIds.mainSessionCard}
+      >
+        <View style={styles.heroTopRow}>
+          <View style={styles.heroCopy}>
             <Text
-              style={[styles.sectionTitle, { color: palette.text }]}
-              testID={TestIds.mainSectionTitle}
+              style={[styles.heroGreeting, { color: palette.text }]}
+              testID={TestIds.mainTitle}
             >
-              Your tasks
+              {getTimeGreeting()}, {userName}
             </Text>
             <Text
-              style={[styles.taskListTitle, { color: palette.muted }]}
-              testID={TestIds.taskListTitle}
+              style={[styles.heroSummary, { color: palette.text }]}
+              testID={TestIds.mainSessionTitle}
             >
-              {hasTasks ? `${tasks.length} saved tasks` : 'No saved tasks'}
+              {todayTasksMessage}
+            </Text>
+            <Text
+              style={[styles.heroHint, { color: palette.muted }]}
+              testID={TestIds.mainSubtitle}
+            >
+              Stay focused and clear one thing at a time.
             </Text>
           </View>
           <Pressable
@@ -457,256 +503,435 @@ export function HomeScreen() {
               navigation.navigate('AddTask');
             }}
             style={({ pressed }) => [
-              styles.addButton,
+              styles.heroAddButton,
               {
-                borderColor: palette.border,
-                backgroundColor: palette.card,
-                opacity: pressed ? 0.85 : 1,
+                backgroundColor: palette.accent,
+                opacity: pressed ? 0.9 : 1,
               },
             ]}
+            testID={TestIds.taskAddButton}
           >
-            <Text style={[styles.addButtonText, { color: palette.text }]}>
-              New task
+            <Text
+              style={styles.heroAddButtonText}
+              testID={TestIds.taskAddButtonText}
+            >
+              Add
             </Text>
           </Pressable>
         </View>
 
-        <View style={styles.taskListSection} testID={TestIds.taskListSection}>
-          {hasTasks ? (
-            tasks.map((task, index) => (
-              <View
-                key={task.id}
-                style={[
-                  styles.taskCard,
-                  {
-                    backgroundColor: palette.card,
-                    borderColor: palette.border,
-                  },
-                ]}
-                testID={testIdForTask(index)}
-              >
-                <View
-                  style={[
-                    styles.taskAccent,
-                    {
-                      backgroundColor: task.completed
-                        ? palette.disabled
-                        : palette.accent,
-                    },
-                  ]}
-                />
-                <View style={styles.taskContent}>
-                  <View style={styles.taskTopRow}>
-                    <View style={styles.taskTitleGroup}>
-                      <Text
-                        style={[
-                          styles.taskTitle,
-                          {
-                            color: task.completed
-                              ? palette.muted
-                              : palette.text,
-                          },
-                          task.completed ? styles.completedTaskTitle : null,
-                        ]}
-                        testID={`${TestIds.taskItemTitle}-${index}`}
-                      >
-                        {task.title}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.taskDescription,
-                          { color: palette.muted },
-                        ]}
-                        testID={`${TestIds.taskItemDescription}-${index}`}
-                      >
-                        {task.description || 'No description provided.'}
-                      </Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.statusPill,
-                        {
-                          backgroundColor: task.completed
-                            ? palette.inputBackground
-                            : palette.accent,
-                          borderColor: task.completed
-                            ? palette.border
-                            : palette.accent,
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.statusPillText,
-                          task.completed
-                            ? { color: palette.muted }
-                            : styles.statusPillTextOpen,
-                        ]}
-                      >
-                        {task.completed ? 'Done' : 'Open'}
-                      </Text>
-                    </View>
-                  </View>
+        {nextTask ? (
+          <Pressable
+            accessibilityLabel={`Open ${nextTask.title} details`}
+            accessibilityRole="button"
+            onPress={() => {
+              navigation.navigate('TaskDetails', { taskId: nextTask.id });
+            }}
+            style={({ pressed }) => [
+              styles.upNextCard,
+              {
+                backgroundColor: palette.inputBackground,
+                borderColor: palette.border,
+                opacity: pressed ? 0.9 : 1,
+              },
+            ]}
+            testID={TestIds.mainHeroUpNextCard}
+          >
+            <Text style={[styles.upNextKicker, { color: palette.accent }]}>
+              Up next
+            </Text>
+            <Text
+              style={[styles.upNextTitle, { color: palette.text }]}
+              testID={TestIds.mainHeroUpNextTitle}
+            >
+              {nextTask.title}
+            </Text>
+            <Text
+              style={[styles.upNextMeta, { color: palette.muted }]}
+              testID={TestIds.mainHeroUpNextMeta}
+            >
+              {formatDueLabel(nextTask.dueDate)} ·{' '}
+              {formatPriorityLabel(nextTask.priority)} priority
+            </Text>
+          </Pressable>
+        ) : (
+          <View
+            style={[
+              styles.upNextCard,
+              {
+                backgroundColor: palette.inputBackground,
+                borderColor: palette.border,
+              },
+            ]}
+          >
+            <Text style={[styles.upNextKicker, { color: palette.accent }]}>
+              Up next
+            </Text>
+            <Text style={[styles.upNextTitle, { color: palette.text }]}>
+              Nothing scheduled yet
+            </Text>
+            <Text style={[styles.upNextMeta, { color: palette.muted }]}>
+              Add a task with a due date to see it here.
+            </Text>
+          </View>
+        )}
 
-                  <Text
-                    style={[styles.taskMetadata, { color: palette.accent }]}
-                    testID={`${TestIds.taskItemMetadata}-${index}`}
-                  >
-                    {formatTaskMetadata(task)}
-                  </Text>
+        <View style={styles.statsRow}>
+          <View
+            style={[
+              styles.statCard,
+              {
+                backgroundColor: palette.inputBackground,
+                borderColor: palette.border,
+              },
+            ]}
+          >
+            <Text style={[styles.statValue, { color: palette.text }]}>
+              {stats.total}
+            </Text>
+            <Text style={[styles.statLabel, { color: palette.muted }]}>
+              Total
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.statCard,
+              {
+                backgroundColor: palette.inputBackground,
+                borderColor: palette.border,
+              },
+            ]}
+          >
+            <Text style={[styles.statValue, { color: palette.text }]}>
+              {stats.open}
+            </Text>
+            <Text style={[styles.statLabel, { color: palette.muted }]}>
+              Open
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.statCard,
+              {
+                backgroundColor: palette.inputBackground,
+                borderColor: palette.border,
+              },
+            ]}
+          >
+            <Text style={[styles.statValue, { color: palette.text }]}>
+              {stats.completed}
+            </Text>
+            <Text style={[styles.statLabel, { color: palette.muted }]}>
+              Done
+            </Text>
+          </View>
+        </View>
+      </View>
 
-                  <View
-                    style={[
-                      styles.daysRemainingPill,
+      <View style={styles.sectionHeader}>
+        <View>
+          <Text
+            style={[styles.sectionTitle, { color: palette.text }]}
+            testID={TestIds.mainSectionTitle}
+          >
+            Your tasks
+          </Text>
+          <Text
+            style={[styles.taskListTitle, { color: palette.muted }]}
+            testID={TestIds.taskListTitle}
+          >
+            {hasTasks
+              ? `${visibleTasks.length} of ${tasks.length} tasks`
+              : 'No saved tasks'}
+          </Text>
+        </View>
+        <Pressable
+          accessibilityLabel="Add task"
+          accessibilityRole="button"
+          onPress={() => {
+            navigation.navigate('AddTask');
+          }}
+          style={({ pressed }) => [
+            styles.addButton,
+            {
+              borderColor: palette.border,
+              backgroundColor: palette.card,
+              opacity: pressed ? 0.85 : 1,
+            },
+          ]}
+        >
+          <Text style={[styles.addButtonText, { color: palette.text }]}>
+            New task
+          </Text>
+        </Pressable>
+      </View>
+
+      {hasTasks ? (
+        <View style={styles.controlsCard}>
+          <TextInput
+            accessibilityLabel="Search tasks"
+            autoCapitalize="none"
+            onChangeText={setSearchQuery}
+            placeholder="Search by title or description"
+            placeholderTextColor={palette.muted}
+            style={[
+              styles.searchInput,
+              {
+                backgroundColor: palette.card,
+                borderColor: palette.border,
+                color: palette.text,
+              },
+            ]}
+            testID={TestIds.taskSearchInput}
+            value={searchQuery}
+          />
+
+          <View style={styles.controlGroup}>
+            <Text style={[styles.controlLabel, { color: palette.muted }]}>
+              Status
+            </Text>
+            <View style={styles.controlRow}>
+              {statusFilters.map(filter => {
+                const isSelected = statusFilter === filter.value;
+
+                return (
+                  <Pressable
+                    accessibilityLabel={`Show ${filter.label} tasks`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    key={filter.value}
+                    onPress={() => {
+                      setStatusFilter(filter.value);
+                    }}
+                    style={({ pressed }) => [
+                      styles.filterButton,
                       {
-                        backgroundColor: task.completed
-                          ? palette.inputBackground
-                          : palette.errorBackground,
-                        borderColor: task.completed
-                          ? palette.border
-                          : palette.errorBorder,
+                        backgroundColor: isSelected
+                          ? palette.accent
+                          : palette.card,
+                        borderColor: isSelected
+                          ? palette.accent
+                          : palette.border,
+                        opacity: pressed ? 0.85 : 1,
                       },
                     ]}
-                    testID={`${TestIds.taskItemDaysRemaining}-${index}`}
+                    testID={testIdForStatusFilter(filter.value)}
                   >
                     <Text
                       style={[
-                        styles.daysRemainingText,
-                        {
-                          color: task.completed ? palette.muted : palette.error,
-                        },
+                        styles.filterButtonText,
+                        isSelected
+                          ? styles.filterButtonTextActive
+                          : { color: palette.text },
                       ]}
                     >
-                      {task.completed
-                        ? 'Finished'
-                        : formatDaysRemaining(task.dueDate)}
+                      {filter.label}
                     </Text>
-                  </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
 
-                  <View style={styles.taskActionRow}>
-                    <Pressable
-                      accessibilityLabel={`Open ${task.title} details`}
-                      accessibilityRole="button"
-                      onPress={() => {
-                        navigation.navigate('TaskDetails', { taskId: task.id });
-                      }}
-                      style={({ pressed }) => [
-                        styles.detailsButton,
-                        {
-                          backgroundColor: palette.inputBackground,
-                          borderColor: palette.border,
-                          opacity: pressed ? 0.85 : 1,
-                        },
+          <View style={styles.controlGroup}>
+            <Text style={[styles.controlLabel, { color: palette.muted }]}>
+              Priority
+            </Text>
+            <View style={styles.controlRow}>
+              {priorityFilters.map(filter => {
+                const isSelected = priorityFilter === filter.value;
+
+                return (
+                  <Pressable
+                    accessibilityLabel={`Show ${filter.label} priority tasks`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    key={filter.value}
+                    onPress={() => {
+                      setPriorityFilter(filter.value);
+                    }}
+                    style={({ pressed }) => [
+                      styles.filterButton,
+                      {
+                        backgroundColor: isSelected
+                          ? palette.accent
+                          : palette.card,
+                        borderColor: isSelected
+                          ? palette.accent
+                          : palette.border,
+                        opacity: pressed ? 0.85 : 1,
+                      },
+                    ]}
+                    testID={testIdForPriorityFilter(filter.value)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterButtonText,
+                        isSelected
+                          ? styles.filterButtonTextActive
+                          : { color: palette.text },
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.detailsButtonText,
-                          { color: palette.text },
-                        ]}
-                      >
-                        View details
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      accessibilityLabel={
-                        task.completed
-                          ? `Mark ${task.title} incomplete`
-                          : `Mark ${task.title} completed`
-                      }
-                      accessibilityRole="button"
-                      onPress={() => {
-                        toggleTaskCompleted(task.id);
-                      }}
-                      style={({ pressed }) => [
-                        styles.completeButton,
-                        {
-                          borderColor: palette.border,
-                          opacity: pressed ? 0.85 : 1,
-                        },
+                      {filter.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+
+          <View style={styles.controlGroup}>
+            <Text style={[styles.controlLabel, { color: palette.muted }]}>
+              Sort
+            </Text>
+            <View style={styles.controlRow}>
+              {sortOptions.map(option => {
+                const isSelected = sortOption === option.value;
+
+                return (
+                  <Pressable
+                    accessibilityLabel={`Sort tasks by ${option.label}`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    key={option.value}
+                    onPress={() => {
+                      setSortOption(option.value);
+                    }}
+                    style={({ pressed }) => [
+                      styles.filterButton,
+                      {
+                        backgroundColor: isSelected
+                          ? palette.accent
+                          : palette.card,
+                        borderColor: isSelected
+                          ? palette.accent
+                          : palette.border,
+                        opacity: pressed ? 0.85 : 1,
+                      },
+                    ]}
+                    testID={testIdForTaskSort(option.value)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterButtonText,
+                        isSelected
+                          ? styles.filterButtonTextActive
+                          : { color: palette.text },
                       ]}
-                      testID={`${TestIds.taskToggleButton}-${index}`}
                     >
-                      <Text
-                        style={[
-                          styles.completeButtonText,
-                          { color: palette.text },
-                        ]}
-                        testID={`${TestIds.taskToggleButtonText}-${index}`}
-                      >
-                        {task.completed ? 'Reopen' : 'Complete'}
-                      </Text>
-                    </Pressable>
-                  </View>
-                </View>
-              </View>
-            ))
-          ) : (
+                      {option.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+      ) : null}
+    </Animated.View>
+  );
+
+  return (
+    <FlatList
+      accessibilityLabel="Authenticated main screen"
+      data={visibleTasks}
+      keyExtractor={task => task.id}
+      ListEmptyComponent={
+        hasTasks ? (
+          <View
+            style={[
+              styles.emptyStateCard,
+              {
+                backgroundColor: palette.card,
+                borderColor: palette.border,
+              },
+            ]}
+            testID={TestIds.taskNoResultsCard}
+          >
+            <Text style={[styles.emptyStateTitle, { color: palette.text }]}>
+              No matching tasks
+            </Text>
+            <Text
+              style={[styles.emptyStateDescription, { color: palette.muted }]}
+            >
+              Try a different search, status filter, or sort option.
+            </Text>
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.emptyStateCard,
+              {
+                backgroundColor: palette.card,
+                borderColor: palette.border,
+              },
+            ]}
+            testID={TestIds.taskEmptyStateCard}
+          >
             <View
               style={[
-                styles.emptyStateCard,
+                styles.emptyBadge,
                 {
-                  backgroundColor: palette.card,
+                  backgroundColor: palette.inputBackground,
                   borderColor: palette.border,
                 },
               ]}
-              testID={TestIds.taskEmptyStateCard}
             >
-              <View
-                style={[
-                  styles.emptyBadge,
-                  {
-                    backgroundColor: palette.inputBackground,
-                    borderColor: palette.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[styles.emptyBadgeText, { color: palette.accent }]}
-                >
-                  0
-                </Text>
-              </View>
-              <Text
-                style={[styles.emptyStateTitle, { color: palette.text }]}
-                testID={TestIds.taskEmptyStateTitle}
-              >
-                No tasks yet
+              <Text style={[styles.emptyBadgeText, { color: palette.accent }]}>
+                0
               </Text>
-              <Text
-                style={[styles.emptyStateDescription, { color: palette.muted }]}
-                testID={TestIds.taskEmptyStateDescription}
-              >
-                Start with one focused task, choose a priority, and set a due
-                date.
-              </Text>
-              <Pressable
-                accessibilityLabel="Add first task"
-                accessibilityRole="button"
-                onPress={() => {
-                  navigation.navigate('AddTask');
-                }}
-                style={({ pressed }) => [
-                  styles.emptyCta,
-                  {
-                    backgroundColor: palette.accent,
-                    opacity: pressed ? 0.9 : 1,
-                  },
-                ]}
-              >
-                <Text style={styles.emptyCtaText}>Create first task</Text>
-              </Pressable>
             </View>
-          )}
-        </View>
-      </Animated.View>
-    </ScrollView>
+            <Text
+              style={[styles.emptyStateTitle, { color: palette.text }]}
+              testID={TestIds.taskEmptyStateTitle}
+            >
+              No tasks yet
+            </Text>
+            <Text
+              style={[styles.emptyStateDescription, { color: palette.muted }]}
+              testID={TestIds.taskEmptyStateDescription}
+            >
+              Start with one focused task, choose a priority, and set a due
+              date.
+            </Text>
+            <Pressable
+              accessibilityLabel="Add first task"
+              accessibilityRole="button"
+              onPress={() => {
+                navigation.navigate('AddTask');
+              }}
+              style={({ pressed }) => [
+                styles.emptyCta,
+                {
+                  backgroundColor: palette.accent,
+                  opacity: pressed ? 0.9 : 1,
+                },
+              ]}
+            >
+              <Text style={styles.emptyCtaText}>Create first task</Text>
+            </Pressable>
+          </View>
+        )
+      }
+      ListHeaderComponent={header}
+      renderItem={renderTask}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingTop: insets.top + 24,
+          paddingBottom: insets.bottom + 24,
+          backgroundColor: palette.background,
+        },
+      ]}
+      testID={TestIds.mainScreen}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
+    gap: 14,
     paddingHorizontal: 24,
   },
   animatedContent: {
@@ -849,6 +1074,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '800',
   },
+  controlsCard: {
+    gap: 12,
+  },
+  searchInput: {
+    borderRadius: 14,
+    borderWidth: 1,
+    fontSize: 15,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  controlGroup: {
+    gap: 8,
+  },
+  controlLabel: {
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  controlRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterButton: {
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  filterButtonText: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  filterButtonTextActive: {
+    color: '#FFFFFF',
+  },
   taskListSection: {
     gap: 14,
   },
@@ -887,6 +1149,22 @@ const styles = StyleSheet.create({
   taskDescription: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  taskMetaRow: {
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  priorityPill: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  priorityPillText: {
+    fontSize: 12,
+    fontWeight: '800',
+    textTransform: 'uppercase',
   },
   statusPill: {
     borderRadius: 999,

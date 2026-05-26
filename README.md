@@ -46,6 +46,7 @@ See [docs/releases.md](./docs/releases.md) for publishing downloadable Android A
 - Create, view, edit, delete
 - Mark completed
 - Search, filter by status/priority, sort by due date
+- Persist tasks locally with priority and due date support
 
 ### Profile & settings
 
