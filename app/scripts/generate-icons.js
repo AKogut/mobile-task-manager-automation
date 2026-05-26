@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-env node */
 /**
  * Generates iOS and Android app icons from assets/icon.svg
  * Run: node scripts/generate-icons.js
