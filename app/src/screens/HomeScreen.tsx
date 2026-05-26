@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { APP_NAME } from '@/constants/app';
+import { SegmentedControl } from '@/components/SegmentedControl';
 import {
   TestIds,
   testIdForPriorityFilter,
@@ -179,9 +180,7 @@ function getVisibleTasks(
         return true;
       }
 
-      return `${task.title} ${task.description}`
-        .toLowerCase()
-        .includes(normalizedQuery);
+      return task.title.toLowerCase().includes(normalizedQuery);
     })
     .sort((first, second) => {
       if (sortOption === 'priority') {
@@ -257,6 +256,11 @@ export function HomeScreen() {
       ),
     [priorityFilter, searchQuery, sortOption, statusFilter, tasks],
   );
+  const hasActiveTaskFilters =
+    searchQuery !== '' || statusFilter !== 'all' || priorityFilter !== 'all';
+  const visibleTasksCountLabel = `${visibleTasks.length} task${
+    visibleTasks.length === 1 ? '' : 's'
+  }`;
 
   const renderTask = ({ item: task, index }: ListRenderItemInfo<Task>) => {
     const priorityColors = getPriorityColors(task.priority, palette);
@@ -667,17 +671,63 @@ export function HomeScreen() {
       </View>
 
       {hasTasks ? (
-        <View style={styles.controlsCard}>
+        <View
+          style={[
+            styles.controlsCard,
+            {
+              backgroundColor: palette.card,
+              borderColor: palette.border,
+              shadowColor: palette.text,
+            },
+          ]}
+        >
+          <View style={styles.controlsHeader}>
+            <View
+              style={[
+                styles.controlsCountBadge,
+                {
+                  backgroundColor: palette.inputBackground,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.controlsCountText, { color: palette.text }]}>
+                {visibleTasksCountLabel}
+              </Text>
+            </View>
+            {hasActiveTaskFilters ? (
+              <Pressable
+                accessibilityLabel="Clear filters"
+                accessibilityRole="button"
+                onPress={() => {
+                  setSearchQuery('');
+                  setStatusFilter('all');
+                  setPriorityFilter('all');
+                }}
+                style={({ pressed }) => [
+                  styles.clearFiltersButton,
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <Text
+                  style={[styles.clearFiltersText, { color: palette.error }]}
+                >
+                  Clear filters
+                </Text>
+              </Pressable>
+            ) : null}
+          </View>
+
           <TextInput
             accessibilityLabel="Search tasks"
             autoCapitalize="none"
             onChangeText={setSearchQuery}
-            placeholder="Search by title or description"
+            placeholder="Search by title"
             placeholderTextColor={palette.muted}
             style={[
               styles.searchInput,
               {
-                backgroundColor: palette.card,
+                backgroundColor: palette.inputBackground,
                 borderColor: palette.border,
                 color: palette.text,
               },
@@ -686,146 +736,53 @@ export function HomeScreen() {
             value={searchQuery}
           />
 
-          <View style={styles.controlGroup}>
-            <Text style={[styles.controlLabel, { color: palette.muted }]}>
-              Status
-            </Text>
-            <View style={styles.controlRow}>
-              {statusFilters.map(filter => {
-                const isSelected = statusFilter === filter.value;
+          <SegmentedControl
+            accessibilityLabelForOption={filter => `Show ${filter.label} tasks`}
+            onChange={setStatusFilter}
+            options={statusFilters}
+            palette={palette}
+            testIdForOption={testIdForStatusFilter}
+            value={statusFilter}
+          />
 
-                return (
-                  <Pressable
-                    accessibilityLabel={`Show ${filter.label} tasks`}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    key={filter.value}
-                    onPress={() => {
-                      setStatusFilter(filter.value);
-                    }}
-                    style={({ pressed }) => [
-                      styles.filterButton,
-                      {
-                        backgroundColor: isSelected
-                          ? palette.accent
-                          : palette.card,
-                        borderColor: isSelected
-                          ? palette.accent
-                          : palette.border,
-                        opacity: pressed ? 0.85 : 1,
-                      },
-                    ]}
-                    testID={testIdForStatusFilter(filter.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterButtonText,
-                        isSelected
-                          ? styles.filterButtonTextActive
-                          : { color: palette.text },
-                      ]}
-                    >
-                      {filter.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
+          <SegmentedControl
+            accessibilityLabelForOption={option =>
+              `Sort tasks by ${option.label}`
+            }
+            onChange={setSortOption}
+            options={sortOptions}
+            palette={palette}
+            testIdForOption={testIdForTaskSort}
+            value={sortOption}
+          />
 
-          <View style={styles.controlGroup}>
-            <Text style={[styles.controlLabel, { color: palette.muted }]}>
-              Priority
-            </Text>
-            <View style={styles.controlRow}>
-              {priorityFilters.map(filter => {
-                const isSelected = priorityFilter === filter.value;
+          <SegmentedControl
+            accessibilityLabelForOption={filter =>
+              `Show ${filter.label} priority tasks`
+            }
+            onChange={setPriorityFilter}
+            options={priorityFilters}
+            palette={palette}
+            renderIcon={(filter, isSelected) => {
+              const indicatorColor =
+                filter.value === 'all'
+                  ? isSelected
+                    ? palette.card
+                    : palette.accent
+                  : getPriorityColors(filter.value, palette).text;
 
-                return (
-                  <Pressable
-                    accessibilityLabel={`Show ${filter.label} priority tasks`}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    key={filter.value}
-                    onPress={() => {
-                      setPriorityFilter(filter.value);
-                    }}
-                    style={({ pressed }) => [
-                      styles.filterButton,
-                      {
-                        backgroundColor: isSelected
-                          ? palette.accent
-                          : palette.card,
-                        borderColor: isSelected
-                          ? palette.accent
-                          : palette.border,
-                        opacity: pressed ? 0.85 : 1,
-                      },
-                    ]}
-                    testID={testIdForPriorityFilter(filter.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterButtonText,
-                        isSelected
-                          ? styles.filterButtonTextActive
-                          : { color: palette.text },
-                      ]}
-                    >
-                      {filter.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={styles.controlGroup}>
-            <Text style={[styles.controlLabel, { color: palette.muted }]}>
-              Sort
-            </Text>
-            <View style={styles.controlRow}>
-              {sortOptions.map(option => {
-                const isSelected = sortOption === option.value;
-
-                return (
-                  <Pressable
-                    accessibilityLabel={`Sort tasks by ${option.label}`}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    key={option.value}
-                    onPress={() => {
-                      setSortOption(option.value);
-                    }}
-                    style={({ pressed }) => [
-                      styles.filterButton,
-                      {
-                        backgroundColor: isSelected
-                          ? palette.accent
-                          : palette.card,
-                        borderColor: isSelected
-                          ? palette.accent
-                          : palette.border,
-                        opacity: pressed ? 0.85 : 1,
-                      },
-                    ]}
-                    testID={testIdForTaskSort(option.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterButtonText,
-                        isSelected
-                          ? styles.filterButtonTextActive
-                          : { color: palette.text },
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
+              return (
+                <View
+                  style={[
+                    styles.priorityIndicator,
+                    { backgroundColor: indicatorColor },
+                  ]}
+                />
+              );
+            }}
+            testIdForOption={testIdForPriorityFilter}
+            value={priorityFilter}
+          />
         </View>
       ) : null}
     </Animated.View>
@@ -854,7 +811,7 @@ export function HomeScreen() {
             <Text
               style={[styles.emptyStateDescription, { color: palette.muted }]}
             >
-              Try a different search, status filter, or sort option.
+              Try a different title search, status filter, or sort option.
             </Text>
           </View>
         ) : (
@@ -1075,41 +1032,49 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   controlsCard: {
-    gap: 12,
-  },
-  searchInput: {
-    borderRadius: 14,
+    borderRadius: 24,
     borderWidth: 1,
-    fontSize: 15,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    gap: 12,
+    padding: 16,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.06,
+    shadowRadius: 20,
+    elevation: 2,
   },
-  controlGroup: {
-    gap: 8,
-  },
-  controlLabel: {
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
-  controlRow: {
+  controlsHeader: {
+    alignItems: 'center',
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
+    justifyContent: 'space-between',
   },
-  filterButton: {
+  controlsCountBadge: {
     borderRadius: 999,
     borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
-  filterButtonText: {
+  controlsCountText: {
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  clearFiltersButton: {
+    paddingVertical: 2,
+  },
+  clearFiltersText: {
     fontSize: 13,
     fontWeight: '800',
   },
-  filterButtonTextActive: {
-    color: '#FFFFFF',
+  searchInput: {
+    borderRadius: 16,
+    borderWidth: 1,
+    fontSize: 15,
+    minHeight: 50,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  priorityIndicator: {
+    borderRadius: 999,
+    height: 8,
+    width: 8,
   },
   taskListSection: {
     gap: 14,

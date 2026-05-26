@@ -314,6 +314,35 @@ describe('task screen flows', () => {
     ).toBe('Fix checkout bug');
 
     await act(async () => {
+      changeText(
+        root.findByProps({ testID: TestIds.taskSearchInput }),
+        'payments',
+      );
+    });
+
+    expect(
+      root.findByProps({ testID: TestIds.taskNoResultsCard }),
+    ).toBeTruthy();
+
+    await act(async () => {
+      press(root.findByProps({ accessibilityLabel: 'Clear filters' }));
+    });
+
+    expect(
+      getProp<string>(
+        root.findByProps({ testID: TestIds.taskSearchInput }),
+        'value',
+      ),
+    ).toBe('');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-0` })),
+    ).toBe('Fix checkout bug');
+
+    await act(async () => {
+      changeText(
+        root.findByProps({ testID: TestIds.taskSearchInput }),
+        'checkout',
+      );
       press(root.findByProps({ testID: testIdForStatusFilter('completed') }));
     });
 

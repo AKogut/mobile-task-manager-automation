@@ -1,5 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "files": [],
-  "include": []
+  "extends": "./app/tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": ["./app/node_modules/@types"]
+  },
+  "include": ["app/**/*.ts", "app/**/*.tsx"],
+  "exclude": ["app/node_modules", "app/**/Pods", "app/android"]
 }
