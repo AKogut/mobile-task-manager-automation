@@ -173,6 +173,33 @@ function getChildren(node: ReactTestInstance): unknown {
   return (node.props as { children?: unknown }).children;
 }
 
+function getVisibleTaskTitles(root: ReactTestInstance): string[] {
+  const titlesByTestId = new Map<string, string>();
+
+  root
+    .findAll(node => {
+      const props = node.props as { testID?: unknown };
+
+      return (
+        typeof props.testID === 'string' &&
+        /^task-item-title-\d+$/.test(props.testID)
+      );
+    })
+    .forEach(node => {
+      const testID = getProp<string>(node, 'testID');
+
+      if (!titlesByTestId.has(testID)) {
+        titlesByTestId.set(testID, getChildren(node) as string);
+      }
+    });
+
+  return [...titlesByTestId.entries()]
+    .sort(([firstTestID], [secondTestID]) =>
+      firstTestID.localeCompare(secondTestID),
+    )
+    .map(([, title]) => title);
+}
+
 describe('task screen flows', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -370,5 +397,181 @@ describe('task screen flows', () => {
     ).toMatchObject({
       completed: true,
     });
+  });
+
+  it('status filter: selecting completed shows only completed tasks', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForStatusFilter('completed') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-0` })),
+    ).toBe('Archive old board');
+    expect(getVisibleTaskTitles(root)).toHaveLength(1);
+  });
+
+  it('status filter: selecting open shows only open tasks', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForStatusFilter('open') }));
+    });
+
+    const visibleTaskTitles = getVisibleTaskTitles(root);
+
+    expect(visibleTaskTitles).toHaveLength(2);
+    expect(visibleTaskTitles).toEqual(
+      expect.arrayContaining(['Write launch notes', 'Fix checkout bug']),
+    );
+    expect(visibleTaskTitles).not.toContain('Archive old board');
+  });
+
+  it('priority filter: selecting high shows only high priority tasks', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForPriorityFilter('high') }));
+    });
+
+    expect(getVisibleTaskTitles(root)).toEqual(['Fix checkout bug']);
+  });
+
+  it('priority filter: selecting low shows only low priority tasks', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForPriorityFilter('low') }));
+    });
+
+    expect(getVisibleTaskTitles(root)).toEqual(['Archive old board']);
+  });
+
+  it('active filter count badge shows correct count', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    expect(
+      root.findAllByProps({ testID: TestIds.taskActiveFiltersCount }),
+    ).toHaveLength(0);
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForStatusFilter('open') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: TestIds.taskActiveFiltersCount })),
+    ).toBe('1 filter active');
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForPriorityFilter('high') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: TestIds.taskActiveFiltersCount })),
+    ).toBe('2 filters active');
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForStatusFilter('all') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: TestIds.taskActiveFiltersCount })),
+    ).toBe('1 filter active');
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForPriorityFilter('all') }));
+    });
+
+    expect(
+      root.findAllByProps({ testID: TestIds.taskActiveFiltersCount }),
+    ).toHaveLength(0);
+  });
+
+  it('combining status and priority filters narrows results', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForStatusFilter('open') }));
+      press(root.findByProps({ testID: testIdForPriorityFilter('high') }));
+    });
+
+    expect(getVisibleTaskTitles(root)).toEqual(['Fix checkout bug']);
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForPriorityFilter('medium') }));
+    });
+
+    expect(getVisibleTaskTitles(root)).toEqual(['Write launch notes']);
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForPriorityFilter('low') }));
+    });
+
+    expect(
+      root.findByProps({ testID: TestIds.taskNoResultsCard }),
+    ).toBeTruthy();
+  });
+
+  it('clear filters resets status filter, priority filter, and search', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      changeText(root.findByProps({ testID: TestIds.taskSearchInput }), 'fix');
+      press(root.findByProps({ testID: testIdForStatusFilter('open') }));
+      press(root.findByProps({ testID: testIdForPriorityFilter('high') }));
+    });
+
+    await act(async () => {
+      press(root.findByProps({ accessibilityLabel: 'Clear filters' }));
+    });
+
+    expect(
+      getProp<string>(
+        root.findByProps({ testID: TestIds.taskSearchInput }),
+        'value',
+      ),
+    ).toBe('');
+    expect(
+      getProp<{ selected: boolean }>(
+        root.findByProps({ testID: testIdForStatusFilter('all') }),
+        'accessibilityState',
+      ).selected,
+    ).toBe(true);
+    expect(
+      getProp<{ selected: boolean }>(
+        root.findByProps({ testID: testIdForPriorityFilter('all') }),
+        'accessibilityState',
+      ).selected,
+    ).toBe(true);
+    expect(getVisibleTaskTitles(root)).toHaveLength(3);
+    expect(getVisibleTaskTitles(root)).toEqual(
+      expect.arrayContaining([
+        'Write launch notes',
+        'Fix checkout bug',
+        'Archive old board',
+      ]),
+    );
   });
 });

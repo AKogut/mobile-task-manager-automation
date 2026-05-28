@@ -66,6 +66,7 @@ export const TestIds = {
   taskItemMetadata: 'task-item-metadata',
   taskItemDaysRemaining: 'task-item-days-remaining',
   taskSearchInput: 'task-search-input',
+  taskActiveFiltersCount: 'task-active-filters-count',
   taskStatusFilterButton: 'task-status-filter-button',
   taskPriorityFilterButton: 'task-priority-filter-button',
   taskSortButton: 'task-sort-button',
