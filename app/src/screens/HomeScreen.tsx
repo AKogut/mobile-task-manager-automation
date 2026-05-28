@@ -258,9 +258,14 @@ export function HomeScreen() {
   );
   const hasActiveTaskFilters =
     searchQuery !== '' || statusFilter !== 'all' || priorityFilter !== 'all';
+  const activeTaskFiltersCount =
+    Number(statusFilter !== 'all') + Number(priorityFilter !== 'all');
   const visibleTasksCountLabel = `${visibleTasks.length} task${
     visibleTasks.length === 1 ? '' : 's'
   }`;
+  const activeTaskFiltersCountLabel = `${activeTaskFiltersCount} filter${
+    activeTaskFiltersCount === 1 ? '' : 's'
+  } active`;
 
   const renderTask = ({ item: task, index }: ListRenderItemInfo<Task>) => {
     const priorityColors = getPriorityColors(task.priority, palette);
@@ -695,6 +700,24 @@ export function HomeScreen() {
                 {visibleTasksCountLabel}
               </Text>
             </View>
+            {activeTaskFiltersCount > 0 ? (
+              <View
+                style={[
+                  styles.controlsCountBadge,
+                  {
+                    backgroundColor: palette.accent,
+                    borderColor: palette.accent,
+                  },
+                ]}
+              >
+                <Text
+                  style={[styles.controlsCountText, { color: palette.card }]}
+                  testID={TestIds.taskActiveFiltersCount}
+                >
+                  {activeTaskFiltersCountLabel}
+                </Text>
+              </View>
+            ) : null}
             {hasActiveTaskFilters ? (
               <Pressable
                 accessibilityLabel="Clear filters"
@@ -736,53 +759,69 @@ export function HomeScreen() {
             value={searchQuery}
           />
 
-          <SegmentedControl
-            accessibilityLabelForOption={filter => `Show ${filter.label} tasks`}
-            onChange={setStatusFilter}
-            options={statusFilters}
-            palette={palette}
-            testIdForOption={testIdForStatusFilter}
-            value={statusFilter}
-          />
+          <View style={styles.controlsSection}>
+            <Text
+              style={[styles.controlsSectionLabel, { color: palette.muted }]}
+            >
+              Sort by
+            </Text>
+            <SegmentedControl
+              accessibilityLabelForOption={option =>
+                `Sort tasks by ${option.label}`
+              }
+              onChange={setSortOption}
+              options={sortOptions}
+              palette={palette}
+              testIdForOption={testIdForTaskSort}
+              value={sortOption}
+            />
+          </View>
 
-          <SegmentedControl
-            accessibilityLabelForOption={option =>
-              `Sort tasks by ${option.label}`
-            }
-            onChange={setSortOption}
-            options={sortOptions}
-            palette={palette}
-            testIdForOption={testIdForTaskSort}
-            value={sortOption}
-          />
+          <View style={styles.controlsSection}>
+            <Text
+              style={[styles.controlsSectionLabel, { color: palette.muted }]}
+            >
+              Filters
+            </Text>
+            <SegmentedControl
+              accessibilityLabelForOption={filter =>
+                `Show ${filter.label} tasks`
+              }
+              onChange={setStatusFilter}
+              options={statusFilters}
+              palette={palette}
+              testIdForOption={testIdForStatusFilter}
+              value={statusFilter}
+            />
 
-          <SegmentedControl
-            accessibilityLabelForOption={filter =>
-              `Show ${filter.label} priority tasks`
-            }
-            onChange={setPriorityFilter}
-            options={priorityFilters}
-            palette={palette}
-            renderIcon={(filter, isSelected) => {
-              const indicatorColor =
-                filter.value === 'all'
-                  ? isSelected
-                    ? palette.card
-                    : palette.accent
-                  : getPriorityColors(filter.value, palette).text;
+            <SegmentedControl
+              accessibilityLabelForOption={filter =>
+                `Show ${filter.label} priority tasks`
+              }
+              onChange={setPriorityFilter}
+              options={priorityFilters}
+              palette={palette}
+              renderIcon={(filter, isSelected) => {
+                const indicatorColor =
+                  filter.value === 'all'
+                    ? isSelected
+                      ? palette.card
+                      : palette.accent
+                    : getPriorityColors(filter.value, palette).text;
 
-              return (
-                <View
-                  style={[
-                    styles.priorityIndicator,
-                    { backgroundColor: indicatorColor },
-                  ]}
-                />
-              );
-            }}
-            testIdForOption={testIdForPriorityFilter}
-            value={priorityFilter}
-          />
+                return (
+                  <View
+                    style={[
+                      styles.priorityIndicator,
+                      { backgroundColor: indicatorColor },
+                    ]}
+                  />
+                );
+              }}
+              testIdForOption={testIdForPriorityFilter}
+              value={priorityFilter}
+            />
+          </View>
         </View>
       ) : null}
     </Animated.View>
@@ -1055,6 +1094,15 @@ const styles = StyleSheet.create({
   controlsCountText: {
     fontSize: 12,
     fontWeight: '800',
+  },
+  controlsSection: {
+    gap: 6,
+  },
+  controlsSectionLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   clearFiltersButton: {
     paddingVertical: 2,
