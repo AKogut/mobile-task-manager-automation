@@ -6,7 +6,7 @@ import { TASKS_STORAGE_KEY } from '@/constants/tasks';
 import { createTaskId } from '@/features/tasks/taskIds';
 import type { Task } from '@/features/tasks/taskTypes';
 
-export type TaskDraft = Omit<Task, 'id' | 'completed'>;
+export type TaskDraft = Omit<Task, 'id' | 'completed' | 'createdAt'>;
 
 type TaskState = {
   tasks: Task[];
@@ -31,6 +31,7 @@ export const useTaskStore = create<TaskState>()(
         const task: Task = {
           id: createTaskId(),
           completed: false,
+          createdAt: new Date().toISOString(),
           ...taskDraft,
         };
 

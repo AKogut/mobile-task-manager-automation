@@ -13,7 +13,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TestIds } from '@/constants/testIds';
-import { formatDueDateParts } from '@/features/tasks/taskDates';
+import {
+  formatDueDateParts,
+  type DueDateParts,
+} from '@/features/tasks/taskDates';
 import {
   formatPriorityLabel,
   getPriorityColors,
@@ -26,6 +29,27 @@ type TaskDetailsScreenProps = NativeStackScreenProps<
   AuthenticatedStackParamList,
   'TaskDetails'
 >;
+
+function formatCreatedDateParts(
+  createdAt: string | undefined,
+): DueDateParts | null {
+  if (!createdAt) {
+    return null;
+  }
+
+  const date = new Date(createdAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return {
+    weekday: date.toLocaleDateString('en-US', { weekday: 'short' }),
+    month: date.toLocaleDateString('en-US', { month: 'short' }),
+    day: date.toLocaleDateString('en-US', { day: 'numeric' }),
+    year: date.toLocaleDateString('en-US', { year: 'numeric' }),
+  };
+}
 
 export function TaskDetailsScreen({
   navigation,
@@ -117,6 +141,7 @@ export function TaskDetailsScreen({
   }
 
   const dueDate = formatDueDateParts(task.dueDate);
+  const createdDate = formatCreatedDateParts(task.createdAt);
   const priorityColors = getPriorityColors(task.priority, palette);
 
   return (
@@ -134,24 +159,6 @@ export function TaskDetailsScreen({
     >
       <Animated.View style={[styles.animatedContent, animatedStyle]}>
         <View style={styles.topBar}>
-          <Pressable
-            accessibilityLabel="Go back"
-            accessibilityRole="button"
-            onPress={navigation.goBack}
-            style={({ pressed }) => [
-              styles.navButton,
-              {
-                borderColor: palette.border,
-                backgroundColor: palette.card,
-                opacity: pressed ? 0.85 : 1,
-              },
-            ]}
-            testID={TestIds.taskDetailsBackButton}
-          >
-            <Text style={[styles.navButtonText, { color: palette.text }]}>
-              Back
-            </Text>
-          </Pressable>
           <Pressable
             accessibilityLabel="Go to home screen"
             accessibilityRole="button"
@@ -276,6 +283,46 @@ export function TaskDetailsScreen({
           </View>
         </View>
 
+        {createdDate ? (
+          <View
+            style={[
+              styles.calendarCard,
+              {
+                backgroundColor: palette.card,
+                borderColor: palette.border,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.calendarBadge,
+                { backgroundColor: palette.inputBackground },
+              ]}
+            >
+              <Text
+                style={[styles.createdBadgeMonth, { color: palette.accent }]}
+              >
+                {createdDate.month}
+              </Text>
+              <Text style={[styles.createdBadgeDay, { color: palette.text }]}>
+                {createdDate.day}
+              </Text>
+            </View>
+            <View style={styles.calendarCopy}>
+              <Text style={[styles.kicker, { color: palette.accent }]}>
+                Created
+              </Text>
+              <Text style={[styles.calendarTitle, { color: palette.text }]}>
+                {createdDate.weekday}, {createdDate.month} {createdDate.day},{' '}
+                {createdDate.year}
+              </Text>
+              <Text style={[styles.calendarHint, { color: palette.muted }]}>
+                When this task was added to your list.
+              </Text>
+            </View>
+          </View>
+        ) : null}
+
         <View
           style={[
             styles.actionPanel,
@@ -353,6 +400,24 @@ export function TaskDetailsScreen({
             </Pressable>
           </View>
         </View>
+        <Pressable
+          accessibilityLabel="Create new task"
+          accessibilityRole="button"
+          onPress={() => {
+            navigation.navigate('AddTask');
+          }}
+          style={({ pressed }) => [
+            styles.newTaskButton,
+            {
+              backgroundColor: palette.accent,
+              borderColor: palette.accent,
+              opacity: pressed ? 0.9 : 1,
+            },
+          ]}
+          testID={TestIds.taskAddButton}
+        >
+          <Text style={styles.newTaskButtonText}>New task</Text>
+        </Pressable>
       </Animated.View>
     </ScrollView>
   );
@@ -369,7 +434,7 @@ const styles = StyleSheet.create({
   topBar: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   navButton: {
     alignItems: 'center',
@@ -458,6 +523,17 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: -0.6,
   },
+  createdBadgeMonth: {
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  createdBadgeDay: {
+    fontSize: 34,
+    fontWeight: '800',
+    letterSpacing: -0.6,
+  },
   calendarCopy: {
     flex: 1,
     gap: 4,
@@ -510,6 +586,19 @@ const styles = StyleSheet.create({
   },
   outlineButtonText: {
     fontSize: 14,
+    fontWeight: '800',
+  },
+  newTaskButton: {
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minHeight: 58,
+    paddingVertical: 16,
+  },
+  newTaskButtonText: {
+    color: '#FFFFFF',
+    fontSize: 17,
     fontWeight: '800',
   },
 });
