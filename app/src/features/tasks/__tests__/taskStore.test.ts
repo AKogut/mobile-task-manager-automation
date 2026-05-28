@@ -12,6 +12,7 @@ const sampleTasks: Task[] = [
     priority: 'high',
     dueDate: '2026-06-01',
     completed: false,
+    createdAt: '2026-05-01T10:00:00.000Z',
   },
 ];
 
@@ -97,6 +98,7 @@ describe('taskStore', () => {
       priority: 'low',
       dueDate: '2026-06-03',
       completed: true,
+      createdAt: '2026-05-01T10:00:00.000Z',
     });
   });
 

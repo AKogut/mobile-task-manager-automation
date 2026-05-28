@@ -113,6 +113,7 @@ const sampleTasks: Task[] = [
     priority: 'medium',
     dueDate: '2026-06-03',
     completed: false,
+    createdAt: '2026-05-01T10:00:00.000Z',
   },
   {
     id: 'task-2',
@@ -121,6 +122,7 @@ const sampleTasks: Task[] = [
     priority: 'high',
     dueDate: '2026-06-01',
     completed: false,
+    createdAt: '2026-05-03T09:00:00.000Z',
   },
   {
     id: 'task-3',
@@ -129,6 +131,7 @@ const sampleTasks: Task[] = [
     priority: 'low',
     dueDate: '2026-06-10',
     completed: true,
+    createdAt: '2026-05-02T14:00:00.000Z',
   },
 ];
 
@@ -573,5 +576,103 @@ describe('task screen flows', () => {
         'Archive old board',
       ]),
     );
+  });
+
+  it('sort by status: open tasks appear before completed', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForTaskSort('status') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-0` })),
+    ).toBe('Fix checkout bug');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-1` })),
+    ).toBe('Write launch notes');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-2` })),
+    ).toBe('Archive old board');
+  });
+
+  it('sort by createdAt: newest task appears first', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForTaskSort('createdAt') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-0` })),
+    ).toBe('Fix checkout bug');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-1` })),
+    ).toBe('Archive old board');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-2` })),
+    ).toBe('Write launch notes');
+  });
+
+  it('sort by dueDate: task with earliest due date appears first', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForTaskSort('dueDate') }));
+    });
+
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-0` })),
+    ).toBe('Fix checkout bug');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-1` })),
+    ).toBe('Write launch notes');
+    expect(
+      getChildren(root.findByProps({ testID: `${TestIds.taskItemTitle}-2` })),
+    ).toBe('Archive old board');
+  });
+
+  it('clear filters does not reset sort option', async () => {
+    useTaskStore.setState({ tasks: sampleTasks });
+
+    const renderer = await renderWithAct(<HomeScreen />);
+    const root = renderer.root;
+
+    await act(async () => {
+      press(root.findByProps({ testID: testIdForTaskSort('priority') }));
+      changeText(root.findByProps({ testID: TestIds.taskSearchInput }), 'fix');
+    });
+
+    await act(async () => {
+      press(root.findByProps({ accessibilityLabel: 'Clear filters' }));
+    });
+
+    expect(
+      getProp<string>(
+        root.findByProps({ testID: TestIds.taskSearchInput }),
+        'value',
+      ),
+    ).toBe('');
+    expect(
+      getProp<{ selected: boolean }>(
+        root.findByProps({ testID: testIdForTaskSort('priority') }),
+        'accessibilityState',
+      ).selected,
+    ).toBe(true);
+    expect(
+      getProp<{ selected: boolean }>(
+        root.findByProps({ testID: testIdForTaskSort('dueDate') }),
+        'accessibilityState',
+      ).selected,
+    ).toBe(false);
   });
 });
