@@ -586,6 +586,7 @@ export function HomeScreen() {
               opacity: pressed ? 0.85 : 1,
             },
           ]}
+          testID={TestIds.taskAddButton}
         >
           <Text style={styles.addButtonText}>New task</Text>
         </Pressable>
@@ -819,6 +820,7 @@ export function HomeScreen() {
                   opacity: pressed ? 0.9 : 1,
                 },
               ]}
+              testID={TestIds.taskAddButton}
             >
               <Text style={styles.emptyCtaText}>Create first task</Text>
             </Pressable>

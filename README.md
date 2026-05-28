@@ -33,27 +33,28 @@ See [docs/architecture.md](./docs/architecture.md) for diagrams and design decis
 See [docs/build-and-run.md](./docs/build-and-run.md) for local build, simulator, and device commands.
 See [docs/releases.md](./docs/releases.md) for publishing downloadable Android APKs through GitHub Releases.
 
-## Features (roadmap)
+## Features
 
 ### Authentication
 
-- Login and logout
-- Validation errors
-- Remember user session
+- Login and logout with validation
+- Session persisted via AsyncStorage — app re-opens authenticated
+- Demo credentials shown on login screen
 
 ### Tasks
 
-- Create, view, edit, delete
-- Mark completed
-- Search, filter by status/priority, sort by due date
-- Persist tasks locally with priority and due date support
+- Create, edit, delete, mark completed
+- Search by title
+- Filter by status (All / Open / Done) and priority (All / Low / Medium / High)
+- Sort by due date, priority, status, or created date
+- Active filter count badge and one-tap clear filters
+- Due date and created date displayed on task detail screen
+- Tasks persisted locally via AsyncStorage
 
-### Profile & settings
+### Settings
 
-- User profile
-- Theme switcher
-- Clear local data
-- About screen
+- Account info (name, email)
+- Logout
 
 ## Getting started
 

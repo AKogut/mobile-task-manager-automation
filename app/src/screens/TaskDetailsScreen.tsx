@@ -201,6 +201,7 @@ export function TaskDetailsScreen({
                   borderColor: task.completed ? palette.accent : palette.border,
                 },
               ]}
+              testID={TestIds.taskDetailsStatus}
             >
               <Text
                 style={[
@@ -209,6 +210,7 @@ export function TaskDetailsScreen({
                     ? styles.statusChipTextCompleted
                     : { color: palette.text },
                 ]}
+                testID={TestIds.taskDetailsStatusText}
               >
                 {task.completed ? 'Completed' : 'Open'}
               </Text>
@@ -221,12 +223,14 @@ export function TaskDetailsScreen({
                   borderColor: priorityColors.border,
                 },
               ]}
+              testID={TestIds.taskDetailsPriority}
             >
               <Text
                 style={[
                   styles.priorityChipText,
                   { color: priorityColors.text },
                 ]}
+                testID={TestIds.taskDetailsPriorityText}
               >
                 {formatPriorityLabel(task.priority)} priority
               </Text>
@@ -292,6 +296,7 @@ export function TaskDetailsScreen({
                 borderColor: palette.border,
               },
             ]}
+            testID={TestIds.taskDetailsCreatedCard}
           >
             <View
               style={[
