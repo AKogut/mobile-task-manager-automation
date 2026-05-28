@@ -177,11 +177,14 @@ function getVisibleTaskTitles(root: ReactTestInstance): string[] {
   const titlesByTestId = new Map<string, string>();
 
   root
-    .findAll(
-      node =>
-        typeof node.props['testID'] === 'string' &&
-        /^task-item-title-\d+$/.test(node.props['testID']),
-    )
+    .findAll(node => {
+      const props = node.props as { testID?: unknown };
+
+      return (
+        typeof props.testID === 'string' &&
+        /^task-item-title-\d+$/.test(props.testID)
+      );
+    })
     .forEach(node => {
       const testID = getProp<string>(node, 'testID');
 
