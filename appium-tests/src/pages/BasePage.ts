@@ -1,8 +1,5 @@
 import type { ChainablePromiseElement } from 'webdriverio';
 
-declare const $: (selector: string) => ChainablePromiseElement;
-declare const browser: Pick<WebdriverIO.Browser, 'acceptAlert'>;
-
 export abstract class BasePage {
   protected el(testId: string): ChainablePromiseElement {
     return $(`~${testId}`);

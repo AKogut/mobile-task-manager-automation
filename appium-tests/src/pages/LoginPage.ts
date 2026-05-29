@@ -15,6 +15,10 @@ export class LoginPage extends BasePage {
     return this.isElementDisplayed(this.SCREEN);
   }
 
+  public async waitForScreen(): Promise<void> {
+    await this.waitForDisplayed(this.SCREEN);
+  }
+
   public async login(email: string, password: string): Promise<void> {
     await this.waitForDisplayed(this.SCREEN);
     await this.typeText(this.EMAIL_INPUT, email);
