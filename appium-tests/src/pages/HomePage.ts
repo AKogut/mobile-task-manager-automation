@@ -9,6 +9,9 @@ export class HomePage extends BasePage {
   private readonly SEARCH_INPUT = 'task-search-input';
   private readonly ADD_BUTTON = 'task-add-button';
   private readonly SETTINGS_BUTTON = 'settings-open-button';
+  private readonly SETTINGS_SCREEN = 'settings-screen';
+  private readonly SETTINGS_TITLE = 'settings-title';
+  private readonly SETTINGS_BACK_BUTTON = 'settings-back-button';
   private readonly ACTIVE_FILTERS_COUNT = 'task-active-filters-count';
   private readonly NO_RESULTS_CARD = 'task-no-results-card';
   private readonly EMPTY_STATE_CARD = 'task-empty-state-card';
@@ -26,7 +29,35 @@ export class HomePage extends BasePage {
   }
 
   public async tapSettingsButton(): Promise<void> {
+    await this.waitForDisplayed(this.SETTINGS_BUTTON);
     await this.tap(this.SETTINGS_BUTTON);
+
+    await browser.waitUntil(
+      async () => {
+        if (await this.isSettingsScreenVisible()) {
+          return true;
+        }
+
+        if (await this.isElementDisplayed(this.SETTINGS_BUTTON)) {
+          await this.tap(this.SETTINGS_BUTTON);
+        }
+
+        return false;
+      },
+      { timeout: 15000, interval: 2000 },
+    );
+  }
+
+  public async isSettingsButtonVisible(): Promise<boolean> {
+    return this.isElementDisplayed(this.SETTINGS_BUTTON);
+  }
+
+  private async isSettingsScreenVisible(): Promise<boolean> {
+    return (
+      (await this.isElementDisplayed(this.SETTINGS_SCREEN)) ||
+      (await this.isElementDisplayed(this.SETTINGS_TITLE)) ||
+      (await this.isElementDisplayed(this.SETTINGS_BACK_BUTTON))
+    );
   }
 
   public async searchFor(query: string): Promise<void> {

@@ -1,41 +1,44 @@
 # Appium E2E Tests
 
-Cross-platform end-to-end automation written in TypeScript using Appium 2,
+Cross-platform end-to-end automation written in TypeScript using Appium,
 WebdriverIO 9, and Mocha.
 
 ## Prerequisites
 
-- Node 22.11 or newer.
-- Appium 2 server available locally.
-- Android SDK and the `Pixel_8_API_35` emulator for Android runs.
-- Xcode and an iPhone 16 simulator running iOS 18.4 for iOS runs.
-- Build the app before running tests. See
-  [Build and Run](../docs/build-and-run.md).
+- Node.js 22.11 or newer.
+- Appium server running on `http://localhost:4723`.
+- Xcode and the configured iOS simulator for iOS runs.
+- Android Studio, Android SDK, and the configured Android emulator for Android runs.
+- Built app binaries at the paths configured in `src/config/`.
 
 ## Install
 
-Install dependencies from this directory:
-
 ```sh
+cd appium-tests
 yarn install
 ```
 
-## Start Appium Server
-
-Start Appium separately before running tests:
-
-```sh
-npx appium
-```
-
-## Run Android Tests
-
-```sh
-yarn test:android
-```
-
-## Run iOS Tests
+## Run Tests
 
 ```sh
 yarn test:ios
+yarn test:android
+```
+
+## Test Structure
+
+```text
+src/tests/auth/
+  auth.smoke.spec.ts
+  auth.negative.spec.ts
+  auth.regression.spec.ts
+```
+
+Full test case definitions are in [`docs/test-cases/`](../docs/test-cases/).
+
+## Other Commands
+
+```sh
+yarn typecheck
+yarn lint
 ```

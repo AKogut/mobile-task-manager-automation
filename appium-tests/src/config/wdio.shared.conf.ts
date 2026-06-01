@@ -9,9 +9,19 @@ export const config: Options.Testrunner = {
   framework: 'mocha',
   mochaOpts: {
     timeout: 60000,
-    retries: 1,
+    retries: 0,
   },
-  reporters: [['spec', { realtimeReporting: true }]],
+  reporters: [
+    ['spec', { realtimeReporting: true }],
+    [
+      'allure',
+      {
+        outputDir: 'allure-results',
+        disableWebdriverStepsReporting: true,
+        disableWebdriverScreenshotsReporting: false,
+      },
+    ],
+  ],
   specs: ['./src/tests/**/*.spec.ts'],
   maxInstances: 1,
   logLevel: 'info',
@@ -19,9 +29,7 @@ export const config: Options.Testrunner = {
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
 
-  specFileRetries: 2,
-  specFileRetriesDelay: 3,
-  specFileRetriesDeferred: false,
+  specFileRetries: 0,
 
   afterTest: async (test, _context, result) => {
     if (result.error !== undefined) {
