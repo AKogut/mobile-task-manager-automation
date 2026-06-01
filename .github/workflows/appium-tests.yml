@@ -77,10 +77,11 @@ jobs:
         run: ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
       - name: Install Appium and drivers
-        working-directory: appium-tests
+        # Pin uiautomator2 to v2.x — v3.x requires Appium 3.x which is
+        # incompatible with the Appium 2.x server used in this project.
         run: |
           npm install -g appium
-          appium driver install uiautomator2
+          appium driver install uiautomator2@2
 
       - name: Install test dependencies
         working-directory: appium-tests
@@ -221,6 +222,7 @@ jobs:
       - name: Build iOS app (bundle embedded — no Metro required)
         working-directory: app/ios
         run: |
+          set -o pipefail
           xcodebuild \
             -workspace MobileTaskManager.xcworkspace \
             -scheme MobileTaskManager \
@@ -230,7 +232,7 @@ jobs:
             FORCE_BUNDLING=YES \
             CODE_SIGNING_ALLOWED=NO \
             build \
-            | xcpretty || cat /tmp/xcodebuild.log
+            2>&1 | tee /tmp/xcodebuild.log
 
       - name: Install Appium and drivers
         working-directory: appium-tests
@@ -270,6 +272,14 @@ jobs:
         with:
           name: appium-log-ios
           path: appium-ios.log
+          retention-days: 3
+
+      - name: Upload xcodebuild log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: /tmp/xcodebuild.log
           retention-days: 3
 
       - name: Upload failure screenshots
