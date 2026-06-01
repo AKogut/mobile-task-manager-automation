@@ -77,11 +77,9 @@ jobs:
         run: ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
       - name: Install Appium and drivers
-        # Pin uiautomator2 to v2.x — v3.x requires Appium 3.x which is
-        # incompatible with the Appium 2.x server used in this project.
         run: |
           npm install -g appium
-          appium driver install uiautomator2@2
+          appium driver install uiautomator2
 
       - name: Install test dependencies
         working-directory: appium-tests
