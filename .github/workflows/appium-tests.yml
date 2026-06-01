@@ -76,14 +76,15 @@ jobs:
         working-directory: app/android
         run: ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
-      - name: Install Appium and drivers
-        run: |
-          npm install -g appium
-          appium driver install uiautomator2
-
       - name: Install test dependencies
         working-directory: appium-tests
         run: npm ci
+
+      - name: Install Appium drivers
+        # Use npx appium from node_modules — ensures driver version matches
+        # the Appium server version declared in package.json (^3.0.0).
+        working-directory: appium-tests
+        run: npx appium driver install uiautomator2
 
       - name: Run tests on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -95,10 +96,11 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            appium --log appium-android.log &
+            cd appium-tests
+            npx appium --log ../appium-android.log &
             APPIUM_PID=$!
             sleep 8
-            cd appium-tests && npm run test:android
+            npm run test:android
             EXIT_CODE=$?
             kill $APPIUM_PID 2>/dev/null || true
             exit $EXIT_CODE
@@ -232,19 +234,20 @@ jobs:
             build \
             2>&1 | tee /tmp/xcodebuild.log
 
-      - name: Install Appium and drivers
-        working-directory: appium-tests
-        run: |
-          npm install -g appium
-          appium driver install xcuitest
-
       - name: Install test dependencies
         working-directory: appium-tests
         run: npm ci
 
+      - name: Install Appium drivers
+        # Use npx appium from node_modules — ensures driver version matches
+        # the Appium server version declared in package.json (^3.0.0).
+        working-directory: appium-tests
+        run: npx appium driver install xcuitest
+
       - name: Start Appium server
+        working-directory: appium-tests
         run: |
-          appium --log appium-ios.log &
+          npx appium --log ../appium-ios.log &
           echo "APPIUM_PID=$!" >> $GITHUB_ENV
           sleep 8
 
