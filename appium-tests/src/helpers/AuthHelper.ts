@@ -26,4 +26,27 @@ export class AuthHelper {
   async isLoggedIn(): Promise<boolean> {
     return this.homePage.isDisplayed();
   }
+
+  async resetToLoginScreen(): Promise<void> {
+    await browser.waitUntil(
+      async () =>
+        (await this.loginPage.isDisplayed()) ||
+        (await this.settingsPage.isDisplayed()) ||
+        (await this.homePage.isDisplayed()),
+      { timeout: 20000, timeoutMsg: 'No known screen appeared within 20s' },
+    );
+
+    if (await this.loginPage.isDisplayed()) {
+      return;
+    }
+
+    if (await this.settingsPage.isDisplayed()) {
+      await this.settingsPage.tapBack();
+      await this.homePage.waitForScreen();
+    }
+
+    if (await this.homePage.isDisplayed()) {
+      await this.logout();
+    }
+  }
 }

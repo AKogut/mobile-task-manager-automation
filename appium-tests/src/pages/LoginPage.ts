@@ -7,6 +7,8 @@ export class LoginPage extends BasePage {
   private readonly SUBMIT_BUTTON = 'login-submit-button';
   private readonly AUTH_ERROR_BANNER = 'auth-error-banner';
   private readonly AUTH_ERROR_MESSAGE = 'auth-error-message';
+  private readonly EMAIL_ERROR = 'login-email-error';
+  private readonly PASSWORD_ERROR = 'login-password-error';
   private readonly DEMO_CREDENTIALS_CARD = 'demo-credentials-card';
   private readonly DEMO_CREDENTIALS_EMAIL = 'demo-credentials-email';
   private readonly DEMO_CREDENTIALS_PASSWORD = 'demo-credentials-password';
@@ -34,6 +36,14 @@ export class LoginPage extends BasePage {
     return this.getText(this.AUTH_ERROR_MESSAGE);
   }
 
+  public async isEmailErrorVisible(): Promise<boolean> {
+    return this.isElementDisplayed(this.EMAIL_ERROR);
+  }
+
+  public async isPasswordErrorVisible(): Promise<boolean> {
+    return this.isElementDisplayed(this.PASSWORD_ERROR);
+  }
+
   public async isDemoCredentialsCardVisible(): Promise<boolean> {
     return this.isElementDisplayed(this.DEMO_CREDENTIALS_CARD);
   }
@@ -52,5 +62,9 @@ export class LoginPage extends BasePage {
 
   public async typeEmail(email: string): Promise<void> {
     await this.typeText(this.EMAIL_INPUT, email);
+  }
+
+  public async clearEmailAndType(text: string): Promise<void> {
+    await this.typeText(this.EMAIL_INPUT, text);
   }
 }
