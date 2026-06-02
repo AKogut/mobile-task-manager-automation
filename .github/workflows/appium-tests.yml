@@ -22,14 +22,12 @@ permissions:
   pages: write
   id-token: write
 
-# ──────────────────────────────────────────────────────────────
-# Android
-# ──────────────────────────────────────────────────────────────
 jobs:
   test-android:
     name: Android tests (API 35)
     if: inputs.platform == 'android' || inputs.platform == 'both'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     env:
       APPIUM_ANDROID_AVD: Pixel_8_API_35
@@ -88,6 +86,10 @@ jobs:
           cat > /tmp/run-android-tests.sh << 'EOF'
           #!/usr/bin/env bash
           set -e
+          adb -s emulator-5554 wait-for-device
+          adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP || true
+          sleep 30
+
           cd "$GITHUB_WORKSPACE/appium-tests"
           node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
           APPIUM_PID=$!
@@ -135,13 +137,11 @@ jobs:
           path: appium-tests/screenshots
           retention-days: 3
 
-  # ──────────────────────────────────────────────────────────────
-  # iOS
-  # ──────────────────────────────────────────────────────────────
   test-ios:
     name: iOS tests (iPhone 16)
     if: inputs.platform == 'ios' || inputs.platform == 'both'
     runs-on: macos-15
+    timeout-minutes: 45
 
     env:
       APPIUM_IOS_APP_PATH: ${{ github.workspace }}/app/ios/build/Build/Products/Debug-iphonesimulator/MobileTaskManager.app
@@ -174,7 +174,6 @@ jobs:
 
       - name: Select available iOS simulator
         run: |
-          # Find the first available iPhone 16 (or fall back to any iPhone).
           SIM_JSON=$(xcrun simctl list devices available -j)
 
           SIM_UDID=$(echo "$SIM_JSON" | python3 -c "
@@ -209,8 +208,6 @@ jobs:
                       sys.exit()
           " 2>/dev/null || echo "iPhone 16")
 
-          # Runtime key: "com.apple.CoreSimulator.SimRuntime.iOS-18-5"
-          # Extract version as "18.5" (last segment after "iOS-", dashes → dots).
           PLATFORM_VERSION=$(echo "$SIM_JSON" | python3 -c "
           import sys, json, re
           d = json.load(sys.stdin)
@@ -232,13 +229,8 @@ jobs:
         run: |
           xcrun simctl boot "$APPIUM_IOS_UDID" || true
           xcrun simctl bootstatus "$APPIUM_IOS_UDID" -b
-          # Open Simulator.app so the simulator has a visible UI window.
-          # Without this Appium detects a headless (booted-but-no-UI) simulator,
-          # tries to restart Simulator.app itself, and then times out waiting
-          # for the re-boot (120 s limit) — causing the first test session to fail.
           SIMULATOR_APP="$(xcode-select -p)/Applications/Simulator.app"
           open -Fn "$SIMULATOR_APP" --args -CurrentDeviceUDID "$APPIUM_IOS_UDID"
-          # Give Simulator.app a moment to attach to the already-booted device.
           sleep 5
 
       - name: Build iOS app (bundle embedded — no Metro required)
@@ -334,9 +326,6 @@ jobs:
           path: appium-tests/screenshots
           retention-days: 3
 
-  # ──────────────────────────────────────────────────────────────
-  # Report — merge results from both platforms → GitHub Pages
-  # ──────────────────────────────────────────────────────────────
   report:
     name: Publish Allure report
     needs: [test-android, test-ios]

@@ -7,7 +7,7 @@ type AppiumConfig = Options.Testrunner &
   Capabilities.WithRequestedTestrunnerCapabilities;
 
 const DEVICE_NAME = process.env.APPIUM_ANDROID_DEVICE_NAME ?? 'emulator-5554';
-const AVD = process.env.APPIUM_ANDROID_AVD ?? 'Pixel_9_Pro_XL_16';
+
 const APP_PATH =
   process.env.APPIUM_ANDROID_APP_PATH ??
   path.resolve(
@@ -24,12 +24,18 @@ export const config: AppiumConfig = {
       platformName: 'Android',
       'appium:automationName': 'UiAutomator2',
       'appium:deviceName': DEVICE_NAME,
-      'appium:avd': AVD,
       'appium:app': APP_PATH,
       'appium:appPackage': 'com.mobiletaskmanager',
       'appium:appActivity': '.MainActivity',
       'appium:autoGrantPermissions': true,
       'appium:newCommandTimeout': 300,
+      ...({
+        'appium:adbExecTimeout': 60000,
+        'appium:androidInstallTimeout': 120000,
+        'appium:uiautomator2ServerInstallTimeout': 60000,
+        'appium:settingsApkInstallTimeout': 90000,
+        'appium:skipUnlock': true,
+      } as Record<string, unknown>),
     },
   ],
 };
