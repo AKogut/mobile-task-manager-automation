@@ -82,10 +82,11 @@ jobs:
         run: npm ci
 
       - name: Install Appium drivers
-        # npx appium uses the version from package.json (^3.0.0),
-        # avoiding the version mismatch from a global npm install.
+        # Use the local appium binary so the driver is stored in the local
+        # Appium home (appium-tests/), not the global ~/.appium that the
+        # emulator-runner script cannot reach.
         working-directory: appium-tests
-        run: npx appium driver install uiautomator2
+        run: node_modules/.bin/appium driver install uiautomator2
 
       - name: Run tests on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -98,8 +99,13 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
           script: |
-            cd appium-tests
-            npx appium --log ../appium-android.log &
+            # Use absolute paths: the emulator-runner script does not inherit
+            # working-directory from previous steps, so `cd appium-tests` can
+            # silently fail and leave all commands running from the repo root.
+            cd "$GITHUB_WORKSPACE/appium-tests"
+            # Use the local binary to ensure the uiautomator2 driver (installed
+            # above in appium-tests/) is found — not the global ~/.appium copy.
+            node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
             APPIUM_PID=$!
             sleep 10
             npm run test:android
