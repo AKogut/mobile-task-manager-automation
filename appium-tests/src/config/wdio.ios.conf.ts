@@ -42,8 +42,8 @@ export const config: AppiumConfig = {
           }
         : {}),
       // Give WDA up to 5 min to start (covers slow CI environments).
-      // Cast needed: wdaStartupTimeout is not in WDIO's Appium type stubs.
-      ...({ 'appium:wdaStartupTimeout': 300000 } as Record<string, unknown>),
+      // Cast needed: wdaLaunchTimeout is not in WDIO's Appium type stubs.
+      ...({ 'appium:wdaLaunchTimeout': 300000 } as Record<string, unknown>),
     },
   ],
 };

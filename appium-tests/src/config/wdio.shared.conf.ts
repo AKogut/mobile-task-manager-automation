@@ -26,8 +26,11 @@ export const config: Options.Testrunner = {
   maxInstances: 1,
   logLevel: 'info',
   waitforTimeout: 10000,
-  connectionRetryTimeout: 120000,
-  connectionRetryCount: 3,
+  // 5 min: covers app install (~1.5 min) + WDA startup on first session.
+  connectionRetryTimeout: 300000,
+  // No retries: each retry spawns a new WDA xcodebuild that competes for
+  // port 8100 with the previous (still-running) one, causing ECONNREFUSED.
+  connectionRetryCount: 0,
 
   specFileRetries: 0,
 
