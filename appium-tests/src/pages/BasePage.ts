@@ -30,10 +30,6 @@ export abstract class BasePage {
 
   protected async typeText(testId: string, text: string): Promise<void> {
     const element = this.el(testId);
-
-    // Empty input: just clear the field. iOS reports the placeholder as the
-    // field "value" when it's empty, so there is nothing to type or verify —
-    // trying to would loop forever against the placeholder text.
     if (text === '') {
       await element.click();
       await element.clearValue();
