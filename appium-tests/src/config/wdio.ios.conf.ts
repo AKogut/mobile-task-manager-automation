@@ -16,6 +16,8 @@ const APP_PATH =
     '../../../app/ios/build/Build/Products/Debug-iphonesimulator/MobileTaskManager.app',
   );
 
+const WDA_DERIVED_DATA = process.env.WDA_DERIVED_DATA;
+
 export const config: AppiumConfig = {
   ...sharedConfig,
   specs: [path.resolve(__dirname, '../tests/**/*.spec.ts')],
@@ -31,6 +33,17 @@ export const config: AppiumConfig = {
       'appium:bundleId': 'org.reactjs.native.example.MobileTaskManager',
       'appium:newCommandTimeout': 300,
       'appium:autoAcceptAlerts': true,
+      // Use pre-built WDA when available (set by CI pre-build step) so Appium
+      // skips the 3-10 min cold build and starts WDA immediately.
+      ...(WDA_DERIVED_DATA !== undefined
+        ? {
+            'appium:usePrebuiltWDA': true,
+            'appium:derivedDataPath': WDA_DERIVED_DATA,
+          }
+        : {}),
+      // Give WDA up to 5 min to start (covers slow CI environments).
+      // Cast needed: wdaStartupTimeout is not in WDIO's Appium type stubs.
+      ...({ 'appium:wdaStartupTimeout': 300000 } as Record<string, unknown>),
     },
   ],
 };

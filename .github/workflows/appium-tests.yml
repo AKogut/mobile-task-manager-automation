@@ -252,6 +252,23 @@ jobs:
         working-directory: appium-tests
         run: npx appium driver install xcuitest
 
+      - name: Pre-build WebDriverAgent
+        # Build WDA once before any test session so Appium can skip the build step
+        # and start WDA immediately (avoids the 3-10 min cold-build timeout in CI).
+        run: |
+          WDA_PROJECT=$(find appium-tests/node_modules -name "WebDriverAgent.xcodeproj" | head -1)
+          echo "WDA project: $WDA_PROJECT"
+          xcodebuild build-for-testing \
+            -project "$WDA_PROJECT" \
+            -scheme WebDriverAgentRunner \
+            -destination "platform=iOS Simulator,id=$APPIUM_IOS_UDID" \
+            -derivedDataPath /tmp/wda-build \
+            CODE_SIGNING_ALLOWED=NO \
+            GCC_TREAT_WARNINGS_AS_ERRORS=0 \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee /tmp/wda-build.log
+          echo "WDA_DERIVED_DATA=/tmp/wda-build" >> "$GITHUB_ENV"
+
       - name: Start Appium server
         working-directory: appium-tests
         run: |
@@ -281,6 +298,14 @@ jobs:
         with:
           name: appium-log-ios
           path: appium-ios.log
+          retention-days: 3
+
+      - name: Upload WDA build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wda-build-log
+          path: /tmp/wda-build.log
           retention-days: 3
 
       - name: Upload xcodebuild log
