@@ -57,7 +57,6 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
-        # Use 'default' (AOSP) image — boots 2-3x faster than google_apis in CI.
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "system-images;android-35;default;x86_64"
 
       - name: Create AVD
@@ -73,7 +72,6 @@ jobs:
         run: npm ci
 
       - name: Build debug APK
-        # assembleDebug bundles the JS — no Metro needed.
         working-directory: app/android
         run: ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
@@ -82,11 +80,24 @@ jobs:
         run: npm ci
 
       - name: Install Appium drivers
-        # Use the local appium binary so the driver is stored in the local
-        # Appium home (appium-tests/), not the global ~/.appium that the
-        # emulator-runner script cannot reach.
         working-directory: appium-tests
         run: node_modules/.bin/appium driver install uiautomator2
+
+      - name: Create Android test runner script
+        run: |
+          cat > /tmp/run-android-tests.sh << 'EOF'
+          #!/usr/bin/env bash
+          set -e
+          cd "$GITHUB_WORKSPACE/appium-tests"
+          node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
+          APPIUM_PID=$!
+          sleep 10
+          npm run test:android
+          EXIT_CODE=$?
+          kill $APPIUM_PID 2>/dev/null || true
+          exit $EXIT_CODE
+          EOF
+          chmod +x /tmp/run-android-tests.sh
 
       - name: Run tests on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -98,20 +109,7 @@ jobs:
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
-          script: |
-            # Use absolute paths: the emulator-runner script does not inherit
-            # working-directory from previous steps, so `cd appium-tests` can
-            # silently fail and leave all commands running from the repo root.
-            cd "$GITHUB_WORKSPACE/appium-tests"
-            # Use the local binary to ensure the uiautomator2 driver (installed
-            # above in appium-tests/) is found — not the global ~/.appium copy.
-            node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
-            APPIUM_PID=$!
-            sleep 10
-            npm run test:android
-            EXIT_CODE=$?
-            kill $APPIUM_PID 2>/dev/null || true
-            exit $EXIT_CODE
+          script: bash /tmp/run-android-tests.sh
 
       - name: Upload Allure results
         if: always()
@@ -234,6 +232,14 @@ jobs:
         run: |
           xcrun simctl boot "$APPIUM_IOS_UDID" || true
           xcrun simctl bootstatus "$APPIUM_IOS_UDID" -b
+          # Open Simulator.app so the simulator has a visible UI window.
+          # Without this Appium detects a headless (booted-but-no-UI) simulator,
+          # tries to restart Simulator.app itself, and then times out waiting
+          # for the re-boot (120 s limit) — causing the first test session to fail.
+          SIMULATOR_APP="$(xcode-select -p)/Applications/Simulator.app"
+          open -Fn "$SIMULATOR_APP" --args -CurrentDeviceUDID "$APPIUM_IOS_UDID"
+          # Give Simulator.app a moment to attach to the already-booted device.
+          sleep 5
 
       - name: Build iOS app (bundle embedded — no Metro required)
         working-directory: app/ios
@@ -259,8 +265,6 @@ jobs:
         run: npx appium driver install xcuitest
 
       - name: Pre-build WebDriverAgent
-        # Build WDA once before any test session so Appium can skip the build step
-        # and start WDA immediately (avoids the 3-10 min cold-build timeout in CI).
         run: |
           WDA_PROJECT=$(find appium-tests/node_modules -name "WebDriverAgent.xcodeproj" | head -1)
           echo "WDA project: $WDA_PROJECT"
