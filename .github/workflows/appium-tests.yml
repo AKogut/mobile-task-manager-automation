@@ -86,9 +86,21 @@ jobs:
           cat > /tmp/run-android-tests.sh << 'EOF'
           #!/usr/bin/env bash
           set -e
-          adb -s emulator-5554 wait-for-device
-          adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP || true
-          sleep 30
+
+          # Poll until the package manager is truly ready — sys.boot_completed=1 only
+          # means the kernel is up; ADB services / package manager can still be initialising.
+          # A fixed sleep is unreliable; this loop exits as soon as pm list works.
+          echo "Waiting for package manager..."
+          DEADLINE=$(( $(date +%s) + 120 ))
+          until adb -s emulator-5554 shell pm list packages 2>/dev/null | grep -q "^package:"; do
+            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+              echo "Package manager did not become ready within 120s — continuing anyway"
+              break
+            fi
+            sleep 3
+          done
+          echo "Package manager ready."
+          adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
 
           cd "$GITHUB_WORKSPACE/appium-tests"
           node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
@@ -97,6 +109,11 @@ jobs:
           npm run test:android
           EXIT_CODE=$?
           kill $APPIUM_PID 2>/dev/null || true
+
+          # Kill the emulator ourselves so android-emulator-runner's cleanup step
+          # returns immediately instead of hanging 20+ min on graceful shutdown.
+          adb -s emulator-5554 emu kill 2>/dev/null || true
+
           exit $EXIT_CODE
           EOF
           chmod +x /tmp/run-android-tests.sh
