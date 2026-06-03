@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 45
 
     env:
-      APPIUM_ANDROID_AVD: Pixel_8_API_35
+      APPIUM_ANDROID_AVD: Nexus6_API_35
       APPIUM_ANDROID_DEVICE_NAME: emulator-5554
       APPIUM_ANDROID_APP_PATH: ${{ github.workspace }}/app/android/app/build/outputs/apk/release/app-release.apk
 
@@ -62,14 +62,6 @@ jobs:
 
       - name: Install Android SDK packages
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "system-images;android-35;google_apis;x86_64"
-
-      - name: Create AVD
-        run: |
-          echo no | avdmanager create avd \
-            --name Pixel_8_API_35 \
-            --package "system-images;android-35;google_apis;x86_64" \
-            --device "pixel_8" \
-            --force
 
       - name: Install app dependencies
         working-directory: app
@@ -130,8 +122,8 @@ jobs:
           api-level: 35
           target: google_apis
           arch: x86_64
-          profile: pixel_8
-          avd-name: Pixel_8_API_35
+          profile: Nexus 6
+          avd-name: Nexus6_API_35
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
