@@ -104,6 +104,7 @@ jobs:
           done
           echo "Package manager ready."
           adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
+          adb -s emulator-5554 shell wm density 320 2>/dev/null || true
 
           cd "$GITHUB_WORKSPACE/appium-tests"
           node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
