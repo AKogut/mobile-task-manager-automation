@@ -22,23 +22,27 @@ permissions:
   pages: write
   id-token: write
 
-# ──────────────────────────────────────────────────────────────
-# Android
-# ──────────────────────────────────────────────────────────────
 jobs:
   test-android:
     name: Android tests (API 35)
     if: inputs.platform == 'android' || inputs.platform == 'both'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     env:
-      APPIUM_ANDROID_AVD: Pixel_8_API_35
+      APPIUM_ANDROID_AVD: Nexus6_API_35
       APPIUM_ANDROID_DEVICE_NAME: emulator-5554
-      APPIUM_ANDROID_APP_PATH: ${{ github.workspace }}/app/android/app/build/outputs/apk/debug/app-debug.apk
+      APPIUM_ANDROID_APP_PATH: ${{ github.workspace }}/app/android/app/build/outputs/apk/release/app-release.apk
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -57,23 +61,15 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "system-images;android-35;default;x86_64"
-
-      - name: Create AVD
-        run: |
-          echo no | avdmanager create avd \
-            --name Pixel_8_API_35 \
-            --package "system-images;android-35;default;x86_64" \
-            --device "pixel_8" \
-            --force
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "system-images;android-35;google_apis;x86_64"
 
       - name: Install app dependencies
         working-directory: app
         run: npm ci
 
-      - name: Build debug APK
+      - name: Build release APK
         working-directory: app/android
-        run: ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=x86_64
 
       - name: Install test dependencies
         working-directory: appium-tests
@@ -87,14 +83,36 @@ jobs:
         run: |
           cat > /tmp/run-android-tests.sh << 'EOF'
           #!/usr/bin/env bash
-          set -e
+          set -eo pipefail
+
+          APPIUM_PID=""
+
+          cleanup() {
+            [ -n "$APPIUM_PID" ] && kill "$APPIUM_PID" 2>/dev/null || true
+            adb -s emulator-5554 emu kill 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          echo "Waiting for package manager..."
+          DEADLINE=$(( $(date +%s) + 120 ))
+          until adb -s emulator-5554 shell pm list packages 2>/dev/null | grep -q "^package:"; do
+            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+              echo "Package manager did not become ready within 120s — continuing anyway"
+              break
+            fi
+            sleep 3
+          done
+          echo "Package manager ready."
+          adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
+          adb -s emulator-5554 shell wm density 320 2>/dev/null || true
+
           cd "$GITHUB_WORKSPACE/appium-tests"
           node_modules/.bin/appium --log "$GITHUB_WORKSPACE/appium-android.log" &
           APPIUM_PID=$!
           sleep 10
-          npm run test:android
-          EXIT_CODE=$?
-          kill $APPIUM_PID 2>/dev/null || true
+
+          EXIT_CODE=0
+          npm run test:android || EXIT_CODE=$?
           exit $EXIT_CODE
           EOF
           chmod +x /tmp/run-android-tests.sh
@@ -103,9 +121,10 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
-          target: default
+          target: google_apis
           arch: x86_64
-          avd-name: Pixel_8_API_35
+          profile: Nexus 6
+          avd-name: Nexus6_API_35
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
@@ -135,13 +154,11 @@ jobs:
           path: appium-tests/screenshots
           retention-days: 3
 
-  # ──────────────────────────────────────────────────────────────
-  # iOS
-  # ──────────────────────────────────────────────────────────────
   test-ios:
     name: iOS tests (iPhone 16)
     if: inputs.platform == 'ios' || inputs.platform == 'both'
     runs-on: macos-15
+    timeout-minutes: 45
 
     env:
       APPIUM_IOS_APP_PATH: ${{ github.workspace }}/app/ios/build/Build/Products/Debug-iphonesimulator/MobileTaskManager.app
@@ -174,7 +191,6 @@ jobs:
 
       - name: Select available iOS simulator
         run: |
-          # Find the first available iPhone 16 (or fall back to any iPhone).
           SIM_JSON=$(xcrun simctl list devices available -j)
 
           SIM_UDID=$(echo "$SIM_JSON" | python3 -c "
@@ -209,8 +225,6 @@ jobs:
                       sys.exit()
           " 2>/dev/null || echo "iPhone 16")
 
-          # Runtime key: "com.apple.CoreSimulator.SimRuntime.iOS-18-5"
-          # Extract version as "18.5" (last segment after "iOS-", dashes → dots).
           PLATFORM_VERSION=$(echo "$SIM_JSON" | python3 -c "
           import sys, json, re
           d = json.load(sys.stdin)
@@ -232,13 +246,8 @@ jobs:
         run: |
           xcrun simctl boot "$APPIUM_IOS_UDID" || true
           xcrun simctl bootstatus "$APPIUM_IOS_UDID" -b
-          # Open Simulator.app so the simulator has a visible UI window.
-          # Without this Appium detects a headless (booted-but-no-UI) simulator,
-          # tries to restart Simulator.app itself, and then times out waiting
-          # for the re-boot (120 s limit) — causing the first test session to fail.
           SIMULATOR_APP="$(xcode-select -p)/Applications/Simulator.app"
           open -Fn "$SIMULATOR_APP" --args -CurrentDeviceUDID "$APPIUM_IOS_UDID"
-          # Give Simulator.app a moment to attach to the already-booted device.
           sleep 5
 
       - name: Build iOS app (bundle embedded — no Metro required)
@@ -334,9 +343,6 @@ jobs:
           path: appium-tests/screenshots
           retention-days: 3
 
-  # ──────────────────────────────────────────────────────────────
-  # Report — merge results from both platforms → GitHub Pages
-  # ──────────────────────────────────────────────────────────────
   report:
     name: Publish Allure report
     needs: [test-android, test-ios]
