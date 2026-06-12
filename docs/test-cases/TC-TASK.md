@@ -43,6 +43,8 @@ Create, edit, delete, and complete tasks.
 - Priority chip shows `High priority` (`task-details-priority-text`)
 - Status chip shows `Open` (`task-details-status-text`)
 
+**Automation:** ✅ Appium — task-creation.spec.ts
+
 ---
 
 ### TC-TASK-002 — Create a task with minimum required fields
@@ -79,6 +81,8 @@ Create, edit, delete, and complete tasks.
 - Description area shows `No description provided.`
 - Priority chip shows `Low priority`
 
+**Automation:** ✅ Appium — task-creation.spec.ts
+
 ---
 
 ### TC-TASK-003 — Newly created task appears in the task list
@@ -113,6 +117,8 @@ Create, edit, delete, and complete tasks.
 - Task list contains `New list task`
 - Task card shows `Medium` priority in the subtitle
 
+**Automation:** ✅ Appium — task-creation.spec.ts
+
 ---
 
 ### TC-TASK-004 — Task creation blocked when title is empty
@@ -137,6 +143,8 @@ Create, edit, delete, and complete tasks.
 - Title validation error is displayed (`task-title-error`)
 - No task is created
 - User remains on the Add Task screen
+
+**Automation:** ✅ Appium — task-creation.spec.ts
 
 ---
 
@@ -168,6 +176,8 @@ Create, edit, delete, and complete tasks.
 - Title validation error is displayed (`task-title-error`)
 - No task is created
 
+**Automation:** ✅ Appium — task-creation.spec.ts
+
 ---
 
 ### TC-TASK-006 — Task creation blocked when no due date is selected
@@ -193,6 +203,8 @@ Create, edit, delete, and complete tasks.
 - No task is created
 - User remains on the Add Task screen
 
+**Automation:** ✅ Appium — task-creation.spec.ts
+
 ---
 
 ### TC-TASK-007 — Quick select "Today" sets due date to current date
@@ -213,6 +225,8 @@ Create, edit, delete, and complete tasks.
 **Expected result**
 
 - Due date input reflects today's date in `YYYY-MM-DD` format
+
+**Automation:** ✅ Appium — task-creation.spec.ts
 
 ---
 
@@ -235,6 +249,8 @@ Create, edit, delete, and complete tasks.
 
 - Due date input reflects tomorrow's date in `YYYY-MM-DD` format
 
+**Automation:** ✅ Appium — task-creation.spec.ts
+
 ---
 
 ### TC-TASK-009 — Quick select "Next week" sets due date 7 days ahead
@@ -255,6 +271,8 @@ Create, edit, delete, and complete tasks.
 **Expected result**
 
 - Due date input reflects a date 7 days from today in `YYYY-MM-DD` format
+
+**Automation:** ✅ Appium — task-creation.spec.ts
 
 ---
 
@@ -440,6 +458,8 @@ Create, edit, delete, and complete tasks.
 - Dialog contains **Cancel** and **Delete** options
 - Task is not deleted yet
 
+**Automation:** ✅ Appium — task-delete.spec.ts
+
 ---
 
 ### TC-TASK-018 — Confirming delete removes the task
@@ -463,6 +483,8 @@ Create, edit, delete, and complete tasks.
 - User is navigated to the Home screen (`main-screen`)
 - Deleted task no longer appears in the task list
 
+**Automation:** ✅ Appium — task-delete.spec.ts
+
 ---
 
 ### TC-TASK-019 — Cancelling delete preserves the task
@@ -485,6 +507,8 @@ Create, edit, delete, and complete tasks.
 - Dialog dismisses
 - Task remains on the Task Details screen
 - Task is still present in the task store
+
+**Automation:** ✅ Appium — task-delete.spec.ts
 
 ---
 
@@ -513,6 +537,8 @@ Create, edit, delete, and complete tasks.
 - `task-description-input` contains `Milk, eggs, and bread`
 - High priority option is selected (`task-priority-option-high`)
 - `task-due-date-input` contains the existing due date
+
+**Automation:** ✅ Appium — task-edit.spec.ts
 
 ---
 
@@ -543,6 +569,8 @@ Create, edit, delete, and complete tasks.
 - Task Details screen is displayed
 - Title shows `Updated task title` (`task-details-title`)
 
+**Automation:** ✅ Appium — task-edit.spec.ts
+
 ---
 
 ### TC-TASK-022 — Edit task priority and save
@@ -564,6 +592,8 @@ Create, edit, delete, and complete tasks.
 
 - Task Details screen is displayed
 - Priority chip shows `High priority` (`task-details-priority-text`)
+
+**Automation:** ✅ Appium — task-edit.spec.ts
 
 ---
 
@@ -592,6 +622,8 @@ Create, edit, delete, and complete tasks.
 
 - Task Details screen shows `Added after creation` in `task-details-description`
 
+**Automation:** ✅ Appium — task-edit.spec.ts
+
 ---
 
 ### TC-TASK-024 — Edited task reflects changes in the task list
@@ -617,6 +649,8 @@ Create, edit, delete, and complete tasks.
 - Task list shows the task card with title `New title`
 - Old title `Old title` is not visible
 
+**Automation:** ✅ Appium — task-edit.spec.ts
+
 ---
 
 ### TC-TASK-025 — Edit task blocked when title is cleared
@@ -639,6 +673,8 @@ Create, edit, delete, and complete tasks.
 - Title validation error is displayed (`task-title-error`)
 - Task is not saved
 - User remains on the Edit Task screen
+
+**Automation:** ✅ Appium — task-edit.spec.ts
 
 ---
 
