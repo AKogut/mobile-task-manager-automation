@@ -95,15 +95,15 @@ The fake auth service simulates a 400 ms network delay and accepts only the demo
 
 Run this subset before every release or automation session to verify the app is healthy:
 
-| TC            | Title                                      |
-| ------------- | ------------------------------------------ |
-| TC-AUTH-001   | Successful login with valid credentials    |
-| TC-AUTH-009   | Successful logout                          |
-| TC-TASK-001   | Create a task with all fields              |
-| TC-TASK-010   | Mark a task as completed from Task Details |
-| TC-TASK-016   | Delete a task with confirmation            |
-| TC-TASK-020   | Edit task title and save                   |
-| TC-SEARCH-001 | Search by exact title match                |
-| TC-FILTER-001 | Status filter — Open                       |
-| TC-SORT-001   | Default sort by due date                   |
-| TC-NAV-001    | Tap task card navigates to Task Details    |
+| TC            | Title                                               |
+| ------------- | --------------------------------------------------- |
+| TC-AUTH-001   | Successful login with valid credentials             |
+| TC-AUTH-009   | Successful logout                                   |
+| TC-TASK-001   | Create a task with all fields                       |
+| TC-TASK-013   | Complete a task from Task Details                   |
+| TC-TASK-017   | Delete task shows confirmation dialog               |
+| TC-TASK-020   | Edit task form is pre-populated with current values |
+| TC-SEARCH-001 | Search by exact title match                         |
+| TC-FILTER-001 | Status filter — Open                                |
+| TC-SORT-001   | Default sort by due date                            |
+| TC-NAV-001    | Tap task card navigates to Task Details             |
