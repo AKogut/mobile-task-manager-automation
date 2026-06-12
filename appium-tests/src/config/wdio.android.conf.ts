@@ -29,7 +29,10 @@ export const config: AppiumConfig = {
       'appium:appActivity': '.MainActivity',
       'appium:autoGrantPermissions': true,
       'appium:newCommandTimeout': 300,
+      'appium:unicodeKeyboard': true,
+      'appium:resetKeyboard': true,
       ...({
+        'appium:settings[waitForIdleTimeout]': 100,
         'appium:adbExecTimeout': 120000,
         'appium:androidInstallTimeout': 120000,
         'appium:uiautomator2ServerInstallTimeout': 120000,

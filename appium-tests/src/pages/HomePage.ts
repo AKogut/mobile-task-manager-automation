@@ -12,6 +12,7 @@ export class HomePage extends BasePage {
   private readonly SETTINGS_SCREEN = 'settings-screen';
   private readonly SETTINGS_TITLE = 'settings-title';
   private readonly SETTINGS_BACK_BUTTON = 'settings-back-button';
+  private readonly TASK_TITLE_INPUT = 'task-title-input';
   private readonly ACTIVE_FILTERS_COUNT = 'task-active-filters-count';
   private readonly NO_RESULTS_CARD = 'task-no-results-card';
   private readonly EMPTY_STATE_CARD = 'task-empty-state-card';
@@ -25,7 +26,31 @@ export class HomePage extends BasePage {
   }
 
   public async tapAddButton(): Promise<void> {
-    await this.tap(this.ADD_BUTTON);
+    if (browser.capabilities.platformName === 'iOS') {
+      await this.tapIosAddTaskButton();
+    } else {
+      await this.tap(this.ADD_BUTTON);
+    }
+
+    await this.waitForDisplayed(this.TASK_TITLE_INPUT);
+  }
+
+  private async tapIosAddTaskButton(): Promise<void> {
+    const labels = ['Add first task', 'Add task'];
+
+    for (const label of labels) {
+      const button = this.elByAccessibilityLabel(label);
+
+      if (!(await button.isExisting())) {
+        continue;
+      }
+
+      await button.scrollIntoView();
+      await button.click();
+      return;
+    }
+
+    throw new Error('Add task button not found');
   }
 
   public async tapSettingsButton(): Promise<void> {
@@ -83,6 +108,10 @@ export class HomePage extends BasePage {
     return this.getText(this.taskTitleId(index));
   }
 
+  public async getTaskMetadata(index: number): Promise<string> {
+    return this.getText(this.taskMetadataId(index));
+  }
+
   public async tapStatusFilter(value: StatusFilter): Promise<void> {
     await this.tap(this.statusFilterId(value));
   }
@@ -125,6 +154,10 @@ export class HomePage extends BasePage {
 
   private taskTitleId(index: number): string {
     return `task-item-title-${String(index)}`;
+  }
+
+  private taskMetadataId(index: number): string {
+    return `task-item-metadata-${String(index)}`;
   }
 
   private toggleButtonId(index: number): string {
