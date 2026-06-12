@@ -2,19 +2,23 @@ import type { ChainablePromiseElement } from 'webdriverio';
 
 export abstract class BasePage {
   protected el(testId: string): ChainablePromiseElement {
+    return $(this.testIdSelector(testId));
+  }
+
+  private testIdSelector(testId: string): string {
     if (this.isAndroid()) {
-      return $(`android=new UiSelector().resourceId("${testId}")`);
+      return `android=new UiSelector().resourceId("${testId}")`;
     }
 
-    return $(`~${testId}`);
+    return `~${testId}`;
   }
 
   protected elByAccessibilityLabel(label: string): ChainablePromiseElement {
-    return $(`~${label}`);
-  }
+    if (this.isAndroid()) {
+      return $(`android=new UiSelector().description("${label}")`);
+    }
 
-  protected async acceptAlert(): Promise<void> {
-    await browser.acceptAlert();
+    return $(`-ios predicate string:label == "${label}"`);
   }
 
   protected async waitForDisplayed(
@@ -29,37 +33,36 @@ export abstract class BasePage {
   }
 
   protected async typeText(testId: string, text: string): Promise<void> {
-    const element = this.el(testId);
+    await this.el(testId).click();
+    await this.el(testId).clearValue();
+
     if (text === '') {
-      await element.click();
-      await element.clearValue();
       return;
     }
 
-    const maxAttempts = 3;
-    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-      await element.click();
-      await element.clearValue();
-      await element.setValue(text);
-      if (await this.fieldHasValue(element, text)) {
-        return;
-      }
+    await this.el(testId).setValue(text);
+    await browser.waitUntil(async () => this.fieldHasValue(testId, text), {
+      timeout: 5000,
+      timeoutMsg: `Failed to enter the expected text into "${testId}"`,
+    });
+  }
+
+  protected async getInputValue(testId: string): Promise<string> {
+    if (this.isAndroid()) {
+      return this.el(testId).getText();
     }
-    throw new Error(
-      `Failed to enter the expected text into "${testId}" after ${String(maxAttempts)} attempts`,
-    );
+
+    return this.el(testId).getValue();
   }
 
   private async fieldHasValue(
-    element: ChainablePromiseElement,
+    testId: string,
     expected: string,
   ): Promise<boolean> {
-    let actual: string;
-    try {
-      actual = await element.getValue();
-    } catch {
-      return true;
-    }
+    const element = this.el(testId);
+    const actual = this.isAndroid()
+      ? await element.getText()
+      : await element.getValue();
     if (actual === expected) {
       return true;
     }
@@ -72,11 +75,14 @@ export abstract class BasePage {
   }
 
   protected async isElementDisplayed(testId: string): Promise<boolean> {
-    try {
-      return await this.el(testId).isDisplayed();
-    } catch {
+    const elements = browser.$$(this.testIdSelector(testId));
+    const count = await elements.length;
+
+    if (count === 0) {
       return false;
     }
+
+    return elements[0].isDisplayed();
   }
 
   public abstract isDisplayed(): Promise<boolean>;
