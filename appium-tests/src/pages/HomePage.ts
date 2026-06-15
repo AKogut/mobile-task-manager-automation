@@ -21,8 +21,8 @@ export class HomePage extends BasePage {
     return this.isElementDisplayed(this.SCREEN);
   }
 
-  public async waitForScreen(): Promise<void> {
-    await this.waitForDisplayed(this.SCREEN);
+  public async waitForScreen(timeout = 10000): Promise<void> {
+    await this.waitForDisplayed(this.SCREEN, timeout);
   }
 
   public async tapAddButton(): Promise<void> {
