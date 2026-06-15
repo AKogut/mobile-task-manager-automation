@@ -32,6 +32,66 @@ export abstract class BasePage {
     await this.el(testId).click();
   }
 
+  protected async scrollIntoView(
+    testId: string,
+    maxSwipes = 8,
+  ): Promise<boolean> {
+    return this.scrollUntilDisplayed(testId, 'up', maxSwipes);
+  }
+
+  protected async scrollToTop(testId: string, maxSwipes = 8): Promise<boolean> {
+    return this.scrollUntilDisplayed(testId, 'down', maxSwipes);
+  }
+
+  private async scrollUntilDisplayed(
+    testId: string,
+    direction: 'up' | 'down',
+    maxSwipes: number,
+  ): Promise<boolean> {
+    const target = this.el(testId);
+
+    if (!(await target.isExisting())) {
+      return false;
+    }
+
+    if (await target.isDisplayed()) {
+      return true;
+    }
+
+    if (this.isAndroid()) {
+      return target.isDisplayed();
+    }
+
+    for (let swipe = 0; swipe < maxSwipes; swipe += 1) {
+      await this.swipe(direction);
+
+      if ((await target.isExisting()) && (await target.isDisplayed())) {
+        return true;
+      }
+    }
+
+    return (await target.isExisting()) && (await target.isDisplayed());
+  }
+
+  private async swipe(direction: 'up' | 'down'): Promise<void> {
+    const { width, height } = await browser.getWindowRect();
+    const x = Math.round(width / 2);
+    const farY = Math.round(height * 0.75);
+    const nearY = Math.round(height * 0.3);
+    const startY = direction === 'up' ? farY : nearY;
+    const endY = direction === 'up' ? nearY : farY;
+
+    await browser
+      .action('pointer', { parameters: { pointerType: 'touch' } })
+      .move({ x, y: startY })
+      .down()
+      .pause(100)
+      .move({ duration: 500, x, y: endY })
+      .up()
+      .pause(250)
+      .perform();
+  }
+
   protected async typeText(testId: string, text: string): Promise<void> {
     await this.el(testId).click();
     await this.el(testId).clearValue();
@@ -40,11 +100,35 @@ export abstract class BasePage {
       return;
     }
 
-    await this.el(testId).setValue(text);
-    await browser.waitUntil(async () => this.fieldHasValue(testId, text), {
-      timeout: 5000,
-      timeoutMsg: `Failed to enter the expected text into "${testId}"`,
-    });
+    const maxAttempts = 3;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      await this.el(testId).setValue(text);
+
+      if (await this.waitForFieldValue(testId, text)) {
+        return;
+      }
+
+      await this.el(testId).click();
+      await this.el(testId).clearValue();
+    }
+
+    throw new Error(`Failed to enter the expected text into "${testId}"`);
+  }
+
+  private async waitForFieldValue(
+    testId: string,
+    text: string,
+  ): Promise<boolean> {
+    try {
+      await browser.waitUntil(async () => this.fieldHasValue(testId, text), {
+        timeout: 5000,
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   protected async getInputValue(testId: string): Promise<string> {

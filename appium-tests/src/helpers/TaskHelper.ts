@@ -78,18 +78,29 @@ export class TaskHelper {
   }
 
   private async navigateToHome(): Promise<void> {
-    if (await this.homePage.isDisplayed()) {
-      return;
+    const maxAttempts = 4;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      if (await this.homePage.isDisplayed()) {
+        return;
+      }
+
+      if (await this.taskDetailsPage.isDisplayed()) {
+        await this.taskDetailsPage.tapHomeButton();
+      } else if (await this.taskFormPage.isDisplayed()) {
+        await this.taskFormPage.tapBackButton();
+      }
+
+      const reachedHome = await this.homePage
+        .waitForScreen(5000)
+        .then(() => true)
+        .catch(() => false);
+
+      if (reachedHome) {
+        return;
+      }
     }
 
-    if (await this.taskFormPage.isDisplayed()) {
-      await this.taskFormPage.tapBackButton();
-    }
-
-    if (await this.taskDetailsPage.isDisplayed()) {
-      await this.taskDetailsPage.tapHomeButton();
-    }
-
-    await this.homePage.waitForScreen();
+    throw new Error('Could not navigate back to the home screen');
   }
 }

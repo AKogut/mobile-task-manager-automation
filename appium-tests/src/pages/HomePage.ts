@@ -21,8 +21,8 @@ export class HomePage extends BasePage {
     return this.isElementDisplayed(this.SCREEN);
   }
 
-  public async waitForScreen(): Promise<void> {
-    await this.waitForDisplayed(this.SCREEN);
+  public async waitForScreen(timeout = 10000): Promise<void> {
+    await this.waitForDisplayed(this.SCREEN, timeout);
   }
 
   public async tapAddButton(): Promise<void> {
@@ -97,18 +97,22 @@ export class HomePage extends BasePage {
   }
 
   public async tapTask(index: number): Promise<void> {
+    await this.scrollTaskItemIntoView(index);
     await this.tap(this.taskItemId(index));
   }
 
   public async toggleTask(index: number): Promise<void> {
+    await this.scrollTaskItemIntoView(index);
     await this.tap(this.toggleButtonId(index));
   }
 
   public async getTaskTitle(index: number): Promise<string> {
+    await this.scrollTaskItemIntoView(index);
     return this.getText(this.taskTitleId(index));
   }
 
   public async getTaskMetadata(index: number): Promise<string> {
+    await this.scrollTaskItemIntoView(index);
     return this.getText(this.taskMetadataId(index));
   }
 
@@ -145,7 +149,11 @@ export class HomePage extends BasePage {
   }
 
   public async isTaskVisible(index: number): Promise<boolean> {
-    return this.isElementDisplayed(this.taskItemId(index));
+    return this.scrollTaskItemIntoView(index);
+  }
+
+  private async scrollTaskItemIntoView(index: number): Promise<boolean> {
+    return this.scrollIntoView(this.taskItemId(index));
   }
 
   private taskItemId(index: number): string {
