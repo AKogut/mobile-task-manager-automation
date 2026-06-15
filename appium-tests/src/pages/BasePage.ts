@@ -35,6 +35,7 @@ export abstract class BasePage {
   protected async scrollIntoView(
     testId: string,
     containerTestId: string,
+    maxSwipes = 8,
   ): Promise<boolean> {
     const target = this.el(testId);
 
@@ -50,15 +51,21 @@ export abstract class BasePage {
       return target.isDisplayed();
     }
 
-    try {
-      const containerId = await this.el(containerTestId).elementId;
+    const containerId = await this.el(containerTestId).elementId;
 
-      await browser.execute('mobile: scroll', {
-        element: containerId,
-        name: testId,
-      });
-    } catch {
-      return target.isDisplayed();
+    for (let swipe = 0; swipe < maxSwipes; swipe += 1) {
+      try {
+        await browser.execute('mobile: scroll', {
+          element: containerId,
+          direction: 'down',
+        });
+      } catch {
+        break;
+      }
+
+      if ((await target.isExisting()) && (await target.isDisplayed())) {
+        return true;
+      }
     }
 
     return target.isDisplayed();
