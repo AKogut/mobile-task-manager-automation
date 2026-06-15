@@ -32,6 +32,38 @@ export abstract class BasePage {
     await this.el(testId).click();
   }
 
+  protected async scrollIntoView(
+    testId: string,
+    containerTestId: string,
+  ): Promise<boolean> {
+    const target = this.el(testId);
+
+    if (!(await target.isExisting())) {
+      return false;
+    }
+
+    if (await target.isDisplayed()) {
+      return true;
+    }
+
+    if (this.isAndroid()) {
+      return target.isDisplayed();
+    }
+
+    try {
+      const containerId = await this.el(containerTestId).elementId;
+
+      await browser.execute('mobile: scroll', {
+        element: containerId,
+        name: testId,
+      });
+    } catch {
+      return target.isDisplayed();
+    }
+
+    return target.isDisplayed();
+  }
+
   protected async typeText(testId: string, text: string): Promise<void> {
     await this.el(testId).click();
     await this.el(testId).clearValue();

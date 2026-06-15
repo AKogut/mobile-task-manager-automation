@@ -153,17 +153,7 @@ export class HomePage extends BasePage {
   }
 
   private async scrollTaskItemIntoView(index: number): Promise<boolean> {
-    const item = this.el(this.taskItemId(index));
-
-    if (!(await item.isExisting())) {
-      return false;
-    }
-
-    if (!(await item.isDisplayed())) {
-      await item.scrollIntoView();
-    }
-
-    return item.isDisplayed();
+    return this.scrollIntoView(this.taskItemId(index), this.SCREEN);
   }
 
   private taskItemId(index: number): string {
