@@ -97,18 +97,22 @@ export class HomePage extends BasePage {
   }
 
   public async tapTask(index: number): Promise<void> {
+    await this.scrollTaskItemIntoView(index);
     await this.tap(this.taskItemId(index));
   }
 
   public async toggleTask(index: number): Promise<void> {
+    await this.scrollTaskItemIntoView(index);
     await this.tap(this.toggleButtonId(index));
   }
 
   public async getTaskTitle(index: number): Promise<string> {
+    await this.scrollTaskItemIntoView(index);
     return this.getText(this.taskTitleId(index));
   }
 
   public async getTaskMetadata(index: number): Promise<string> {
+    await this.scrollTaskItemIntoView(index);
     return this.getText(this.taskMetadataId(index));
   }
 
@@ -145,7 +149,21 @@ export class HomePage extends BasePage {
   }
 
   public async isTaskVisible(index: number): Promise<boolean> {
-    return this.isElementDisplayed(this.taskItemId(index));
+    return this.scrollTaskItemIntoView(index);
+  }
+
+  private async scrollTaskItemIntoView(index: number): Promise<boolean> {
+    const item = this.el(this.taskItemId(index));
+
+    if (!(await item.isExisting())) {
+      return false;
+    }
+
+    if (!(await item.isDisplayed())) {
+      await item.scrollIntoView();
+    }
+
+    return item.isDisplayed();
   }
 
   private taskItemId(index: number): string {

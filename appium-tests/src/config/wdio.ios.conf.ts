@@ -32,7 +32,6 @@ export const config: AppiumConfig = {
       'appium:app': APP_PATH,
       'appium:bundleId': 'org.reactjs.native.example.MobileTaskManager',
       'appium:newCommandTimeout': 300,
-      'appium:autoAcceptAlerts': true,
       // Use pre-built WDA when available (set by CI pre-build step) so Appium
       // skips the 3-10 min cold build and starts WDA immediately.
       ...(WDA_DERIVED_DATA !== undefined

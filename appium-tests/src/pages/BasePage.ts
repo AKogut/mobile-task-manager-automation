@@ -40,11 +40,35 @@ export abstract class BasePage {
       return;
     }
 
-    await this.el(testId).setValue(text);
-    await browser.waitUntil(async () => this.fieldHasValue(testId, text), {
-      timeout: 5000,
-      timeoutMsg: `Failed to enter the expected text into "${testId}"`,
-    });
+    const maxAttempts = 3;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      await this.el(testId).setValue(text);
+
+      if (await this.waitForFieldValue(testId, text)) {
+        return;
+      }
+
+      await this.el(testId).click();
+      await this.el(testId).clearValue();
+    }
+
+    throw new Error(`Failed to enter the expected text into "${testId}"`);
+  }
+
+  private async waitForFieldValue(
+    testId: string,
+    text: string,
+  ): Promise<boolean> {
+    try {
+      await browser.waitUntil(async () => this.fieldHasValue(testId, text), {
+        timeout: 5000,
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   protected async getInputValue(testId: string): Promise<string> {
