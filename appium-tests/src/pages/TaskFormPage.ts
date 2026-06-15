@@ -91,6 +91,7 @@ export class TaskFormPage extends BasePage {
   }
 
   public async tapBackButton(): Promise<void> {
+    await this.scrollToTop(this.BACK_BUTTON);
     await this.tap(this.BACK_BUTTON);
   }
 

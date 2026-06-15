@@ -36,6 +36,18 @@ export abstract class BasePage {
     testId: string,
     maxSwipes = 8,
   ): Promise<boolean> {
+    return this.scrollUntilDisplayed(testId, 'up', maxSwipes);
+  }
+
+  protected async scrollToTop(testId: string, maxSwipes = 8): Promise<boolean> {
+    return this.scrollUntilDisplayed(testId, 'down', maxSwipes);
+  }
+
+  private async scrollUntilDisplayed(
+    testId: string,
+    direction: 'up' | 'down',
+    maxSwipes: number,
+  ): Promise<boolean> {
     const target = this.el(testId);
 
     if (!(await target.isExisting())) {
@@ -51,7 +63,7 @@ export abstract class BasePage {
     }
 
     for (let swipe = 0; swipe < maxSwipes; swipe += 1) {
-      await this.swipeUp();
+      await this.swipe(direction);
 
       if ((await target.isExisting()) && (await target.isDisplayed())) {
         return true;
@@ -61,11 +73,13 @@ export abstract class BasePage {
     return (await target.isExisting()) && (await target.isDisplayed());
   }
 
-  private async swipeUp(): Promise<void> {
+  private async swipe(direction: 'up' | 'down'): Promise<void> {
     const { width, height } = await browser.getWindowRect();
     const x = Math.round(width / 2);
-    const startY = Math.round(height * 0.75);
-    const endY = Math.round(height * 0.3);
+    const farY = Math.round(height * 0.75);
+    const nearY = Math.round(height * 0.3);
+    const startY = direction === 'up' ? farY : nearY;
+    const endY = direction === 'up' ? nearY : farY;
 
     await browser
       .action('pointer', { parameters: { pointerType: 'touch' } })
