@@ -95,7 +95,7 @@ export class TaskFormPage extends BasePage {
   }
 
   public async submit(): Promise<void> {
-    await this.scrollIntoView(this.SUBMIT_BUTTON, this.SCREEN);
+    await this.scrollIntoView(this.SUBMIT_BUTTON);
     await this.tap(this.SUBMIT_BUTTON);
   }
 

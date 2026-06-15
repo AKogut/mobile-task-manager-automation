@@ -34,7 +34,6 @@ export abstract class BasePage {
 
   protected async scrollIntoView(
     testId: string,
-    containerTestId: string,
     maxSwipes = 8,
   ): Promise<boolean> {
     const target = this.el(testId);
@@ -51,24 +50,32 @@ export abstract class BasePage {
       return target.isDisplayed();
     }
 
-    const containerId = await this.el(containerTestId).elementId;
-
     for (let swipe = 0; swipe < maxSwipes; swipe += 1) {
-      try {
-        await browser.execute('mobile: scroll', {
-          element: containerId,
-          direction: 'down',
-        });
-      } catch {
-        break;
-      }
+      await this.swipeUp();
 
       if ((await target.isExisting()) && (await target.isDisplayed())) {
         return true;
       }
     }
 
-    return target.isDisplayed();
+    return (await target.isExisting()) && (await target.isDisplayed());
+  }
+
+  private async swipeUp(): Promise<void> {
+    const { width, height } = await browser.getWindowRect();
+    const x = Math.round(width / 2);
+    const startY = Math.round(height * 0.75);
+    const endY = Math.round(height * 0.3);
+
+    await browser
+      .action('pointer', { parameters: { pointerType: 'touch' } })
+      .move({ x, y: startY })
+      .down()
+      .pause(100)
+      .move({ duration: 500, x, y: endY })
+      .up()
+      .pause(250)
+      .perform();
   }
 
   protected async typeText(testId: string, text: string): Promise<void> {

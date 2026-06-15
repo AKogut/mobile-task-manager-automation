@@ -153,7 +153,7 @@ export class HomePage extends BasePage {
   }
 
   private async scrollTaskItemIntoView(index: number): Promise<boolean> {
-    return this.scrollIntoView(this.taskItemId(index), this.SCREEN);
+    return this.scrollIntoView(this.taskItemId(index));
   }
 
   private taskItemId(index: number): string {
