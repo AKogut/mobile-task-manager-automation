@@ -7,6 +7,7 @@ export class TaskDetailsPage extends BasePage {
   private readonly DESCRIPTION = 'task-details-description';
   private readonly STATUS_TEXT = 'task-details-status-text';
   private readonly PRIORITY_TEXT = 'task-details-priority-text';
+  private readonly COMPLETE_BUTTON = 'task-details-complete-button';
   private readonly EDIT_BUTTON = 'task-details-edit-button';
   private readonly DELETE_BUTTON = 'task-details-delete-button';
 
@@ -49,6 +50,44 @@ export class TaskDetailsPage extends BasePage {
 
   public async getPriorityText(): Promise<string> {
     return this.getText(this.PRIORITY_TEXT);
+  }
+
+  public async getCompleteButtonText(): Promise<string> {
+    await this.scrollIntoView(this.COMPLETE_BUTTON);
+
+    const label = await this.getCompleteButtonLabel();
+
+    return label.toLowerCase().includes('incomplete')
+      ? 'Reopen task'
+      : 'Complete task';
+  }
+
+  private async getCompleteButtonLabel(): Promise<string> {
+    const button = this.el(this.COMPLETE_BUTTON);
+
+    if (this.isIos()) {
+      return button.getText();
+    }
+
+    return (await button.getAttribute('content-desc')) ?? '';
+  }
+
+  public async tapCompleteButton(): Promise<void> {
+    const button = this.el(this.COMPLETE_BUTTON);
+
+    await button.waitForExist({ timeout: 10000 });
+    await this.scrollIntoView(this.COMPLETE_BUTTON);
+    await button.click();
+  }
+
+  public async waitForStatus(expected: string): Promise<void> {
+    await browser.waitUntil(
+      async () => (await this.getStatusText()) === expected,
+      {
+        timeout: 10000,
+        timeoutMsg: `Task status did not become "${expected}"`,
+      },
+    );
   }
 
   public async tapEditButton(): Promise<void> {

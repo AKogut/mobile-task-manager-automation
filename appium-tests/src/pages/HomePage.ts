@@ -116,6 +116,27 @@ export class HomePage extends BasePage {
     return this.getText(this.taskMetadataId(index));
   }
 
+  public async waitForTaskCompleted(
+    index: number,
+    completed: boolean,
+  ): Promise<void> {
+    await browser.waitUntil(
+      async () => {
+        const metadata = await this.getTaskMetadata(index);
+
+        return completed
+          ? metadata.includes('Completed')
+          : !metadata.includes('Completed');
+      },
+      {
+        timeout: 10000,
+        timeoutMsg: `Task ${String(index)} completion did not become ${String(
+          completed,
+        )}`,
+      },
+    );
+  }
+
   public async tapStatusFilter(value: StatusFilter): Promise<void> {
     await this.tap(this.statusFilterId(value));
   }
