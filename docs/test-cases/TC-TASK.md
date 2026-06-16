@@ -368,6 +368,8 @@ Create, edit, delete, and complete tasks.
 - Status chip changes to `Completed` (`task-details-status-text`)
 - Title shows strikethrough styling
 
+**Automation:** ✅ Appium — task-complete.spec.ts
+
 ---
 
 ### TC-TASK-014 — Reopen a completed task from Task Details
@@ -391,6 +393,8 @@ Create, edit, delete, and complete tasks.
 - Status chip changes to `Open` (`task-details-status-text`)
 - Strikethrough styling is removed from title
 
+**Automation:** ✅ Appium — task-complete.spec.ts
+
 ---
 
 ### TC-TASK-015 — Complete a task via checkbox on the task list
@@ -413,6 +417,8 @@ Create, edit, delete, and complete tasks.
 - Task card shows completed styling (strikethrough title)
 - Task stats in the hero card update (completed count increments)
 
+**Automation:** ✅ Appium — task-complete.spec.ts
+
 ---
 
 ### TC-TASK-016 — Reopen a completed task via checkbox on the task list
@@ -433,6 +439,8 @@ Create, edit, delete, and complete tasks.
 
 - Task card reverts to open styling
 - Hero card stats update (open count increments)
+
+**Automation:** ✅ Appium — task-complete.spec.ts
 
 ---
 
