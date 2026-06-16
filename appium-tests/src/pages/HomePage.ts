@@ -16,6 +16,7 @@ export class HomePage extends BasePage {
   private readonly ACTIVE_FILTERS_COUNT = 'task-active-filters-count';
   private readonly NO_RESULTS_CARD = 'task-no-results-card';
   private readonly EMPTY_STATE_CARD = 'task-empty-state-card';
+  private readonly TASK_LIST_TITLE = 'task-list-title';
 
   public async isDisplayed(): Promise<boolean> {
     return this.isElementDisplayed(this.SCREEN);
@@ -86,10 +87,13 @@ export class HomePage extends BasePage {
   }
 
   public async searchFor(query: string): Promise<void> {
+    await this.scrollIntoView(this.SEARCH_INPUT);
     await this.typeText(this.SEARCH_INPUT, query);
   }
 
   public async clearSearch(): Promise<void> {
+    await this.scrollIntoView(this.SEARCH_INPUT);
+
     const searchInput = this.el(this.SEARCH_INPUT);
 
     await searchInput.click();
@@ -137,11 +141,79 @@ export class HomePage extends BasePage {
     );
   }
 
+  public async getTaskIndexByTitle(title: string): Promise<number> {
+    const index = (await this.getVisibleTaskTitles()).indexOf(title);
+
+    if (index < 0) {
+      throw new Error(`Task "${title}" was not found in the task list`);
+    }
+
+    return index;
+  }
+
+  public async getVisibleTaskTitles(maxItems = 20): Promise<string[]> {
+    const titles: string[] = [];
+
+    for (let index = 0; index < maxItems; index += 1) {
+      if (!(await this.ensureTaskTitleLocatable(index))) {
+        break;
+      }
+
+      titles.push(await this.getText(this.taskTitleId(index)));
+    }
+
+    return titles;
+  }
+
+  private async ensureTaskTitleLocatable(index: number): Promise<boolean> {
+    if (browser.capabilities.platformName === 'iOS') {
+      return this.el(this.taskTitleId(index)).isExisting();
+    }
+
+    return this.scrollIntoView(this.taskTitleId(index));
+  }
+
+  public async getVisibleTaskCount(): Promise<number> {
+    await this.scrollToTop(this.TASK_LIST_TITLE);
+
+    const label = await this.getText(this.TASK_LIST_TITLE);
+    const match = /(\d+) of/.exec(label);
+
+    return match ? Number(match[1]) : 0;
+  }
+
+  public async isTaskTitleVisible(title: string): Promise<boolean> {
+    return (await this.getVisibleTaskTitles()).includes(title);
+  }
+
+  public async waitForVisibleTaskCount(expected: number): Promise<void> {
+    await browser.waitUntil(
+      async () => (await this.getVisibleTaskCount()) === expected,
+      {
+        timeout: 10000,
+        timeoutMsg: `Visible task count did not become ${String(expected)}`,
+      },
+    );
+  }
+
+  public async resetFilters(): Promise<void> {
+    await this.resetFilterIfPresent(this.statusFilterId('all'));
+    await this.resetFilterIfPresent(this.priorityFilterId('all'));
+  }
+
+  private async resetFilterIfPresent(testId: string): Promise<void> {
+    if (await this.scrollIntoView(testId)) {
+      await this.tap(testId);
+    }
+  }
+
   public async tapStatusFilter(value: StatusFilter): Promise<void> {
+    await this.scrollIntoView(this.statusFilterId(value));
     await this.tap(this.statusFilterId(value));
   }
 
   public async tapPriorityFilter(value: PriorityFilter): Promise<void> {
+    await this.scrollIntoView(this.priorityFilterId(value));
     await this.tap(this.priorityFilterId(value));
   }
 
@@ -162,6 +234,12 @@ export class HomePage extends BasePage {
   }
 
   public async isNoResultsCardVisible(): Promise<boolean> {
+    if (browser.capabilities.platformName === 'iOS') {
+      return this.el(this.NO_RESULTS_CARD).isExisting();
+    }
+
+    await this.scrollIntoView(this.NO_RESULTS_CARD);
+
     return this.isElementDisplayed(this.NO_RESULTS_CARD);
   }
 

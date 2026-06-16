@@ -26,6 +26,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 - Only the 2 open tasks are visible
 - Completed task is not visible
 
+**Automation:** ✅ Appium — task-filter.spec.ts
+
 ---
 
 ### TC-FILTER-002 — Status filter "Done" shows only completed tasks
@@ -48,6 +50,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 - Only the completed task is visible
 - Open tasks are not visible
 
+**Automation:** ✅ Appium — task-filter.spec.ts
+
 ---
 
 ### TC-FILTER-003 — Status filter "All" shows all tasks
@@ -68,6 +72,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 **Expected result**
 
 - All 3 tasks are visible
+
+**Automation:** ✅ Appium — task-filter.spec.ts
 
 ---
 
@@ -90,6 +96,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 - No task cards are visible
 - No-results card is displayed (`task-no-results-card`)
+
+**Automation:** ✅ Appium — task-filter.spec.ts
 
 ---
 
@@ -115,6 +123,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 - Only the high priority task is visible
 - Medium and low priority tasks are not visible
 
+**Automation:** ✅ Appium — task-filter.spec.ts
+
 ---
 
 ### TC-FILTER-006 — Priority filter "Medium" shows only medium priority tasks
@@ -136,6 +146,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 - Only the medium priority task is visible
 
+**Automation:** ✅ Appium — task-filter.spec.ts
+
 ---
 
 ### TC-FILTER-007 — Priority filter "Low" shows only low priority tasks
@@ -156,6 +168,8 @@ Status filter, priority filter, active filter count badge, and clear filters.
 **Expected result**
 
 - Only the low priority task is visible
+
+**Automation:** ✅ Appium — task-filter.spec.ts
 
 ---
 
