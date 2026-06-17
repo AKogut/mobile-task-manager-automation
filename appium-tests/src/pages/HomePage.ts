@@ -17,6 +17,7 @@ export class HomePage extends BasePage {
   private readonly NO_RESULTS_CARD = 'task-no-results-card';
   private readonly EMPTY_STATE_CARD = 'task-empty-state-card';
   private readonly TASK_LIST_TITLE = 'task-list-title';
+  private readonly SEARCH_PLACEHOLDER = 'Search by title';
 
   public async isDisplayed(): Promise<boolean> {
     return this.isElementDisplayed(this.SCREEN);
@@ -122,8 +123,33 @@ export class HomePage extends BasePage {
 
     const searchInput = this.el(this.SEARCH_INPUT);
 
-    await searchInput.click();
-    await searchInput.clearValue();
+    await browser.waitUntil(
+      async () => {
+        const value = await this.getInputValue(this.SEARCH_INPUT);
+
+        if (value === '' || value === this.SEARCH_PLACEHOLDER) {
+          return true;
+        }
+
+        await searchInput.click();
+
+        if (this.isIos()) {
+          await browser.keys(
+            Array.from({ length: value.length }, () => 'Backspace'),
+          );
+        } else {
+          await searchInput.clearValue();
+        }
+
+        return false;
+      },
+      {
+        timeout: 15000,
+        interval: 500,
+        timeoutMsg: 'Search input was not cleared',
+      },
+    );
+
     await this.dismissKeyboard();
   }
 
