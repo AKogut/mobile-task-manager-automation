@@ -2,17 +2,6 @@ import { DEMO_CREDENTIALS } from '../../data/credentials';
 import { AuthHelper } from '../../helpers/AuthHelper';
 import { HomePage, LoginPage, SettingsPage } from '../../pages';
 
-const IOS_BUNDLE_ID = 'org.reactjs.native.example.MobileTaskManager';
-const ANDROID_APP_ID = 'com.mobiletaskmanager';
-
-async function restartApp(): Promise<void> {
-  const isIOS = browser.capabilities.platformName === 'iOS';
-  const appId = isIOS ? IOS_BUNDLE_ID : ANDROID_APP_ID;
-
-  await driver.terminateApp(appId);
-  await driver.activateApp(appId);
-}
-
 describe('Authentication — Regression', () => {
   const loginPage = new LoginPage();
   const homePage = new HomePage();
@@ -37,7 +26,7 @@ describe('Authentication — Regression', () => {
   it('TC-AUTH-011 — Session persists after app restart', async () => {
     await authHelper.loginWithDemoCredentials();
 
-    await restartApp();
+    await authHelper.restartApp();
     await homePage.waitForScreen();
 
     expect(await homePage.isDisplayed()).toBe(true);
@@ -45,7 +34,7 @@ describe('Authentication — Regression', () => {
   });
 
   it('TC-AUTH-012 — Unauthenticated user lands on Login screen', async () => {
-    await restartApp();
+    await authHelper.restartApp();
     await loginPage.waitForScreen();
 
     expect(await loginPage.isDisplayed()).toBe(true);

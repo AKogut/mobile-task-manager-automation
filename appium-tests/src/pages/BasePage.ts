@@ -1,5 +1,7 @@
 import type { ChainablePromiseElement } from 'webdriverio';
 
+import { isAndroid, isIos } from '../utils/platform';
+
 export abstract class BasePage {
   protected el(testId: string): ChainablePromiseElement {
     return $(this.testIdSelector(testId));
@@ -187,7 +189,11 @@ export abstract class BasePage {
 
   public abstract isDisplayed(): Promise<boolean>;
 
-  private isAndroid(): boolean {
-    return browser.capabilities.platformName === 'Android';
+  protected isAndroid(): boolean {
+    return isAndroid();
+  }
+
+  protected isIos(): boolean {
+    return isIos();
   }
 }
