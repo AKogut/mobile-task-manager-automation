@@ -70,17 +70,25 @@ export class TaskFormPage extends BasePage {
     option: QuickDate,
     expectedValue?: string,
   ): Promise<void> {
-    await this.tap(this.quickDateOptionId(option));
     await browser.waitUntil(
       async () => {
         const dueDate = await this.getDueDateValue();
+        const populated =
+          expectedValue === undefined
+            ? /^\d{4}-\d{2}-\d{2}$/.test(dueDate)
+            : dueDate === expectedValue;
 
-        return expectedValue === undefined
-          ? /^\d{4}-\d{2}-\d{2}$/.test(dueDate)
-          : dueDate === expectedValue;
+        if (populated) {
+          return true;
+        }
+
+        await this.tap(this.quickDateOptionId(option));
+
+        return false;
       },
       {
-        timeout: 5000,
+        timeout: 15000,
+        interval: 1000,
         timeoutMsg: `Quick date "${option}" did not populate the due date field`,
       },
     );

@@ -352,9 +352,8 @@ jobs:
       always() &&
       (needs.test-android.result != 'skipped' || needs.test-ios.result != 'skipped')
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      any: ${{ steps.detect.outputs.any }}
 
     steps:
       - name: Download Android results
@@ -453,7 +452,16 @@ jobs:
         with:
           path: site
 
+  deploy:
+    name: Deploy report to GitHub Pages
+    needs: report
+    if: github.ref == 'refs/heads/main' && needs.report.outputs.any == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deploy
-        if: steps.detect.outputs.any == 'true'
         uses: actions/deploy-pages@v4

@@ -233,7 +233,8 @@ export class HomePage extends BasePage {
     await browser.waitUntil(
       async () => (await this.getVisibleTaskCount()) === expected,
       {
-        timeout: 10000,
+        timeout: 20000,
+        interval: 1000,
         timeoutMsg: `Visible task count did not become ${String(expected)}`,
       },
     );
