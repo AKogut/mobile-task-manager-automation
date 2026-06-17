@@ -32,6 +32,12 @@ export class TaskHelper {
     await this.deleteAllTasksFromHome();
   }
 
+  public async prepareCleanHome(): Promise<void> {
+    await this.navigateToHome();
+    await this.homePage.resetFilters();
+    await this.deleteAllTasksFromHome();
+  }
+
   public async createTask(fixture: TaskFixture): Promise<void> {
     await this.homePage.tapAddButton();
     await this.taskFormPage.waitForScreen();
@@ -44,6 +50,21 @@ export class TaskHelper {
         timeoutMsg: `Task details title "${fixture.title}" not visible`,
       },
     );
+  }
+
+  public async createTasks(fixtures: readonly TaskFixture[]): Promise<void> {
+    for (const fixture of fixtures) {
+      await this.createTask(fixture);
+      await this.taskDetailsPage.tapHomeButton();
+      await this.homePage.waitForScreen();
+    }
+  }
+
+  public async completeTaskByTitle(title: string): Promise<void> {
+    const index = await this.homePage.getTaskIndexByTitle(title);
+
+    await this.homePage.toggleTask(index);
+    await this.homePage.waitForTaskCompleted(index, true);
   }
 
   public async openTaskDetails(index: number): Promise<void> {

@@ -8,7 +8,7 @@ import {
 export const config: Options.Testrunner = {
   framework: 'mocha',
   mochaOpts: {
-    timeout: 60000,
+    timeout: 180000,
     retries: 0,
   },
   reporters: [

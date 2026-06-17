@@ -31,6 +31,8 @@ Search tasks by title substring.
 - Task list shows exactly one task with title `Pay rent`
 - `Buy groceries` and `Call dentist` are not visible
 
+**Automation:** ✅ Appium — task-search.spec.ts
+
 ---
 
 ### TC-SEARCH-002 — Search by partial title returns matching tasks
@@ -59,6 +61,8 @@ Search tasks by title substring.
 - Task list shows `Buy groceries` and `Buy milk`
 - `Call dentist` is not visible
 
+**Automation:** ✅ Appium — task-search.spec.ts
+
 ---
 
 ### TC-SEARCH-003 — Search is case-insensitive
@@ -85,6 +89,8 @@ Search tasks by title substring.
 **Expected result**
 
 - `Buy groceries` is visible in the task list
+
+**Automation:** ✅ Appium — task-search.spec.ts
 
 ---
 
@@ -114,6 +120,8 @@ Search tasks by title substring.
 - No-results card is displayed (`task-no-results-card`)
 - Empty state card is NOT shown (`task-empty-state-card` absent)
 
+**Automation:** ✅ Appium — task-search.spec.ts
+
 ---
 
 ### TC-SEARCH-005 — Clearing the search input restores the full task list
@@ -134,6 +142,8 @@ Search tasks by title substring.
 
 - All tasks are visible again
 - No-results card is gone
+
+**Automation:** ✅ Appium — task-search.spec.ts
 
 ---
 
@@ -158,3 +168,5 @@ Search tasks by title substring.
 - Only `Buy groceries` is visible (open AND contains "Buy")
 - `Buy milk` is excluded (completed)
 - `Call dentist` is excluded (no "Buy" in title)
+
+**Automation:** ✅ Appium — task-search.spec.ts

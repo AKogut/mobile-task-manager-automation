@@ -50,16 +50,16 @@ export abstract class BasePage {
   ): Promise<boolean> {
     const target = this.el(testId);
 
-    if (!(await target.isExisting())) {
-      return false;
-    }
-
-    if (await target.isDisplayed()) {
+    if ((await target.isExisting()) && (await target.isDisplayed())) {
       return true;
     }
 
     if (this.isAndroid()) {
-      return target.isDisplayed();
+      return this.androidScrollIntoView(testId);
+    }
+
+    if (!(await target.isExisting())) {
+      return false;
     }
 
     for (let swipe = 0; swipe < maxSwipes; swipe += 1) {
@@ -69,6 +69,22 @@ export abstract class BasePage {
         return true;
       }
     }
+
+    return (await target.isExisting()) && (await target.isDisplayed());
+  }
+
+  private async androidScrollIntoView(testId: string): Promise<boolean> {
+    const selector =
+      `android=new UiScrollable(new UiSelector().scrollable(true).instance(0))` +
+      `.scrollIntoView(new UiSelector().resourceId("${testId}"))`;
+
+    try {
+      await $(selector).isExisting();
+    } catch {
+      return false;
+    }
+
+    const target = this.el(testId);
 
     return (await target.isExisting()) && (await target.isDisplayed());
   }
