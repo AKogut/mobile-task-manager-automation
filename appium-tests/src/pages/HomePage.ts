@@ -27,13 +27,34 @@ export class HomePage extends BasePage {
   }
 
   public async tapAddButton(): Promise<void> {
-    if (browser.capabilities.platformName === 'iOS') {
-      await this.tapIosAddTaskButton();
-    } else {
-      await this.tap(this.ADD_BUTTON);
-    }
+    await browser.waitUntil(
+      async () => {
+        if (await this.isElementDisplayed(this.TASK_TITLE_INPUT)) {
+          return true;
+        }
 
-    await this.waitForDisplayed(this.TASK_TITLE_INPUT);
+        await this.triggerAddTask();
+
+        return this.isElementDisplayed(this.TASK_TITLE_INPUT);
+      },
+      {
+        timeout: 20000,
+        interval: 1000,
+        timeoutMsg: 'Add task form did not open',
+      },
+    );
+  }
+
+  private async triggerAddTask(): Promise<void> {
+    try {
+      if (this.isIos()) {
+        await this.tapIosAddTaskButton();
+      } else {
+        await this.tap(this.ADD_BUTTON);
+      }
+    } catch {
+      return;
+    }
   }
 
   private async tapIosAddTaskButton(): Promise<void> {
@@ -46,7 +67,10 @@ export class HomePage extends BasePage {
         continue;
       }
 
-      await button.scrollIntoView();
+      if (!(await button.isDisplayed().catch(() => false))) {
+        await button.scrollIntoView().catch(() => undefined);
+      }
+
       await button.click();
       return;
     }
@@ -70,7 +94,7 @@ export class HomePage extends BasePage {
 
         return false;
       },
-      { timeout: 15000, interval: 2000 },
+      { timeout: 20000, interval: 1000 },
     );
   }
 
@@ -92,12 +116,31 @@ export class HomePage extends BasePage {
   }
 
   public async clearSearch(): Promise<void> {
-    await this.scrollIntoView(this.SEARCH_INPUT);
+    if (!(await this.scrollIntoView(this.SEARCH_INPUT))) {
+      return;
+    }
 
     const searchInput = this.el(this.SEARCH_INPUT);
 
     await searchInput.click();
     await searchInput.clearValue();
+    await this.dismissKeyboard();
+  }
+
+  public async dismissKeyboard(): Promise<void> {
+    if (!(await this.isKeyboardShown())) {
+      return;
+    }
+
+    await browser.hideKeyboard().catch(() => undefined);
+
+    if (await this.isKeyboardShown()) {
+      await this.tap(this.TASK_LIST_TITLE).catch(() => undefined);
+    }
+  }
+
+  private async isKeyboardShown(): Promise<boolean> {
+    return browser.isKeyboardShown().catch(() => false);
   }
 
   public async tapTask(index: number): Promise<void> {
@@ -166,7 +209,7 @@ export class HomePage extends BasePage {
   }
 
   private async ensureTaskTitleLocatable(index: number): Promise<boolean> {
-    if (browser.capabilities.platformName === 'iOS') {
+    if (this.isIos()) {
       return this.el(this.taskTitleId(index)).isExisting();
     }
 
@@ -203,18 +246,43 @@ export class HomePage extends BasePage {
 
   private async resetFilterIfPresent(testId: string): Promise<void> {
     if (await this.scrollIntoView(testId)) {
-      await this.tap(testId);
+      await this.selectSegment(testId);
     }
   }
 
   public async tapStatusFilter(value: StatusFilter): Promise<void> {
     await this.scrollIntoView(this.statusFilterId(value));
-    await this.tap(this.statusFilterId(value));
+    await this.selectSegment(this.statusFilterId(value));
   }
 
   public async tapPriorityFilter(value: PriorityFilter): Promise<void> {
     await this.scrollIntoView(this.priorityFilterId(value));
-    await this.tap(this.priorityFilterId(value));
+    await this.selectSegment(this.priorityFilterId(value));
+  }
+
+  private async selectSegment(testId: string): Promise<void> {
+    await browser.waitUntil(
+      async () => {
+        if (await this.isSegmentSelected(testId)) {
+          return true;
+        }
+
+        await this.tap(testId);
+
+        return this.isSegmentSelected(testId);
+      },
+      {
+        timeout: 10000,
+        interval: 500,
+        timeoutMsg: `Filter "${testId}" did not become selected`,
+      },
+    );
+  }
+
+  private async isSegmentSelected(testId: string): Promise<boolean> {
+    const selected = await this.el(testId).getAttribute('selected');
+
+    return selected === 'true' || selected === '1';
   }
 
   public async tapSort(value: SortOption): Promise<void> {
@@ -234,7 +302,7 @@ export class HomePage extends BasePage {
   }
 
   public async isNoResultsCardVisible(): Promise<boolean> {
-    if (browser.capabilities.platformName === 'iOS') {
+    if (this.isIos()) {
       return this.el(this.NO_RESULTS_CARD).isExisting();
     }
 

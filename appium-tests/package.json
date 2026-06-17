@@ -6,8 +6,10 @@
   "scripts": {
     "test:android": "wdio run src/config/wdio.android.conf.ts",
     "test:ios": "wdio run src/config/wdio.ios.conf.ts",
-    "report:generate": "allure generate allure-results --clean -o allure-report",
-    "report:open": "allure open allure-report",
+    "report:android": "allure generate allure-results/android --clean -o allure-report/android",
+    "report:ios": "allure generate allure-results/ios --clean -o allure-report/ios",
+    "report:open:android": "allure open allure-report/android",
+    "report:open:ios": "allure open allure-report/ios",
     "lint": "eslint \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit"
   },

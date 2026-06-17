@@ -4,6 +4,10 @@ import { LoginPage } from '../pages/LoginPage';
 import { SettingsPage } from '../pages/SettingsPage';
 import { TaskDetailsPage } from '../pages/TaskDetailsPage';
 import { TaskFormPage } from '../pages/TaskFormPage';
+import { isIos } from '../utils/platform';
+
+const IOS_BUNDLE_ID = 'org.reactjs.native.example.MobileTaskManager';
+const ANDROID_APP_ID = 'com.mobiletaskmanager';
 
 export class AuthHelper {
   private readonly loginPage = new LoginPage();
@@ -29,6 +33,13 @@ export class AuthHelper {
 
   async isLoggedIn(): Promise<boolean> {
     return this.homePage.isDisplayed();
+  }
+
+  async restartApp(): Promise<void> {
+    const appId = isIos() ? IOS_BUNDLE_ID : ANDROID_APP_ID;
+
+    await driver.terminateApp(appId);
+    await driver.activateApp(appId);
   }
 
   async resetToLoginScreen(): Promise<void> {

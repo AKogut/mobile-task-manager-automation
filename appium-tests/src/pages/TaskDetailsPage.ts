@@ -153,8 +153,4 @@ export class TaskDetailsPage extends BasePage {
 
     await $(selector).waitForDisplayed({ timeout: 10000 });
   }
-
-  private isIos(): boolean {
-    return browser.capabilities.platformName === 'iOS';
-  }
 }

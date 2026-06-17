@@ -102,13 +102,13 @@ npm run android
 
 ## Development workflow
 
-| Command                | Description                        |
-| ---------------------- | ---------------------------------- |
-| `npm run lint`         | ESLint for app and Appium packages |
-| `npm run typecheck`    | TypeScript strict check            |
-| `npm run format`       | Prettier write                     |
-| `npm run format:check` | Prettier check (CI)                |
-| `npm run app:test`     | Jest unit tests                    |
+| Command                | Description                     |
+| ---------------------- | ------------------------------- |
+| `npm run lint`         | ESLint for the React Native app |
+| `npm run typecheck`    | TypeScript strict check         |
+| `npm run format`       | Prettier write                  |
+| `npm run format:check` | Prettier check (CI)             |
+| `npm run app:test`     | Jest unit tests                 |
 
 **Git hooks** (Husky + lint-staged) run ESLint and Prettier on staged files before each commit.
 
@@ -120,9 +120,18 @@ npm run android
 | iOS XCUITest     | `ios-tests/`     | [README](./ios-tests/README.md)     |
 | Android Espresso | `android-tests/` | [README](./android-tests/README.md) |
 
+The Appium suite runs the same specs on both platforms and produces a separate
+Allure report per platform (locally and on GitHub Pages):
+
 ```bash
-npm run e2e   # WebdriverIO (requires built app + running device)
+cd appium-tests
+yarn install
+yarn test:ios        # or: yarn test:android
+yarn report:open:ios # or: yarn report:open:android
 ```
+
+See the [Appium README](./appium-tests/README.md) for prerequisites, environment
+variables, and the per-platform report layout.
 
 ## Labels
 

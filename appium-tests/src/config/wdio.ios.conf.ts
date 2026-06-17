@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { Capabilities, Options } from '@wdio/types';
 
-import { config as sharedConfig } from './wdio.shared.conf';
+import { createSharedConfig } from './wdio.shared.conf';
 
 type AppiumConfig = Options.Testrunner &
   Capabilities.WithRequestedTestrunnerCapabilities;
@@ -19,8 +19,15 @@ const APP_PATH =
 const WDA_DERIVED_DATA = process.env.WDA_DERIVED_DATA;
 
 export const config: AppiumConfig = {
-  ...sharedConfig,
-  specs: [path.resolve(__dirname, '../tests/**/*.spec.ts')],
+  ...createSharedConfig({
+    platform: 'ios',
+    environment: {
+      Platform: 'iOS',
+      Device: DEVICE_NAME,
+      PlatformVersion: PLATFORM_VERSION,
+      Automation: 'XCUITest',
+    },
+  }),
   port: 4723,
   capabilities: [
     {
@@ -32,16 +39,12 @@ export const config: AppiumConfig = {
       'appium:app': APP_PATH,
       'appium:bundleId': 'org.reactjs.native.example.MobileTaskManager',
       'appium:newCommandTimeout': 300,
-      // Use pre-built WDA when available (set by CI pre-build step) so Appium
-      // skips the 3-10 min cold build and starts WDA immediately.
       ...(WDA_DERIVED_DATA !== undefined
         ? {
             'appium:usePrebuiltWDA': true,
             'appium:derivedDataPath': WDA_DERIVED_DATA,
           }
         : {}),
-      // Give WDA up to 5 min to start (covers slow CI environments).
-      // Cast needed: wdaLaunchTimeout is not in WDIO's Appium type stubs.
       ...({ 'appium:wdaLaunchTimeout': 300000 } as Record<string, unknown>),
     },
   ],

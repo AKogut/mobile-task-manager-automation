@@ -34,6 +34,7 @@ export class TaskHelper {
 
   public async prepareCleanHome(): Promise<void> {
     await this.navigateToHome();
+    await this.homePage.clearSearch();
     await this.homePage.resetFilters();
     await this.deleteAllTasksFromHome();
   }

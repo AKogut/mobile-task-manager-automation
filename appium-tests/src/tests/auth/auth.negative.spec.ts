@@ -87,8 +87,7 @@ describe('Authentication — Negative', () => {
     );
     await browser.waitUntil(async () => loginPage.isAuthErrorVisible());
 
-    await loginPage.tapEmailInput();
-    await loginPage.clearEmailAndType('d');
+    await loginPage.typeEmail('d');
 
     expect(await loginPage.isAuthErrorVisible()).toBe(false);
   });
@@ -101,10 +100,5 @@ describe('Authentication — Negative', () => {
     );
   });
 
-  // TC-AUTH-013 is skipped because the loading indicator (~400 ms) is shorter
-  // than Appium's minimum reliable polling interval on both iOS (XCUITest) and
-  // Android (UIAutomator2 over ADB). Each element lookup round-trip takes
-  // long enough to make the indicator impossible to catch consistently at the
-  // E2E level. This micro-animation is better covered by a component-level test.
   it.skip('TC-AUTH-013 — Loading indicator shown during login request');
 });

@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { Capabilities, Options } from '@wdio/types';
 
-import { config as sharedConfig } from './wdio.shared.conf';
+import { createSharedConfig } from './wdio.shared.conf';
 
 type AppiumConfig = Options.Testrunner &
   Capabilities.WithRequestedTestrunnerCapabilities;
@@ -16,8 +16,14 @@ const APP_PATH =
   );
 
 export const config: AppiumConfig = {
-  ...sharedConfig,
-  specs: [path.resolve(__dirname, '../tests/**/*.spec.ts')],
+  ...createSharedConfig({
+    platform: 'android',
+    environment: {
+      Platform: 'Android',
+      Device: DEVICE_NAME,
+      Automation: 'UiAutomator2',
+    },
+  }),
   port: 4723,
   capabilities: [
     {

@@ -56,15 +56,7 @@ export class LoginPage extends BasePage {
     return this.getText(this.DEMO_CREDENTIALS_PASSWORD);
   }
 
-  public async tapEmailInput(): Promise<void> {
-    await this.tap(this.EMAIL_INPUT);
-  }
-
   public async typeEmail(email: string): Promise<void> {
     await this.typeText(this.EMAIL_INPUT, email);
-  }
-
-  public async clearEmailAndType(text: string): Promise<void> {
-    await this.typeText(this.EMAIL_INPUT, text);
   }
 }
