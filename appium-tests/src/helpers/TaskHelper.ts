@@ -10,6 +10,7 @@ export class TaskHelper {
   private readonly taskFormPage = new TaskFormPage();
 
   public async startSession(): Promise<void> {
+    await this.authHelper.restartApp();
     await browser.waitUntil(
       async () =>
         (await this.loginPage.isDisplayed()) ||

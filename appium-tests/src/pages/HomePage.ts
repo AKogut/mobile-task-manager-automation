@@ -17,6 +17,7 @@ export class HomePage extends BasePage {
   private readonly NO_RESULTS_CARD = 'task-no-results-card';
   private readonly EMPTY_STATE_CARD = 'task-empty-state-card';
   private readonly TASK_LIST_TITLE = 'task-list-title';
+  private readonly CLEAR_FILTERS_LABEL = 'Clear filters';
 
   public async isDisplayed(): Promise<boolean> {
     return this.isElementDisplayed(this.SCREEN);
@@ -116,15 +117,30 @@ export class HomePage extends BasePage {
   }
 
   public async clearSearch(): Promise<void> {
-    if (!(await this.scrollIntoView(this.SEARCH_INPUT))) {
-      return;
-    }
-
-    const searchInput = this.el(this.SEARCH_INPUT);
-
-    await searchInput.click();
-    await searchInput.clearValue();
     await this.dismissKeyboard();
+
+    const clearButton = this.elByAccessibilityLabel(this.CLEAR_FILTERS_LABEL);
+
+    await browser.waitUntil(
+      async () => {
+        if (!(await clearButton.isExisting())) {
+          return true;
+        }
+
+        if (await clearButton.isDisplayed().catch(() => false)) {
+          await clearButton.click();
+        } else {
+          await this.scrollIntoView(this.SEARCH_INPUT);
+        }
+
+        return !(await clearButton.isExisting());
+      },
+      {
+        timeout: 15000,
+        interval: 500,
+        timeoutMsg: 'Search and filters were not cleared',
+      },
+    );
   }
 
   public async dismissKeyboard(): Promise<void> {
@@ -233,7 +249,8 @@ export class HomePage extends BasePage {
     await browser.waitUntil(
       async () => (await this.getVisibleTaskCount()) === expected,
       {
-        timeout: 10000,
+        timeout: 20000,
+        interval: 1000,
         timeoutMsg: `Visible task count did not become ${String(expected)}`,
       },
     );

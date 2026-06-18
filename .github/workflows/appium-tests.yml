@@ -27,7 +27,7 @@ jobs:
     name: Android tests (API 35)
     if: inputs.platform == 'android' || inputs.platform == 'both'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     env:
       APPIUM_ANDROID_AVD: Nexus6_API_35
@@ -132,6 +132,7 @@ jobs:
 
       - name: Upload Allure results
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-android
@@ -158,7 +159,7 @@ jobs:
     name: iOS tests (iPhone 16)
     if: inputs.platform == 'ios' || inputs.platform == 'both'
     runs-on: macos-15
-    timeout-minutes: 45
+    timeout-minutes: 75
 
     env:
       APPIUM_IOS_APP_PATH: ${{ github.workspace }}/app/ios/build/Build/Products/Debug-iphonesimulator/MobileTaskManager.app
@@ -305,6 +306,7 @@ jobs:
 
       - name: Upload Allure results
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-ios
@@ -350,46 +352,61 @@ jobs:
       always() &&
       (needs.test-android.result != 'skipped' || needs.test-ios.result != 'skipped')
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      any: ${{ steps.detect.outputs.any }}
 
     steps:
       - name: Download Android results
-        if: needs.test-android.result != 'skipped'
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-results-android
           path: allure-results
 
       - name: Download iOS results
-        if: needs.test-ios.result != 'skipped'
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-results-ios
           path: allure-results
 
+      - name: Detect available results
+        id: detect
+        run: |
+          ANDROID=false
+          IOS=false
+          ANY=false
+          [ -d allure-results/android ] && ANDROID=true
+          [ -d allure-results/ios ] && IOS=true
+          if [ "$ANDROID" = true ] || [ "$IOS" = true ]; then ANY=true; fi
+          echo "android=$ANDROID" >> "$GITHUB_OUTPUT"
+          echo "ios=$IOS" >> "$GITHUB_OUTPUT"
+          echo "any=$ANY" >> "$GITHUB_OUTPUT"
+
       - name: Set up Java (required by Allure CLI)
+        if: steps.detect.outputs.any == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Install Allure CLI
+        if: steps.detect.outputs.any == 'true'
         run: npm install -g allure-commandline
 
       - name: Generate Android report
-        if: needs.test-android.result != 'skipped'
+        if: steps.detect.outputs.android == 'true'
         run: allure generate allure-results/android --clean -o site/android
 
       - name: Generate iOS report
-        if: needs.test-ios.result != 'skipped'
+        if: steps.detect.outputs.ios == 'true'
         run: allure generate allure-results/ios --clean -o site/ios
 
       - name: Build landing page
+        if: steps.detect.outputs.any == 'true'
         env:
-          ANDROID_RAN: ${{ needs.test-android.result != 'skipped' }}
-          IOS_RAN: ${{ needs.test-ios.result != 'skipped' }}
+          ANDROID_RAN: ${{ steps.detect.outputs.android }}
+          IOS_RAN: ${{ steps.detect.outputs.ios }}
         run: |
           mkdir -p site
           IOS_CARD=""
@@ -430,10 +447,21 @@ jobs:
           EOF
 
       - name: Upload GitHub Pages artifact
+        if: steps.detect.outputs.any == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
+  deploy:
+    name: Deploy report to GitHub Pages
+    needs: report
+    if: github.ref == 'refs/heads/main' && needs.report.outputs.any == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4

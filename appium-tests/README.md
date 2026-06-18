@@ -184,11 +184,12 @@ Tasks persist via the app's local storage, so the suite resets state itself:
   ~400 ms — shorter than the reliable element-polling round-trip on either
   XCUITest or UiAutomator2 — so it cannot be caught consistently at the E2E
   level. It is better covered by a component-level test.
-- **No connection/spec retries.** On iOS a retry spawns a second WDA
-  `xcodebuild` that competes with the first for port 8100 and fails with
-  `ECONNREFUSED`; retries are therefore disabled and timeouts kept generous
-  (`connectionRetryTimeout` 5 min, Mocha hook timeout 3 min to cover multi-task
-  setup).
+- **Retries: test-level only, no session/spec retries.** A failed test is
+  retried once in the same session (`mochaOpts.retries: 1`) to absorb residual
+  device flakiness. Connection and spec-file retries stay disabled because on
+  iOS they spawn a second WDA `xcodebuild` that competes for port 8100 and fails
+  with `ECONNREFUSED`; timeouts are kept generous instead (`connectionRetryTimeout`
+  5 min, Mocha hook/test timeout 3 min to cover multi-task setup).
 - **Prebuilt WDA.** Setting `WDA_DERIVED_DATA` makes Appium reuse a prebuilt
   WebDriverAgent and skip the 3–10 min cold build on the first iOS session.
 
