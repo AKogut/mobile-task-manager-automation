@@ -17,7 +17,7 @@ export class HomePage extends BasePage {
   private readonly NO_RESULTS_CARD = 'task-no-results-card';
   private readonly EMPTY_STATE_CARD = 'task-empty-state-card';
   private readonly TASK_LIST_TITLE = 'task-list-title';
-  private readonly SEARCH_PLACEHOLDER = 'Search by title';
+  private readonly CLEAR_FILTERS_LABEL = 'Clear filters';
 
   public async isDisplayed(): Promise<boolean> {
     return this.isElementDisplayed(this.SCREEN);
@@ -121,34 +121,18 @@ export class HomePage extends BasePage {
       return;
     }
 
-    const searchInput = this.el(this.SEARCH_INPUT);
+    if (this.isIos()) {
+      const clearButton = this.elByAccessibilityLabel(this.CLEAR_FILTERS_LABEL);
 
-    await browser.waitUntil(
-      async () => {
-        const value = await this.getInputValue(this.SEARCH_INPUT);
+      if (await clearButton.isExisting()) {
+        await clearButton.click();
+      }
+    } else {
+      const searchInput = this.el(this.SEARCH_INPUT);
 
-        if (value === '' || value === this.SEARCH_PLACEHOLDER) {
-          return true;
-        }
-
-        await searchInput.click();
-
-        if (this.isIos()) {
-          await browser.keys(
-            Array.from({ length: value.length }, () => 'Backspace'),
-          );
-        } else {
-          await searchInput.clearValue();
-        }
-
-        return false;
-      },
-      {
-        timeout: 15000,
-        interval: 500,
-        timeoutMsg: 'Search input was not cleared',
-      },
-    );
+      await searchInput.click();
+      await searchInput.clearValue();
+    }
 
     await this.dismissKeyboard();
   }
