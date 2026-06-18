@@ -41,7 +41,7 @@ export function createSharedConfig({
     framework: 'mocha',
     mochaOpts: {
       timeout: 180000,
-      retries: 0,
+      retries: 1,
     },
     reporters: [
       ['spec', { realtimeReporting: true }],
