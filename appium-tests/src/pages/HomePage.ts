@@ -117,21 +117,6 @@ export class HomePage extends BasePage {
   }
 
   public async clearSearch(): Promise<void> {
-    if (this.isIos()) {
-      await this.clearViaClearFiltersButton();
-      return;
-    }
-
-    if (await this.scrollIntoView(this.SEARCH_INPUT)) {
-      const searchInput = this.el(this.SEARCH_INPUT);
-
-      await searchInput.click();
-      await searchInput.clearValue();
-      await this.dismissKeyboard();
-    }
-  }
-
-  private async clearViaClearFiltersButton(): Promise<void> {
     await this.dismissKeyboard();
 
     const clearButton = this.elByAccessibilityLabel(this.CLEAR_FILTERS_LABEL);
