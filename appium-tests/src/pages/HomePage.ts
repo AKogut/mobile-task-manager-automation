@@ -119,17 +119,21 @@ export class HomePage extends BasePage {
   public async clearSearch(): Promise<void> {
     if (this.isIos()) {
       await this.clearViaClearFiltersButton();
-    } else if (await this.scrollIntoView(this.SEARCH_INPUT)) {
+      return;
+    }
+
+    if (await this.scrollIntoView(this.SEARCH_INPUT)) {
       const searchInput = this.el(this.SEARCH_INPUT);
 
       await searchInput.click();
       await searchInput.clearValue();
+      await this.dismissKeyboard();
     }
-
-    await this.dismissKeyboard();
   }
 
   private async clearViaClearFiltersButton(): Promise<void> {
+    await this.dismissKeyboard();
+
     const clearButton = this.elByAccessibilityLabel(this.CLEAR_FILTERS_LABEL);
 
     await browser.waitUntil(
@@ -138,7 +142,11 @@ export class HomePage extends BasePage {
           return true;
         }
 
-        await clearButton.click();
+        if (await clearButton.isDisplayed().catch(() => false)) {
+          await clearButton.click();
+        } else {
+          await this.scrollIntoView(this.SEARCH_INPUT);
+        }
 
         return !(await clearButton.isExisting());
       },
