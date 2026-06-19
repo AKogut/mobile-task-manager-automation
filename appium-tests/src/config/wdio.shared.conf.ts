@@ -60,7 +60,8 @@ export function createSharedConfig({
     waitforTimeout: 10000,
     connectionRetryTimeout: 300000,
     connectionRetryCount: 0,
-    specFileRetries: 0,
+    specFileRetries: 1,
+    specFileRetriesDeferred: true,
 
     onPrepare: () => {
       writeAllureEnvironment(platform, environment);
