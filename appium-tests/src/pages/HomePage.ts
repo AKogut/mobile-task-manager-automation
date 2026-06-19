@@ -112,6 +112,7 @@ export class HomePage extends BasePage {
   }
 
   public async searchFor(query: string): Promise<void> {
+    await this.dismissKeyboard();
     await this.scrollIntoView(this.SEARCH_INPUT);
     await this.typeText(this.SEARCH_INPUT, query);
   }
