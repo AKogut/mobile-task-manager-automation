@@ -90,8 +90,9 @@ A screenshot is captured automatically on every test failure and stored under
 
 ### Published reports (GitHub Pages)
 
-The `Appium E2E Tests` workflow generates a separate report per platform and
-deploys them to GitHub Pages behind a landing page:
+The `Appium E2E Tests` workflow runs nightly (03:00 UTC) and on demand
+(`workflow_dispatch`, choosing iOS, Android, or both). It generates a separate
+report per platform and deploys them to GitHub Pages behind a landing page:
 
 ```text
 <pages-url>/          # landing page with iOS / Android cards
