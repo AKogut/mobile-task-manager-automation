@@ -38,6 +38,16 @@
                ReferencedContainer = "container:MobileTaskManager.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "06B112B4334A15DC6CF68A87"
+               BuildableName = "MobileTaskManagerUITests.xctest"
+               BlueprintName = "MobileTaskManagerUITests"
+               ReferencedContainer = "container:MobileTaskManager.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
