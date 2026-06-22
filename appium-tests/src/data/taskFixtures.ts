@@ -135,5 +135,5 @@ export const SEARCH_QUERIES = {
   exact: 'Pay rent',
   partial: 'Buy',
   caseInsensitive: 'BUY GROCERIES',
-  noMatch: 'zzznomatch',
+  noMatch: 'zxq7-9418',
 } as const;

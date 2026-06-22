@@ -1,10 +1,21 @@
 import { TestIds } from '@/constants/testIds';
 import { RootNavigator } from '@/navigation/RootNavigator';
+import {
+  bootstrapPersistence,
+  isUITestRun,
+  type RootProps,
+} from '@/testing/uiTestHarness';
+import { useEffect } from 'react';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-function App() {
+function App(props: RootProps) {
   const isDarkMode = useColorScheme() === 'dark';
+  const isUITest = isUITestRun(props);
+
+  useEffect(() => {
+    bootstrapPersistence(isUITest).catch(() => undefined);
+  }, [isUITest]);
 
   return (
     <SafeAreaProvider>

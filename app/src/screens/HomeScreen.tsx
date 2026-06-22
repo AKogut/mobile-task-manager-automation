@@ -661,6 +661,8 @@ export function HomeScreen() {
           <TextInput
             accessibilityLabel="Search tasks"
             autoCapitalize="none"
+            autoComplete="off"
+            autoCorrect={false}
             onChangeText={setSearchQuery}
             placeholder="Search by title"
             placeholderTextColor={palette.muted}
@@ -828,6 +830,7 @@ export function HomeScreen() {
         )
       }
       ListHeaderComponent={header}
+      removeClippedSubviews={false}
       renderItem={renderTask}
       contentContainerStyle={[
         styles.content,
