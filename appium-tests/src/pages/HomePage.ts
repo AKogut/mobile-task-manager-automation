@@ -112,9 +112,29 @@ export class HomePage extends BasePage {
   }
 
   public async searchFor(query: string): Promise<void> {
-    await this.dismissKeyboard();
-    await this.scrollIntoView(this.SEARCH_INPUT);
+    await this.waitForSearchInputReachable();
     await this.typeText(this.SEARCH_INPUT, query);
+  }
+
+  private async waitForSearchInputReachable(): Promise<void> {
+    await browser.waitUntil(
+      async () => {
+        await this.dismissKeyboard();
+
+        if (await this.isElementDisplayed(this.SEARCH_INPUT)) {
+          return true;
+        }
+
+        await this.scrollIntoView(this.SEARCH_INPUT);
+
+        return this.isElementDisplayed(this.SEARCH_INPUT);
+      },
+      {
+        timeout: 15000,
+        interval: 500,
+        timeoutMsg: 'Search input did not become reachable',
+      },
+    );
   }
 
   public async clearSearch(): Promise<void> {
