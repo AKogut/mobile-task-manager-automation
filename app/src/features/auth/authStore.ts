@@ -70,6 +70,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: AUTH_STORAGE_KEY,
+      skipHydration: true,
       storage: createJSONStorage(() => AsyncStorage),
       partialize: state => ({
         user: state.user,

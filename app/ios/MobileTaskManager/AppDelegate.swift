@@ -23,9 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     window = UIWindow(frame: UIScreen.main.bounds)
 
+    let isUITest = ProcessInfo.processInfo.arguments.contains("-uitest")
+
     factory.startReactNative(
       withModuleName: "MobileTaskManager",
       in: window,
+      initialProperties: ["isUITest": isUITest],
       launchOptions: launchOptions
     )
 
