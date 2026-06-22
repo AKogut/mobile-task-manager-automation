@@ -14,7 +14,7 @@ function App(props: RootProps) {
   const isUITest = isUITestRun(props);
 
   useEffect(() => {
-    void bootstrapPersistence(isUITest);
+    bootstrapPersistence(isUITest).catch(() => undefined);
   }, [isUITest]);
 
   return (
