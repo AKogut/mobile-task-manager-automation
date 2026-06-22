@@ -205,9 +205,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-008 — Demo credentials card is visible on Login screen
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -297,9 +297,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-012 — Unauthenticated user lands on Login screen
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Regression | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Regression | Cross-platform, iOS |
 
 **Preconditions**
 

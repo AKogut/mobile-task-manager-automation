@@ -23,6 +23,7 @@ app/android/local.properties
 # Native automation
 ios-tests/**/DerivedData/
 ios-tests/**/.build/
+*.xcresult
 android-tests/**/build/
 android-tests/**/.gradle/
 
