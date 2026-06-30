@@ -90,6 +90,20 @@ xcodebuild test-without-building \
   -derivedDataPath app/ios/build/uitests
 ```
 
+## Reports
+
+A run writes an `.xcresult` bundle (under the derived-data path locally, or to a
+fixed path on CI). Turn it into a standalone HTML report:
+
+```sh
+brew install xcresultparser   # once
+npm run ios:test:report       # writes ios-tests/report.html
+```
+
+`ios:test:report` uses the most recent `.xcresult` from the last run. On CI the
+**XCUITest iOS Tests** workflow generates the same report and uploads it (plus the
+raw `.xcresult`) as a downloadable artifact on every run.
+
 ## Clean, deterministic state
 
 Each test launches the app with the `-uitest` argument:
@@ -109,9 +123,14 @@ in [`app/src/testing/uiTestHarness.ts`](../app/src/testing/uiTestHarness.ts).
 ios-tests/
   README.md
   MobileTaskManagerUITests/
+    TestIds.swift                    # generated from the app's testIds.ts
+    UITestCase.swift                 # base case: launch + reset, failure screenshots
+    LoginScreen.swift                # Login screen object
     MobileTaskManagerUITests.swift   # test cases
   scripts/
-    add_xcuitest_target.rb           # idempotent target + scheme setup
+    add_xcuitest_target.rb           # idempotent target/scheme setup + source sync
+    generate-testids.rb              # TestIds.swift code generation
+    run-tests.sh                     # xcodebuild wrapper
 ```
 
 The Swift sources live in this directory and are referenced by the Xcode target
@@ -121,9 +140,15 @@ launches `MobileTaskManager` as a separate process.
 
 ## Architecture & patterns
 
-- **Screen Objects.** Each screen is wrapped in a Swift `struct` over
-  `XCUIApplication` that exposes intent-revealing actions and queries
-  (`login(email:password:)`, `addTask(...)`); tests never touch raw selectors.
+- **Screen Objects.** Each screen is a Swift `struct` over `XCUIApplication`
+  that exposes element queries and intent-revealing actions
+  (`LoginScreen.login(email:password:)`); tests never touch raw selectors.
+- **`UITestCase` base class.** Handles the shared launch with the `-uitest`
+  reset argument and attaches a screenshot on any failure.
+- **Generated identifiers.** `TestIds.swift` is generated from the app's
+  [`testIds.ts`](../app/src/constants/testIds.ts) (`npm run ios:test:testids`),
+  so selectors never drift from the app. Re-run it whenever the app's testIDs
+  change.
 - **Selectors are `testID`s only.** Elements are resolved by accessibility
   identifier — never by label text, index, or XPath-style traversal.
 - **Explicit waits.** Use `waitForExistence(timeout:)`; never `sleep`.
@@ -133,6 +158,8 @@ launches `MobileTaskManager` as a separate process.
 ## Conventions
 
 - **No inline code comments.** The code is self-documenting; rationale lives here.
+- `TestIds.swift` is generated — do not hand-edit it; run
+  `npm run ios:test:testids` after changing the app's `testID`s.
 - Selectors mirror
   [`app/src/constants/testIds.ts`](../app/src/constants/testIds.ts), the single
   source of truth for element identity shared with the app.
@@ -144,5 +171,5 @@ The **XCUITest iOS Tests** workflow
 runs on a macOS runner nightly and on demand (`workflow_dispatch`), mirroring the
 Appium E2E workflow's cadence. It boots an available iPhone simulator, builds the
 app with its JS bundle embedded (`FORCE_BUNDLING`, so no Metro is needed on CI),
-runs the suite via `npm run ios:test`, and uploads the `.xcresult` bundle as an
-artifact.
+runs the suite via `npm run ios:test`, and uploads the HTML report and the raw
+`.xcresult` bundle as artifacts.

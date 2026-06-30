@@ -11,7 +11,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3CAB598C37AE33C1459F9FE0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		76B316CD819690CD45C5FE6F /* UITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D6F70A59296BB034CD3D3C /* UITestCase.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		81E9295C1517889A7FB589FE /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A890C393A8F3FFA10A3BEFA2 /* LoginScreen.swift */; };
+		8A175257FCE6093F5DDF631C /* TestIds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9373DE576602287B82953739 /* TestIds.swift */; };
 		90E1A3D4C91301897AC0EE55 /* MobileTaskManagerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A088F581E5EEC1C2F4A60370 /* MobileTaskManagerUITests.swift */; };
 		E043C078218E18D660C3EE11 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBCF868A9D4BC84131E57F8 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -38,8 +41,11 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-MobileTaskManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MobileTaskManager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MobileTaskManager/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MobileTaskManager/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9373DE576602287B82953739 /* TestIds.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestIds.swift; sourceTree = "<group>"; };
 		A088F581E5EEC1C2F4A60370 /* MobileTaskManagerUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MobileTaskManagerUITests.swift; sourceTree = "<group>"; };
+		A890C393A8F3FFA10A3BEFA2 /* LoginScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F3D6F70A59296BB034CD3D3C /* UITestCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UITestCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +142,9 @@
 			isa = PBXGroup;
 			children = (
 				A088F581E5EEC1C2F4A60370 /* MobileTaskManagerUITests.swift */,
+				A890C393A8F3FFA10A3BEFA2 /* LoginScreen.swift */,
+				9373DE576602287B82953739 /* TestIds.swift */,
+				F3D6F70A59296BB034CD3D3C /* UITestCase.swift */,
 			);
 			name = MobileTaskManagerUITests;
 			path = "../../ios-tests/MobileTaskManagerUITests";
@@ -324,6 +333,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				90E1A3D4C91301897AC0EE55 /* MobileTaskManagerUITests.swift in Sources */,
+				81E9295C1517889A7FB589FE /* LoginScreen.swift in Sources */,
+				8A175257FCE6093F5DDF631C /* TestIds.swift in Sources */,
+				76B316CD819690CD45C5FE6F /* UITestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
