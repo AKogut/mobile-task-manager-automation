@@ -46,10 +46,8 @@ test_without_building() {
 }
 
 report() {
-  local bundle="$RESULT_BUNDLE"
-  if [ -z "$bundle" ]; then
-    bundle=$(find "$DERIVED_DATA/Logs/Test" -maxdepth 1 -name "*.xcresult" 2>/dev/null | sort | tail -1)
-  fi
+  local bundle
+  bundle=$(find "$DERIVED_DATA/Logs/Test" -maxdepth 1 -name "*.xcresult" 2>/dev/null | sort | tail -1)
   if [ -z "$bundle" ] || [ ! -e "$bundle" ]; then
     echo "No .xcresult found — run the suite first (npm run ios:test)" >&2
     exit 1

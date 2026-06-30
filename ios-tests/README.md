@@ -92,8 +92,8 @@ xcodebuild test-without-building \
 
 ## Reports
 
-A run writes an `.xcresult` bundle (under the derived-data path locally, or to a
-fixed path on CI). Turn it into a standalone HTML report:
+A run writes an `.xcresult` bundle under the derived-data path. Turn the latest
+one into a standalone HTML report:
 
 ```sh
 brew install xcresultparser   # once
