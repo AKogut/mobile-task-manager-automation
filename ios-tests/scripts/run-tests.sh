@@ -8,6 +8,7 @@ DESTINATION="${IOS_TEST_DESTINATION:-platform=iOS Simulator,name=iPhone 17 Pro M
 DERIVED_DATA="$REPO_ROOT/app/ios/build/uitests"
 EMBED_BUNDLE="${IOS_TEST_EMBED_BUNDLE:-NO}"
 RESULT_BUNDLE="${IOS_TEST_RESULT_BUNDLE:-}"
+REPORT_HTML="$REPO_ROOT/ios-tests/report.html"
 
 require_metro() {
   if [ "$EMBED_BUNDLE" = "YES" ]; then
@@ -44,12 +45,30 @@ test_without_building() {
     ${extra[@]+"${extra[@]}"}
 }
 
+report() {
+  local bundle="$RESULT_BUNDLE"
+  if [ -z "$bundle" ]; then
+    bundle=$(find "$DERIVED_DATA/Logs/Test" -maxdepth 1 -name "*.xcresult" 2>/dev/null | sort | tail -1)
+  fi
+  if [ -z "$bundle" ] || [ ! -e "$bundle" ]; then
+    echo "No .xcresult found — run the suite first (npm run ios:test)" >&2
+    exit 1
+  fi
+  if ! command -v xcresultparser >/dev/null 2>&1; then
+    echo "xcresultparser not found — install it: brew install xcresultparser" >&2
+    exit 1
+  fi
+  xcresultparser --output-format html "$bundle" >"$REPORT_HTML"
+  echo "Report written to ios-tests/report.html"
+}
+
 case "${1:-all}" in
   build) build_for_testing ;;
   run) test_without_building ;;
   all) build_for_testing && test_without_building ;;
+  report) report ;;
   *)
-    echo "usage: run-tests.sh [build|run|all]" >&2
+    echo "usage: run-tests.sh [build|run|all|report]" >&2
     exit 1
     ;;
 esac

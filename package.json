@@ -20,9 +20,11 @@
     "app:android": "npm run android --prefix app",
     "app:android:setup": "npm run setup:android && npm run app:android",
     "app:test": "npm run test --prefix app",
+    "ios:test:testids": "cd app && bundle exec ruby ../ios-tests/scripts/generate-testids.rb",
     "ios:test:setup": "cd app && bundle exec ruby ../ios-tests/scripts/add_xcuitest_target.rb",
     "ios:test:build": "ios-tests/scripts/run-tests.sh build",
     "ios:test:run": "ios-tests/scripts/run-tests.sh run",
+    "ios:test:report": "ios-tests/scripts/run-tests.sh report",
     "ios:test": "ios-tests/scripts/run-tests.sh"
   },
   "devDependencies": {
