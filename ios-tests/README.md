@@ -124,8 +124,12 @@ ios-tests/
   README.md
   MobileTaskManagerUITests/
     TestIds.swift                    # generated from the app's testIds.ts
+    XCUIApplication+Element.swift    # element(withId:) lookup helper
     UITestCase.swift                 # base case: launch + reset, failure screenshots
     LoginScreen.swift                # Login screen object
+    HomeScreen.swift                 # Home: task list, search, filters, sort
+    TaskFormScreen.swift             # Add/Edit task form fields
+    TaskDetailsScreen.swift          # Task details actions + delete alert
     MobileTaskManagerUITests.swift   # test cases
   scripts/
     add_xcuitest_target.rb           # idempotent target/scheme setup + source sync

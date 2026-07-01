@@ -99,4 +99,12 @@ enum TestIds {
   static let demoCredentialsTitle = "demo-credentials-title"
   static let demoCredentialsEmail = "demo-credentials-email"
   static let demoCredentialsPassword = "demo-credentials-password"
+
+  static func testIdForFeature(_ index: Int) -> String { "main-feature-row-\(index)" }
+  static func testIdForTask(_ index: Int) -> String { "task-list-item-\(index)" }
+  static func testIdForPriority(_ priority: String) -> String { "task-priority-option-\(priority)" }
+  static func testIdForDueDateOption(_ option: String) -> String { "task-due-date-quick-option-\(option)" }
+  static func testIdForStatusFilter(_ filter: String) -> String { "task-status-filter-button-\(filter)" }
+  static func testIdForPriorityFilter(_ priority: String) -> String { "task-priority-filter-button-\(priority)" }
+  static func testIdForTaskSort(_ sort: String) -> String { "task-sort-button-\(sort)" }
 }
