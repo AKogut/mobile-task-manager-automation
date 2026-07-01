@@ -8,9 +8,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-001 — Create a task with all fields
 
-| Priority | Type  | Platform       |
-| -------- | ----- | -------------- |
-| Critical | Smoke | Cross-platform |
+| Priority | Type  | Platform            |
+| -------- | ----- | ------------------- |
+| Critical | Smoke | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -87,9 +87,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-003 — Newly created task appears in the task list
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 

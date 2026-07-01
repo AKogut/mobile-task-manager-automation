@@ -18,4 +18,23 @@ class UITestCase: XCTestCase {
     }
     app = nil
   }
+
+  @discardableResult
+  func signInToHome(
+    file: StaticString = #filePath,
+    line: UInt = #line,
+  ) -> HomeScreen {
+    LoginScreen(app: app).login(
+      email: DemoCredentials.email,
+      password: DemoCredentials.password,
+    )
+    let home = HomeScreen(app: app)
+    XCTAssertTrue(
+      home.waitForScreen(),
+      "Expected the Home screen after signing in.",
+      file: file,
+      line: line,
+    )
+    return home
+  }
 }

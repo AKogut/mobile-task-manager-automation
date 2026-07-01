@@ -24,6 +24,8 @@ titles, the case id is encoded in the **method name** (`test_TC_AUTH_012_…`).
 | [TC-AUTH-001](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_001_validLoginNavigatesToHome`                 | Valid login navigates to the Home screen            |
 | [TC-AUTH-002](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_002_invalidPasswordShowsError`                 | Wrong password shows the auth error, stays on Login |
 | [TC-AUTH-009](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_009_logoutReturnsToLogin`                      | Logout from Settings returns to the Login screen    |
+| [TC-TASK-001](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_001_createTaskWithAllFields`                   | Create a task with all fields, details screen shown |
+| [TC-TASK-003](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_003_newTaskAppearsInList`                      | A newly created task appears in the Home list       |
 
 ## Prerequisites
 
@@ -137,6 +139,7 @@ ios-tests/
     SettingsScreen.swift             # Settings: account info, logout
     MobileTaskManagerUITests.swift   # login-screen smoke tests
     AuthFlowUITests.swift            # login / logout flow tests
+    TaskCreationUITests.swift        # create-task flow tests
   scripts/
     add_xcuitest_target.rb           # idempotent target/scheme setup + source sync
     generate-testids.rb              # TestIds.swift code generation
