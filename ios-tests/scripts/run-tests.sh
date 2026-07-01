@@ -42,6 +42,8 @@ test_without_building() {
     -scheme "$SCHEME" \
     -destination "$DESTINATION" \
     -derivedDataPath "$DERIVED_DATA" \
+    -retry-tests-on-failure \
+    -test-iterations 3 \
     ${extra[@]+"${extra[@]}"}
 }
 
