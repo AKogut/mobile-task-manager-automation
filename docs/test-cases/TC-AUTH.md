@@ -6,9 +6,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-001 — Successful login with valid credentials
 
-| Priority | Type  | Platform       |
-| -------- | ----- | -------------- |
-| Critical | Smoke | Cross-platform |
+| Priority | Type  | Platform            |
+| -------- | ----- | ------------------- |
+| Critical | Smoke | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -41,9 +41,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-002 — Login fails with incorrect password
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -227,9 +227,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-009 — Successful logout clears session
 
-| Priority | Type  | Platform       |
-| -------- | ----- | -------------- |
-| Critical | Smoke | Cross-platform |
+| Priority | Type  | Platform            |
+| -------- | ----- | ------------------- |
+| Critical | Smoke | Cross-platform, iOS |
 
 **Preconditions**
 

@@ -21,6 +21,9 @@ titles, the case id is encoded in the **method name** (`test_TC_AUTH_012_…`).
 | -------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------- |
 | [TC-AUTH-012](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_012_unauthenticatedUserLandsOnLoginScreen`     | Clean launch lands on Login, Home is not shown      |
 | [TC-AUTH-008](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_008_demoCredentialsCardIsVisibleOnLoginScreen` | Demo credentials card and its `testID`s are exposed |
+| [TC-AUTH-001](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_001_validLoginNavigatesToHome`                 | Valid login navigates to the Home screen            |
+| [TC-AUTH-002](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_002_invalidPasswordShowsError`                 | Wrong password shows the auth error, stays on Login |
+| [TC-AUTH-009](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_009_logoutReturnsToLogin`                      | Logout from Settings returns to the Login screen    |
 
 ## Prerequisites
 
@@ -126,11 +129,14 @@ ios-tests/
     TestIds.swift                    # generated from the app's testIds.ts
     XCUIApplication+Element.swift    # element(withId:) lookup helper
     UITestCase.swift                 # base case: launch + reset, failure screenshots
+    DemoCredentials.swift            # demo login test data
     LoginScreen.swift                # Login screen object
     HomeScreen.swift                 # Home: task list, search, filters, sort
     TaskFormScreen.swift             # Add/Edit task form fields
     TaskDetailsScreen.swift          # Task details actions + delete alert
-    MobileTaskManagerUITests.swift   # test cases
+    SettingsScreen.swift             # Settings: account info, logout
+    MobileTaskManagerUITests.swift   # login-screen smoke tests
+    AuthFlowUITests.swift            # login / logout flow tests
   scripts/
     add_xcuitest_target.rb           # idempotent target/scheme setup + source sync
     generate-testids.rb              # TestIds.swift code generation
