@@ -26,6 +26,8 @@ titles, the case id is encoded in the **method name** (`test_TC_AUTH_012_…`).
 | [TC-AUTH-009](../docs/test-cases/TC-AUTH.md) | `test_TC_AUTH_009_logoutReturnsToLogin`                      | Logout from Settings returns to the Login screen    |
 | [TC-TASK-001](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_001_createTaskWithAllFields`                   | Create a task with all fields, details screen shown |
 | [TC-TASK-003](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_003_newTaskAppearsInList`                      | A newly created task appears in the Home list       |
+| [TC-TASK-020](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_020_editFormIsPrePopulated`                    | The edit form opens pre-populated with task values  |
+| [TC-TASK-021](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_021_editTitleAndSave`                          | Editing the title and saving updates task details   |
 
 ## Prerequisites
 
@@ -130,6 +132,7 @@ ios-tests/
   MobileTaskManagerUITests/
     TestIds.swift                    # generated from the app's testIds.ts
     XCUIApplication+Element.swift    # element(withId:) lookup helper
+    XCUIElement+Text.swift           # robust clear + type + verify helper
     UITestCase.swift                 # base case: launch + reset, failure screenshots
     DemoCredentials.swift            # demo login test data
     LoginScreen.swift                # Login screen object
@@ -140,6 +143,7 @@ ios-tests/
     MobileTaskManagerUITests.swift   # login-screen smoke tests
     AuthFlowUITests.swift            # login / logout flow tests
     TaskCreationUITests.swift        # create-task flow tests
+    TaskEditUITests.swift            # edit-task flow tests
   scripts/
     add_xcuitest_target.rb           # idempotent target/scheme setup + source sync
     generate-testids.rb              # TestIds.swift code generation

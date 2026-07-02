@@ -524,9 +524,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-020 — Edit task form is pre-populated with current values
 
-| Priority | Type  | Platform       |
-| -------- | ----- | -------------- |
-| High     | Smoke | Cross-platform |
+| Priority | Type  | Platform            |
+| -------- | ----- | ------------------- |
+| High     | Smoke | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -552,9 +552,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-021 — Edit task title and save
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
