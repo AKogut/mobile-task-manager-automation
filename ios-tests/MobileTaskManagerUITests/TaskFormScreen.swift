@@ -18,13 +18,23 @@ struct TaskFormScreen {
   }
 
   func setTitle(_ text: String) {
-    titleField.tap()
-    titleField.typeText(text)
+    titleField.replaceText(text)
   }
 
   func setDescription(_ text: String) {
-    descriptionField.tap()
-    descriptionField.typeText(text)
+    descriptionField.replaceText(text)
+  }
+
+  func titleValue() -> String {
+    titleField.value as? String ?? ""
+  }
+
+  func descriptionValue() -> String {
+    descriptionField.value as? String ?? ""
+  }
+
+  func dueDateValue() -> String {
+    dueDateField.value as? String ?? ""
   }
 
   func selectPriority(_ value: String) {
