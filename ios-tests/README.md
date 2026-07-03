@@ -28,6 +28,9 @@ titles, the case id is encoded in the **method name** (`test_TC_AUTH_012_…`).
 | [TC-TASK-003](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_003_newTaskAppearsInList`                      | A newly created task appears in the Home list       |
 | [TC-TASK-020](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_020_editFormIsPrePopulated`                    | The edit form opens pre-populated with task values  |
 | [TC-TASK-021](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_021_editTitleAndSave`                          | Editing the title and saving updates task details   |
+| [TC-TASK-017](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_017_deleteShowsConfirmationDialog`             | Delete shows the native confirmation dialog         |
+| [TC-TASK-018](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_018_confirmingDeleteRemovesTask`               | Confirming delete removes the task from the list    |
+| [TC-TASK-019](../docs/test-cases/TC-TASK.md) | `test_TC_TASK_019_cancellingDeletePreservesTask`             | Cancelling delete keeps the task                    |
 
 ## Prerequisites
 
@@ -144,6 +147,7 @@ ios-tests/
     AuthFlowUITests.swift            # login / logout flow tests
     TaskCreationUITests.swift        # create-task flow tests
     TaskEditUITests.swift            # edit-task flow tests
+    TaskDeletionUITests.swift        # delete-task flow tests
   scripts/
     add_xcuitest_target.rb           # idempotent target/scheme setup + source sync
     generate-testids.rb              # TestIds.swift code generation

@@ -23,6 +23,7 @@
 		8A175257FCE6093F5DDF631C /* TestIds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9373DE576602287B82953739 /* TestIds.swift */; };
 		8F1A8E692CAB77EDEB81A567 /* AuthFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B40FA28A286CA520DA5D1A /* AuthFlowUITests.swift */; };
 		90E1A3D4C91301897AC0EE55 /* MobileTaskManagerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A088F581E5EEC1C2F4A60370 /* MobileTaskManagerUITests.swift */; };
+		9432C71FA9B838E072997680 /* TaskDeletionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B212FFF6460A906616B8107 /* TaskDeletionUITests.swift */; };
 		98A4B0D7B65AFD064F43670A /* TaskDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF901D3BCF7890A6FB4288BC /* TaskDetailsScreen.swift */; };
 		AA2BA0D57C20131421360477 /* TaskEditUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE56BD0FE87C5405785FE757 /* TaskEditUITests.swift */; };
 		BA58070F4969C9FB15226EC9 /* XCUIElement+Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8AC977CD68F20691F6A2C4D /* XCUIElement+Text.swift */; };
@@ -57,6 +58,7 @@
 		7ABFB3B3801F3C23406F5C19 /* HomeScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		80C78C010E4C92A5DFD8C7D0 /* SettingsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MobileTaskManager/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8B212FFF6460A906616B8107 /* TaskDeletionUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TaskDeletionUITests.swift; sourceTree = "<group>"; };
 		9373DE576602287B82953739 /* TestIds.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestIds.swift; sourceTree = "<group>"; };
 		A088F581E5EEC1C2F4A60370 /* MobileTaskManagerUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MobileTaskManagerUITests.swift; sourceTree = "<group>"; };
 		A890C393A8F3FFA10A3BEFA2 /* LoginScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				5FE88F662D7030349B4858A2 /* TaskCreationUITests.swift */,
 				EE56BD0FE87C5405785FE757 /* TaskEditUITests.swift */,
 				B8AC977CD68F20691F6A2C4D /* XCUIElement+Text.swift */,
+				8B212FFF6460A906616B8107 /* TaskDeletionUITests.swift */,
 			);
 			name = MobileTaskManagerUITests;
 			path = "../../ios-tests/MobileTaskManagerUITests";
@@ -376,6 +379,7 @@
 				78B9760C72041B325E04A0E9 /* TaskCreationUITests.swift in Sources */,
 				AA2BA0D57C20131421360477 /* TaskEditUITests.swift in Sources */,
 				BA58070F4969C9FB15226EC9 /* XCUIElement+Text.swift in Sources */,
+				9432C71FA9B838E072997680 /* TaskDeletionUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
