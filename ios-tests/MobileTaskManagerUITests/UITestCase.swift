@@ -49,6 +49,23 @@ class UITestCase: XCTestCase {
     quickDate: String = "tomorrow",
   ) -> TaskDetailsScreen {
     let home = signInToHome()
+    return addTaskFromHome(
+      home,
+      title: title,
+      description: description,
+      priority: priority,
+      quickDate: quickDate,
+    )
+  }
+
+  @discardableResult
+  func addTaskFromHome(
+    _ home: HomeScreen,
+    title: String,
+    description: String? = nil,
+    priority: String,
+    quickDate: String = "today",
+  ) -> TaskDetailsScreen {
     home.tapAddTask()
 
     let form = TaskFormScreen(app: app)
@@ -64,4 +81,31 @@ class UITestCase: XCTestCase {
     XCTAssertTrue(details.waitForScreen())
     return details
   }
+
+  @discardableResult
+  func seedTasks(_ specs: [TaskSpec]) -> HomeScreen {
+    let home = signInToHome()
+    for spec in specs {
+      let details = addTaskFromHome(
+        home,
+        title: spec.title,
+        priority: spec.priority,
+        quickDate: spec.quickDate,
+      )
+      if spec.completed {
+        details.tapComplete()
+        XCTAssertTrue(details.waitForStatus("Completed"))
+      }
+      details.tapHome()
+      XCTAssertTrue(home.waitForScreen())
+    }
+    return home
+  }
+}
+
+struct TaskSpec {
+  let title: String
+  let priority: String
+  var quickDate: String = "today"
+  var completed: Bool = false
 }

@@ -18,8 +18,11 @@ struct HomeScreen {
   }
 
   func search(_ query: String) {
-    searchField.tap()
-    searchField.typeText(query)
+    searchField.replaceText(query)
+  }
+
+  func clearSearch() {
+    searchField.replaceText("")
   }
 
   func tapAddTask() {
@@ -30,12 +33,30 @@ struct HomeScreen {
     settingsButton.tap()
   }
 
+  func statusFilter(_ value: String) -> XCUIElement {
+    app.element(withId: TestIds.testIdForStatusFilter(value))
+  }
+
+  func priorityFilter(_ value: String) -> XCUIElement {
+    app.element(withId: TestIds.testIdForPriorityFilter(value))
+  }
+
   func selectStatusFilter(_ value: String) {
-    app.element(withId: TestIds.testIdForStatusFilter(value)).tap()
+    selectSegment(statusFilter(value))
   }
 
   func selectPriorityFilter(_ value: String) {
-    app.element(withId: TestIds.testIdForPriorityFilter(value)).tap()
+    selectSegment(priorityFilter(value))
+  }
+
+  private func selectSegment(_ element: XCUIElement) {
+    _ = element.waitForExistence(timeout: 10)
+    for _ in 0..<5 {
+      if element.isSelected {
+        return
+      }
+      element.tap()
+    }
   }
 
   func selectSort(_ value: String) {
@@ -54,12 +75,45 @@ struct HomeScreen {
     app.element(withId: "\(TestIds.taskToggleButton)-\(index)")
   }
 
+  func taskMetadata(at index: Int) -> XCUIElement {
+    app.element(withId: "\(TestIds.taskItemMetadata)-\(index)")
+  }
+
+  func toggleTask(at index: Int) {
+    toggle(at: index).tap()
+  }
+
   func openTask(at index: Int) {
     taskRow(at: index).tap()
   }
 
+  @discardableResult
+  func waitForTaskCompleted(at index: Int, completed: Bool, timeout: TimeInterval = 10) -> Bool {
+    let deadline = Date().addingTimeInterval(timeout)
+    while Date() < deadline {
+      let metadata = taskMetadata(at: index).label
+      if metadata.contains("Completed") == completed {
+        return true
+      }
+      usleep(300_000)
+    }
+    return false
+  }
+
   func isTaskVisible(titled title: String) -> Bool {
     app.staticTexts[title].exists
+  }
+
+  func visibleTaskTitles(maxItems: Int = 20) -> [String] {
+    var titles: [String] = []
+    for index in 0..<maxItems {
+      let element = taskTitle(at: index)
+      guard element.exists else {
+        break
+      }
+      titles.append(element.label)
+    }
+    return titles
   }
 
   func visibleTaskCount() -> Int {
@@ -69,5 +123,33 @@ struct HomeScreen {
     }
     let digits = label[range].prefix { $0.isNumber }
     return Int(digits) ?? 0
+  }
+
+  @discardableResult
+  func waitForVisibleTaskCount(_ expected: Int, timeout: TimeInterval = 20) -> Bool {
+    let deadline = Date().addingTimeInterval(timeout)
+    while Date() < deadline {
+      if visibleTaskCount() == expected {
+        return true
+      }
+      usleep(400_000)
+    }
+    return visibleTaskCount() == expected
+  }
+
+  func isNoResultsCardVisible() -> Bool {
+    noResultsCard.exists
+  }
+
+  func isEmptyStateVisible() -> Bool {
+    emptyStateCard.exists
+  }
+
+  func activeFiltersCountText() -> String {
+    activeFiltersCount.label
+  }
+
+  func isActiveFiltersBadgeVisible() -> Bool {
+    activeFiltersCount.exists
   }
 }
