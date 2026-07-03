@@ -20,55 +20,55 @@ titles, the case id is encoded in the **method name** (`test_TC_AUTH_012_…`).
 The suite mirrors the Appium E2E suite case-for-case (auth, task CRUD, complete/
 reopen, search, and filters).
 
-| Test case                                        | XCUITest method                                              | Verifies                                              |
-| ------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------- |
-| [TC-AUTH-001](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_001_validLoginNavigatesToHome`                 | Valid login navigates to the Home screen              |
-| [TC-AUTH-002](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_002_invalidPasswordShowsError`                 | Wrong password shows the auth error, stays on Login   |
-| [TC-AUTH-003](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_003_unregisteredEmailShowsError`               | Unregistered email shows the auth error               |
-| [TC-AUTH-004](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_004_emptyEmailIsBlocked`                       | Empty email is blocked with a validation error        |
-| [TC-AUTH-005](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_005_emptyPasswordIsBlocked`                    | Empty password is blocked with a validation error     |
-| [TC-AUTH-006](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_006_invalidEmailFormatIsBlocked`               | Invalid email format is blocked                       |
-| [TC-AUTH-007](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_007_errorBannerClearsOnEdit`                   | Error banner clears once an input is edited           |
-| [TC-AUTH-008](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_008_demoCredentialsCardIsVisibleOnLoginScreen` | Demo credentials card and its `testID`s are exposed   |
-| [TC-AUTH-009](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_009_logoutReturnsToLogin`                      | Logout from Settings returns to the Login screen      |
-| [TC-AUTH-010](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_010_settingsShowsAccountInfo`                  | Settings shows the demo account name and email        |
-| [TC-AUTH-011](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_011_sessionPersistsAfterRestart`               | A logged-in session persists across an app restart    |
-| [TC-AUTH-012](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_012_unauthenticatedUserLandsOnLoginScreen`     | Clean launch lands on Login, Home is not shown        |
-| [TC-TASK-001](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_001_createTaskWithAllFields`                   | Create a task with all fields, details screen shown   |
-| [TC-TASK-002](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_002_createTaskWithMinimumRequiredFields`       | Create a task with the minimum required fields        |
-| [TC-TASK-003](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_003_newTaskAppearsInList`                      | A newly created task appears in the Home list         |
-| [TC-TASK-004](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_004_creationBlockedWhenTitleIsEmpty`           | Creation is blocked when the title is empty           |
-| [TC-TASK-005](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_005_creationBlockedWhenTitleExceeds80Characters` | Creation is blocked for an over-long title          |
-| [TC-TASK-006](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_006_creationBlockedWhenNoDueDate`              | Creation is blocked when no due date is selected      |
-| [TC-TASK-007](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_007_quickSelectTodaySetsDueDate`              | Quick select "Today" sets the due date                |
-| [TC-TASK-008](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_008_quickSelectTomorrowSetsDueDate`           | Quick select "Tomorrow" sets the due date             |
-| [TC-TASK-009](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_009_quickSelectNextWeekSetsDueDate`          | Quick select "Next week" sets the due date            |
-| [TC-TASK-013](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_013_completeTaskFromDetails`                  | Completing a task from details updates status/button  |
-| [TC-TASK-014](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_014_reopenTaskFromDetails`                   | Reopening a task from details updates status/button   |
-| [TC-TASK-015](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_015_completeTaskViaListCheckbox`            | Completing a task via the list checkbox               |
-| [TC-TASK-016](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_016_reopenTaskViaListCheckbox`             | Reopening a task via the list checkbox                |
-| [TC-TASK-017](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_017_deleteShowsConfirmationDialog`             | Delete shows the native confirmation dialog           |
-| [TC-TASK-018](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_018_confirmingDeleteRemovesTask`               | Confirming delete removes the task from the list      |
-| [TC-TASK-019](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_019_cancellingDeletePreservesTask`             | Cancelling delete keeps the task                      |
-| [TC-TASK-020](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_020_editFormIsPrePopulated`                    | The edit form opens pre-populated with task values    |
-| [TC-TASK-021](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_021_editTitleAndSave`                          | Editing the title and saving updates task details     |
-| [TC-TASK-022](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_022_editPriorityAndSave`                      | Editing the priority and saving updates details       |
-| [TC-TASK-023](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_023_editDescriptionAndSave`                  | Editing the description and saving updates details     |
-| [TC-TASK-024](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_024_editedTaskReflectsInList`               | An edited task reflects its new title in the list     |
-| [TC-TASK-025](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_025_editBlockedWhenTitleCleared`           | Editing is blocked when the title is cleared          |
-| [TC-SEARCH-001](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_001_exactTitleMatch`                      | Search by exact title returns the matching task       |
-| [TC-SEARCH-002](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_002_partialTitleMatch`                    | Search by partial title returns matching tasks        |
-| [TC-SEARCH-003](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_003_caseInsensitive`                      | Search is case-insensitive                            |
-| [TC-SEARCH-004](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_004_noMatchesShowsNoResultsCard`          | No matches shows the no-results card                  |
-| [TC-SEARCH-005](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_005_clearingSearchRestoresList`           | Clearing the search restores the full list            |
-| [TC-SEARCH-006](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_006_searchWithActiveStatusFilter`         | Search combines with an active status filter          |
-| [TC-FILTER-001](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_001_statusOpenShowsOnlyOpenTasks`         | Status filter "Open" shows only open tasks            |
-| [TC-FILTER-002](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_002_statusDoneShowsOnlyCompletedTasks`    | Status filter "Done" shows only completed tasks       |
-| [TC-FILTER-003](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_003_statusAllShowsAllTasks`               | Status filter "All" shows all tasks                   |
-| [TC-FILTER-004](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_004_statusDoneWithNoCompletedShowsNoResultsCard` | "Done" with no completed tasks shows no-results |
-| [TC-FILTER-005](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_005_priorityHighShowsOnlyHighTasks`       | Priority filter "High" shows only high tasks          |
-| [TC-FILTER-006](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_006_priorityMediumShowsOnlyMediumTasks`   | Priority filter "Medium" shows only medium tasks      |
-| [TC-FILTER-007](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_007_priorityLowShowsOnlyLowTasks`         | Priority filter "Low" shows only low tasks            |
+| Test case                                        | XCUITest method                                                  | Verifies                                             |
+| ------------------------------------------------ | ---------------------------------------------------------------- | ---------------------------------------------------- |
+| [TC-AUTH-001](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_001_validLoginNavigatesToHome`                     | Valid login navigates to the Home screen             |
+| [TC-AUTH-002](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_002_invalidPasswordShowsError`                     | Wrong password shows the auth error, stays on Login  |
+| [TC-AUTH-003](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_003_unregisteredEmailShowsError`                   | Unregistered email shows the auth error              |
+| [TC-AUTH-004](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_004_emptyEmailIsBlocked`                           | Empty email is blocked with a validation error       |
+| [TC-AUTH-005](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_005_emptyPasswordIsBlocked`                        | Empty password is blocked with a validation error    |
+| [TC-AUTH-006](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_006_invalidEmailFormatIsBlocked`                   | Invalid email format is blocked                      |
+| [TC-AUTH-007](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_007_errorBannerClearsOnEdit`                       | Error banner clears once an input is edited          |
+| [TC-AUTH-008](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_008_demoCredentialsCardIsVisibleOnLoginScreen`     | Demo credentials card and its `testID`s are exposed  |
+| [TC-AUTH-009](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_009_logoutReturnsToLogin`                          | Logout from Settings returns to the Login screen     |
+| [TC-AUTH-010](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_010_settingsShowsAccountInfo`                      | Settings shows the demo account name and email       |
+| [TC-AUTH-011](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_011_sessionPersistsAfterRestart`                   | A logged-in session persists across an app restart   |
+| [TC-AUTH-012](../docs/test-cases/TC-AUTH.md)     | `test_TC_AUTH_012_unauthenticatedUserLandsOnLoginScreen`         | Clean launch lands on Login, Home is not shown       |
+| [TC-TASK-001](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_001_createTaskWithAllFields`                       | Create a task with all fields, details screen shown  |
+| [TC-TASK-002](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_002_createTaskWithMinimumRequiredFields`           | Create a task with the minimum required fields       |
+| [TC-TASK-003](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_003_newTaskAppearsInList`                          | A newly created task appears in the Home list        |
+| [TC-TASK-004](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_004_creationBlockedWhenTitleIsEmpty`               | Creation is blocked when the title is empty          |
+| [TC-TASK-005](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_005_creationBlockedWhenTitleExceeds80Characters`   | Creation is blocked for an over-long title           |
+| [TC-TASK-006](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_006_creationBlockedWhenNoDueDate`                  | Creation is blocked when no due date is selected     |
+| [TC-TASK-007](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_007_quickSelectTodaySetsDueDate`                   | Quick select "Today" sets the due date               |
+| [TC-TASK-008](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_008_quickSelectTomorrowSetsDueDate`                | Quick select "Tomorrow" sets the due date            |
+| [TC-TASK-009](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_009_quickSelectNextWeekSetsDueDate`                | Quick select "Next week" sets the due date           |
+| [TC-TASK-013](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_013_completeTaskFromDetails`                       | Completing a task from details updates status/button |
+| [TC-TASK-014](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_014_reopenTaskFromDetails`                         | Reopening a task from details updates status/button  |
+| [TC-TASK-015](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_015_completeTaskViaListCheckbox`                   | Completing a task via the list checkbox              |
+| [TC-TASK-016](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_016_reopenTaskViaListCheckbox`                     | Reopening a task via the list checkbox               |
+| [TC-TASK-017](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_017_deleteShowsConfirmationDialog`                 | Delete shows the native confirmation dialog          |
+| [TC-TASK-018](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_018_confirmingDeleteRemovesTask`                   | Confirming delete removes the task from the list     |
+| [TC-TASK-019](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_019_cancellingDeletePreservesTask`                 | Cancelling delete keeps the task                     |
+| [TC-TASK-020](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_020_editFormIsPrePopulated`                        | The edit form opens pre-populated with task values   |
+| [TC-TASK-021](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_021_editTitleAndSave`                              | Editing the title and saving updates task details    |
+| [TC-TASK-022](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_022_editPriorityAndSave`                           | Editing the priority and saving updates details      |
+| [TC-TASK-023](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_023_editDescriptionAndSave`                        | Editing the description and saving updates details   |
+| [TC-TASK-024](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_024_editedTaskReflectsInList`                      | An edited task reflects its new title in the list    |
+| [TC-TASK-025](../docs/test-cases/TC-TASK.md)     | `test_TC_TASK_025_editBlockedWhenTitleCleared`                   | Editing is blocked when the title is cleared         |
+| [TC-SEARCH-001](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_001_exactTitleMatch`                             | Search by exact title returns the matching task      |
+| [TC-SEARCH-002](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_002_partialTitleMatch`                           | Search by partial title returns matching tasks       |
+| [TC-SEARCH-003](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_003_caseInsensitive`                             | Search is case-insensitive                           |
+| [TC-SEARCH-004](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_004_noMatchesShowsNoResultsCard`                 | No matches shows the no-results card                 |
+| [TC-SEARCH-005](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_005_clearingSearchRestoresList`                  | Clearing the search restores the full list           |
+| [TC-SEARCH-006](../docs/test-cases/TC-SEARCH.md) | `test_TC_SEARCH_006_searchWithActiveStatusFilter`                | Search combines with an active status filter         |
+| [TC-FILTER-001](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_001_statusOpenShowsOnlyOpenTasks`                | Status filter "Open" shows only open tasks           |
+| [TC-FILTER-002](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_002_statusDoneShowsOnlyCompletedTasks`           | Status filter "Done" shows only completed tasks      |
+| [TC-FILTER-003](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_003_statusAllShowsAllTasks`                      | Status filter "All" shows all tasks                  |
+| [TC-FILTER-004](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_004_statusDoneWithNoCompletedShowsNoResultsCard` | "Done" with no completed tasks shows no-results      |
+| [TC-FILTER-005](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_005_priorityHighShowsOnlyHighTasks`              | Priority filter "High" shows only high tasks         |
+| [TC-FILTER-006](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_006_priorityMediumShowsOnlyMediumTasks`          | Priority filter "Medium" shows only medium tasks     |
+| [TC-FILTER-007](../docs/test-cases/TC-FILTER.md) | `test_TC_FILTER_007_priorityLowShowsOnlyLowTasks`                | Priority filter "Low" shows only low tasks           |
 
 ### Intentionally not automated on iOS
 
@@ -303,10 +303,21 @@ launches `MobileTaskManager` as a separate process.
 
 ## Continuous integration
 
-The **XCUITest iOS Tests** workflow
-([`.github/workflows/xcuitest-tests.yml`](../.github/workflows/xcuitest-tests.yml))
-runs on a macOS runner nightly and on demand (`workflow_dispatch`), mirroring the
-Appium E2E workflow's cadence. It boots an available iPhone simulator, builds the
-app with its JS bundle embedded (`FORCE_BUNDLING`, so no Metro is needed on CI),
-runs the suite via `npm run ios:test`, and uploads the HTML report and the raw
-`.xcresult` bundle as artifacts.
+The suite runs as one job of the repository-wide
+[**Nightly E2E**](../.github/workflows/nightly-e2e.yml) orchestrator, which drives
+every suite (Appium iOS, Appium Android, XCUITest) on a shared schedule and
+publishes a single combined
+[**live report**](https://akogut.github.io/mobile-task-manager-automation/) to
+GitHub Pages — the XCUITest results appear under the
+[Native iOS](https://akogut.github.io/mobile-task-manager-automation/ios-native/)
+card.
+
+The XCUITest logic is a reusable workflow
+([`.github/workflows/xcuitest-suite.yml`](../.github/workflows/xcuitest-suite.yml),
+`workflow_call`), also exposed as a thin on-demand caller
+([`.github/workflows/xcuitest-tests.yml`](../.github/workflows/xcuitest-tests.yml),
+`workflow_dispatch`). It boots an available iPhone simulator, builds the app with
+its JS bundle embedded (`FORCE_BUNDLING`, so no Metro is needed on CI), runs the
+suite via `npm run ios:test`, and uploads the HTML report and the raw `.xcresult`
+bundle as artifacts. Only the nightly orchestrator publishes Pages, so on-demand
+runs never clobber the shared report.
