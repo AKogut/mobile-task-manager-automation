@@ -448,9 +448,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-017 — Delete task shows confirmation dialog
 
-| Priority | Type  | Platform       |
-| -------- | ----- | -------------- |
-| Critical | Smoke | Cross-platform |
+| Priority | Type  | Platform            |
+| -------- | ----- | ------------------- |
+| Critical | Smoke | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -472,9 +472,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-018 — Confirming delete removes the task
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Critical | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Critical | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -497,9 +497,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-019 — Cancelling delete preserves the task
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 

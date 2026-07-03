@@ -1,25 +1,6 @@
 import XCTest
 
 final class TaskEditUITests: UITestCase {
-  @discardableResult
-  private func createSampleTask() -> TaskDetailsScreen {
-    let home = signInToHome()
-    home.tapAddTask()
-
-    let form = TaskFormScreen(app: app)
-    XCTAssertTrue(form.waitForScreen())
-    form.fillAndSubmit(
-      title: "Buy groceries",
-      description: "Milk, eggs, and bread",
-      priority: "high",
-      quickDate: "tomorrow",
-    )
-
-    let details = TaskDetailsScreen(app: app)
-    XCTAssertTrue(details.waitForScreen())
-    return details
-  }
-
   func test_TC_TASK_020_editFormIsPrePopulated() {
     let details = createSampleTask()
     details.tapEdit()

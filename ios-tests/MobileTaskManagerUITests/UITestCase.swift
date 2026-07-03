@@ -37,4 +37,28 @@ class UITestCase: XCTestCase {
     )
     return home
   }
+
+  @discardableResult
+  func createSampleTask(
+    title: String = "Buy groceries",
+    description: String = "Milk, eggs, and bread",
+    priority: String = "high",
+    quickDate: String = "tomorrow",
+  ) -> TaskDetailsScreen {
+    let home = signInToHome()
+    home.tapAddTask()
+
+    let form = TaskFormScreen(app: app)
+    XCTAssertTrue(form.waitForScreen())
+    form.fillAndSubmit(
+      title: title,
+      description: description,
+      priority: priority,
+      quickDate: quickDate,
+    )
+
+    let details = TaskDetailsScreen(app: app)
+    XCTAssertTrue(details.waitForScreen())
+    return details
+  }
 }

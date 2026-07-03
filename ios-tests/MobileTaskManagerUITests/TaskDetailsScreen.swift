@@ -30,17 +30,35 @@ struct TaskDetailsScreen {
     homeButton.tap()
   }
 
+  var deleteAlert: XCUIElement {
+    app.alerts["Delete task?"]
+  }
+
+  var confirmDeleteButton: XCUIElement {
+    deleteAlert.buttons["Delete"]
+  }
+
+  var cancelDeleteButton: XCUIElement {
+    deleteAlert.buttons["Cancel"]
+  }
+
   func tapDelete() {
     deleteButton.tap()
   }
 
-  func confirmDelete() {
+  @discardableResult
+  func openDeleteDialog(timeout: TimeInterval = 10) -> Bool {
     tapDelete()
-    app.alerts.buttons["Delete"].tap()
+    return deleteAlert.waitForExistence(timeout: timeout)
+  }
+
+  func confirmDelete() {
+    _ = openDeleteDialog()
+    confirmDeleteButton.tap()
   }
 
   func cancelDelete() {
-    tapDelete()
-    app.alerts.buttons["Cancel"].tap()
+    _ = openDeleteDialog()
+    cancelDeleteButton.tap()
   }
 }
