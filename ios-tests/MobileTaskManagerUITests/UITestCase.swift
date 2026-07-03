@@ -10,6 +10,12 @@ class UITestCase: XCTestCase {
     app.launch()
   }
 
+  func relaunchAuthenticated() {
+    app.terminate()
+    app.launchArguments = ["-uitest", "-uitest-authed"]
+    app.launch()
+  }
+
   override func tearDownWithError() throws {
     if let testRun, testRun.failureCount > 0 {
       let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
@@ -24,10 +30,7 @@ class UITestCase: XCTestCase {
     file: StaticString = #filePath,
     line: UInt = #line,
   ) -> HomeScreen {
-    LoginScreen(app: app).login(
-      email: DemoCredentials.email,
-      password: DemoCredentials.password,
-    )
+    relaunchAuthenticated()
     let home = HomeScreen(app: app)
     XCTAssertTrue(
       home.waitForScreen(),

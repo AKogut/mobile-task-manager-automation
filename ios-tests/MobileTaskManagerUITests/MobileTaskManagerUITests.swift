@@ -13,7 +13,7 @@ final class MobileTaskManagerUITests: UITestCase {
       "testID login-email-input should map to an accessibility identifier.",
     )
     XCTAssertFalse(
-      app.descendants(matching: .any)[TestIds.mainScreen].exists,
+      app.element(withId: TestIds.mainScreen).exists,
       "The home screen must not be shown to an unauthenticated user.",
     )
   }
