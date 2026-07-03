@@ -1,0 +1,95 @@
+name: XCUITest suite (reusable)
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  xcuitest:
+    name: XCUITest (iOS Simulator)
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: true
+          working-directory: app
+
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Install CocoaPods dependencies
+        working-directory: app/ios
+        run: bundle exec pod install
+
+      - name: Add XCUITest target
+        run: npm run ios:test:setup
+
+      - name: Select and boot iOS simulator
+        run: |
+          SIM_UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          chosen = ''
+          for runtime, devices in data['devices'].items():
+              if 'iOS' not in runtime:
+                  continue
+              for device in devices:
+                  if device.get('isAvailable') and device['name'].startswith('iPhone') and not chosen:
+                      chosen = device['udid']
+          print(chosen)
+          ")
+          if [ -z "$SIM_UDID" ]; then
+            echo 'No available iPhone simulator found' >&2
+            exit 1
+          fi
+          echo "SIM_UDID=$SIM_UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$SIM_UDID" || true
+          xcrun simctl bootstatus "$SIM_UDID" -b
+
+      - name: Run XCUITest suite
+        env:
+          IOS_TEST_DESTINATION: platform=iOS Simulator,id=${{ env.SIM_UDID }}
+          IOS_TEST_EMBED_BUNDLE: 'YES'
+        run: npm run ios:test
+
+      - name: Generate HTML report
+        if: always()
+        continue-on-error: true
+        run: |
+          brew install xcresultparser
+          npm run ios:test:report
+
+      - name: Upload HTML report
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v5
+        with:
+          name: xcuitest-report
+          path: ios-tests/report.html
+          retention-days: 7
+
+      - name: Upload xcresult bundle
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v5
+        with:
+          name: xcuitest-xcresult
+          path: app/ios/build/uitests/Logs/Test/*.xcresult
+          retention-days: 7
