@@ -127,6 +127,72 @@ hydration, so every test starts from the login screen with no leftover data — 
 in-test navigation or teardown is needed to reset state. The app-side hook lives
 in [`app/src/testing/uiTestHarness.ts`](../app/src/testing/uiTestHarness.ts).
 
+### Seeded authenticated session
+
+Tests that exercise task CRUD start from the Home screen, not from the login
+form. Driving the login UI on every one of those tests is slow and — on CI
+simulators — the single flakiest step (see Troubleshooting). Instead they launch
+with an extra argument:
+
+```swift
+app.launchArguments = ["-uitest", "-uitest-authed"]
+```
+
+`-uitest-authed` tells the app-side harness to seed the demo user's session
+directly into the auth store after storage is cleared, so the app boots straight
+into an authenticated state. `UITestCase.signInToHome()` (and therefore
+`createSampleTask()`) relaunches the app with this argument rather than typing
+credentials. The real login flow is still exercised end-to-end — but only where
+that is the behavior under test, in `AuthFlowUITests`, which continues to type
+credentials into the login form.
+
+## Troubleshooting
+
+**"Multiple matching elements found" when resolving a `testID`.**
+Some `testID`s legitimately appear twice in a single screen — for example
+`task-add-button` renders both in the Home header and in the empty-state
+"Create first task" call to action. A plain `descendants(matching: .any)[id]`
+query throws when it matches more than one element. `XCUIApplication.element(withId:)`
+resolves this with `.firstMatch` (the same semantics WebdriverIO uses in the
+Appium suite), which is why all screen objects go through that helper instead of
+raw queries.
+
+**Login typing drops characters on CI simulators.**
+`typeText` occasionally loses characters on a cold CI simulator, producing the
+wrong credentials, a failed auth, and a Home screen that never appears. The
+tell-tale sign is that `TC-AUTH-002` (wrong password) passes while
+`TC-AUTH-001` fails — any dropped character still counts as an incorrect
+password, but a valid login needs the exact string. `LoginScreen` mitigates this
+by entering text through `XCUIElement.replaceText`, which clears the field,
+types, verifies the field value (length only, for masked fields), and retries up
+to three times. CRUD tests avoid the login form altogether via the seeded
+session described above.
+
+**A test fails intermittently.**
+`run-tests.sh` runs `xcodebuild` with `-retry-tests-on-failure -test-iterations 3`,
+Xcode's built-in retry mechanism for flaky UI tests, so a single transient
+failure is retried automatically. The exit code is the source of truth: it is `0`
+only if every test ultimately passes.
+
+**The verbose `xcodebuild` log looks truncated or misleading.**
+The streamed log is buffered and unreliable to read live. Trust the process exit
+code, and grep the completed log for `Executed N tests, with 0 failures` and
+`TEST EXECUTE SUCCEEDED`.
+
+**`xcresultparser` errors ("root ID is missing") or produces no report.**
+The parser is finicky about newer Xcode `.xcresult` formats and about bundles
+written with `-resultBundlePath`. `run-tests.sh report` builds the report from
+the `.xcresult` under the derived-data `Logs/Test` directory; on CI the report
+step is `continue-on-error` so a parser hiccup never fails the run. The raw
+`.xcresult` is always uploaded as an artifact.
+
+**Tests can't launch the app / hang on a blank screen.**
+The Debug build loads its JS bundle from Metro. Make sure Metro is running
+(`npm run app:start`) and that `curl -s localhost:8081/status` returns
+`packager-status:running` before starting a run. `run-tests.sh` checks this and
+fails fast with a clear message when Metro is unreachable (unless
+`IOS_TEST_EMBED_BUNDLE=YES`, the CI path, which embeds the bundle instead).
+
 ## Project structure
 
 ```text
@@ -165,7 +231,9 @@ launches `MobileTaskManager` as a separate process.
   that exposes element queries and intent-revealing actions
   (`LoginScreen.login(email:password:)`); tests never touch raw selectors.
 - **`UITestCase` base class.** Handles the shared launch with the `-uitest`
-  reset argument and attaches a screenshot on any failure.
+  reset argument and attaches a screenshot on any failure. Its
+  `signInToHome()` / `createSampleTask()` helpers relaunch with the
+  `-uitest-authed` seeded-session argument so CRUD tests bypass the login UI.
 - **Generated identifiers.** `TestIds.swift` is generated from the app's
   [`testIds.ts`](../app/src/constants/testIds.ts) (`npm run ios:test:testids`),
   so selectors never drift from the app. Re-run it whenever the app's testIDs
