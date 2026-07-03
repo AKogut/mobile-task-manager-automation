@@ -22,6 +22,19 @@ struct TaskDetailsScreen {
     completeButton.tap()
   }
 
+  func completeButtonText() -> String {
+    completeButton.label.lowercased().contains("incomplete")
+      ? "Reopen task"
+      : "Complete task"
+  }
+
+  @discardableResult
+  func waitForStatus(_ expected: String, timeout: TimeInterval = 10) -> Bool {
+    let predicate = NSPredicate(format: "label == %@", expected)
+    let expectation = XCTNSPredicateExpectation(predicate: predicate, object: statusText)
+    return XCTWaiter().wait(for: [expectation], timeout: timeout) == .completed
+  }
+
   func tapEdit() {
     editButton.tap()
   }

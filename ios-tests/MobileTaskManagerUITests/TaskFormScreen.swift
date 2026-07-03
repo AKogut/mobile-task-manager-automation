@@ -41,6 +41,24 @@ struct TaskFormScreen {
     app.element(withId: TestIds.testIdForPriority(value)).tap()
   }
 
+  func isPrioritySelected(_ value: String) -> Bool {
+    app.element(withId: TestIds.testIdForPriority(value)).isSelected
+  }
+
+  func isTitleErrorVisible(timeout: TimeInterval = 5) -> Bool {
+    guard titleError.waitForExistence(timeout: timeout) else {
+      return false
+    }
+    return !titleError.label.isEmpty
+  }
+
+  func isDueDateErrorVisible(timeout: TimeInterval = 5) -> Bool {
+    guard dueDateError.waitForExistence(timeout: timeout) else {
+      return false
+    }
+    return !dueDateError.label.isEmpty
+  }
+
   func selectQuickDate(_ option: String) {
     app.element(withId: TestIds.testIdForDueDateOption(option)).tap()
   }

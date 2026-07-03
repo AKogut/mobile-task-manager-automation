@@ -74,9 +74,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-003 — Login fails with unregistered email
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -104,9 +104,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-004 — Login blocked with empty email field
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -128,9 +128,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-005 — Login blocked with empty password field
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -152,9 +152,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-006 — Login blocked with invalid email format
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -183,9 +183,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-007 — Error banner disappears when user edits an input
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -251,9 +251,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-010 — Settings screen displays correct account info
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -274,9 +274,9 @@ Login, logout, session persistence, and form validation.
 
 ### TC-AUTH-011 — Session persists after app restart
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Regression | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Regression | Cross-platform, iOS |
 
 **Preconditions**
 

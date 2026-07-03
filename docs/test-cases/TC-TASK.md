@@ -49,9 +49,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-002 — Create a task with minimum required fields
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -123,9 +123,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-004 — Task creation blocked when title is empty
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -150,9 +150,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-005 — Task creation blocked when title exceeds 80 characters
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -182,9 +182,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-006 — Task creation blocked when no due date is selected
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -209,9 +209,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-007 — Quick select "Today" sets due date to current date
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -232,9 +232,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-008 — Quick select "Tomorrow" sets due date to tomorrow
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -255,9 +255,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-009 — Quick select "Next week" sets due date 7 days ahead
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -349,9 +349,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-013 — Complete a task from Task Details
 
-| Priority | Type  | Platform       |
-| -------- | ----- | -------------- |
-| Critical | Smoke | Cross-platform |
+| Priority | Type  | Platform            |
+| -------- | ----- | ------------------- |
+| Critical | Smoke | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -374,9 +374,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-014 — Reopen a completed task from Task Details
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -399,9 +399,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-015 — Complete a task via checkbox on the task list
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -423,9 +423,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-016 — Reopen a completed task via checkbox on the task list
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -583,9 +583,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-022 — Edit task priority and save
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -607,9 +607,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-023 — Edit task description and save
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -636,9 +636,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-024 — Edited task reflects changes in the task list
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| High     | Regression | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| High     | Regression | Cross-platform, iOS |
 
 **Preconditions**
 
@@ -663,9 +663,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-025 — Edit task blocked when title is cleared
 
-| Priority | Type       | Platform       |
-| -------- | ---------- | -------------- |
-| Medium   | Functional | Cross-platform |
+| Priority | Type       | Platform            |
+| -------- | ---------- | ------------------- |
+| Medium   | Functional | Cross-platform, iOS |
 
 **Preconditions**
 
