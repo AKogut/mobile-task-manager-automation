@@ -3,6 +3,8 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D22.11.0-339933?logo=node.js&logoColor=white)](./.nvmrc)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61DAFB?logo=react&logoColor=black)](./app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./app/tsconfig.json)
+[![Nightly E2E](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml/badge.svg)](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml)
+[![E2E report](https://img.shields.io/badge/E2E%20report-live-8A2BE2?logo=githubpages&logoColor=white)](https://akogut.github.io/mobile-task-manager-automation/)
 
 Portfolio-grade **React Native** task manager for **iOS** and **Android**, paired with **cross-platform** and **native** mobile test automation and a **CI/CD** pipeline.
 
@@ -114,24 +116,55 @@ npm run android
 
 ## Test automation
 
-| Suite            | Path             | Docs                                |
-| ---------------- | ---------------- | ----------------------------------- |
-| Appium E2E       | `appium-tests/`  | [README](./appium-tests/README.md)  |
-| iOS XCUITest     | `ios-tests/`     | [README](./ios-tests/README.md)     |
-| Android Espresso | `android-tests/` | [README](./android-tests/README.md) |
+Three suites cover the same product behavior from complementary angles — one
+cross-platform driver plus a native suite per platform — all traced back to the
+shared [test cases](./docs/test-cases/):
 
-The Appium suite runs the same specs on both platforms and produces a separate
-Allure report per platform (locally and on GitHub Pages):
+| Suite          | Stack                    | Path             | Docs                                |
+| -------------- | ------------------------ | ---------------- | ----------------------------------- |
+| Cross-platform | Appium 2 + WebdriverIO 9 | `appium-tests/`  | [README](./appium-tests/README.md)  |
+| iOS native     | Swift + XCUITest         | `ios-tests/`     | [README](./ios-tests/README.md)     |
+| Android native | Kotlin + Espresso        | `android-tests/` | [README](./android-tests/README.md) |
+
+The iOS XCUITest suite mirrors the Appium coverage case-for-case (auth, task
+CRUD, complete/reopen, search, and filters), so the same behavior is validated
+through both a WebDriver driver and the native XCTest runtime.
+
+### Combined report
+
+A single [**Nightly E2E**](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml)
+workflow orchestrates every suite and publishes one combined
+[**live report**](https://akogut.github.io/mobile-task-manager-automation/) to
+GitHub Pages, with a card per driver:
+
+- [Appium iOS](https://akogut.github.io/mobile-task-manager-automation/ios/) — Allure
+- [Appium Android](https://akogut.github.io/mobile-task-manager-automation/android/) — Allure
+- [Native iOS](https://akogut.github.io/mobile-task-manager-automation/ios-native/) — XCUITest
+
+The suite workflows are reusable (`workflow_call`) and can also be dispatched
+on demand; only the nightly orchestrator publishes Pages, so per-suite runs
+never clobber the shared site.
+
+### Run locally
 
 ```bash
+# Cross-platform (Appium)
 cd appium-tests
 yarn install
 yarn test:ios        # or: yarn test:android
 yarn report:open:ios # or: yarn report:open:android
 ```
 
-See the [Appium README](./appium-tests/README.md) for prerequisites, environment
-variables, and the per-platform report layout.
+```bash
+# iOS native (XCUITest) — Metro must be running
+npm run app:start
+npm run ios:test         # build + run on the iOS Simulator
+npm run ios:test:report  # HTML report → ios-tests/report.html
+```
+
+See the [Appium README](./appium-tests/README.md) and
+[iOS README](./ios-tests/README.md) for prerequisites, environment variables,
+and report layout.
 
 ## Labels
 
