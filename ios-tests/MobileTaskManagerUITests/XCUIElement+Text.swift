@@ -7,12 +7,8 @@ extension XCUIElement {
     for attempt in 1...4 {
       tap()
       clearText()
-      if attempt <= 2 {
-        typeText(text)
-      } else {
-        for character in text {
-          typeText(String(character))
-        }
+      for character in text {
+        typeText(String(character))
       }
 
       if hasEntered(text, masked: masked) || attempt == 4 {
