@@ -9,8 +9,8 @@ permissions:
 jobs:
   xcuitest:
     name: XCUITest (iOS Simulator)
-    runs-on: macos-15
-    timeout-minutes: 60
+    runs-on: macos-26
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
@@ -46,14 +46,26 @@ jobs:
           SIM_UDID=$(xcrun simctl list devices available -j | python3 -c "
           import sys, json
           data = json.load(sys.stdin)
-          chosen = ''
+          iphones = []
           for runtime, devices in data['devices'].items():
               if 'iOS' not in runtime:
                   continue
               for device in devices:
-                  if device.get('isAvailable') and device['name'].startswith('iPhone') and not chosen:
-                      chosen = device['udid']
-          print(chosen)
+                  if device.get('isAvailable') and device['name'].startswith('iPhone'):
+                      iphones.append(device)
+
+          def rank(device):
+              name = device['name']
+              if name == 'iPhone 17 Pro Max':
+                  return 0
+              if name.endswith('Pro Max'):
+                  return 1
+              if name.endswith('Pro'):
+                  return 2
+              return 3
+
+          iphones.sort(key=rank)
+          print(iphones[0]['udid'] if iphones else '')
           ")
           if [ -z "$SIM_UDID" ]; then
             echo 'No available iPhone simulator found' >&2

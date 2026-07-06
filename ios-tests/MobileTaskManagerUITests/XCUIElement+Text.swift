@@ -4,17 +4,27 @@ extension XCUIElement {
   func replaceText(_ text: String, masked: Bool = false) {
     _ = waitForExistence(timeout: 10)
 
-    for attempt in 1...3 {
+    for attempt in 1...4 {
       tap()
       clearText()
-      typeText(text)
+      if attempt <= 2 {
+        typeText(text)
+      } else {
+        for character in text {
+          typeText(String(character))
+        }
+      }
 
-      let current = (value as? String) ?? ""
-      let entered = masked ? current.count == text.count : current == text
-      if entered || attempt == 3 {
+      if hasEntered(text, masked: masked) || attempt == 4 {
         return
       }
     }
+  }
+
+  private func hasEntered(_ text: String, masked: Bool) -> Bool {
+    let raw = (value as? String) ?? ""
+    let current = raw == placeholderValue ? "" : raw
+    return masked ? current.count == text.count : current == text
   }
 
   private func clearText() {
