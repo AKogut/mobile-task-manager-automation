@@ -180,7 +180,7 @@ jobs:
   deploy:
     name: Deploy combined report to GitHub Pages
     needs: report
-    if: github.ref == 'refs/heads/main' && needs.report.outputs.any == 'true'
+    if: always() && github.ref == 'refs/heads/main' && needs.report.outputs.any == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
