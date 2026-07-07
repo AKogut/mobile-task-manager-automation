@@ -54,11 +54,15 @@ report() {
     echo "No .xcresult found — run the suite first (npm run ios:test)" >&2
     exit 1
   fi
-  if ! command -v xcresultparser >/dev/null 2>&1; then
-    echo "xcresultparser not found — install it: brew install xcresultparser" >&2
+  if ! command -v xchtmlreport >/dev/null 2>&1; then
+    echo "xchtmlreport not found — install it: brew install xctesthtmlreport" >&2
     exit 1
   fi
-  xcresultparser --output-format html "$bundle" >"$REPORT_HTML"
+  local out
+  out=$(mktemp -d)
+  xchtmlreport -o "$out" "$bundle"
+  mv "$out/index.html" "$REPORT_HTML"
+  rm -rf "$out"
   echo "Report written to ios-tests/report.html"
 }
 

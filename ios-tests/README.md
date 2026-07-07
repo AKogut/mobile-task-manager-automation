@@ -148,11 +148,12 @@ xcodebuild test-without-building \
 ## Reports
 
 A run writes an `.xcresult` bundle under the derived-data path. Turn the latest
-one into a standalone HTML report:
+one into a standalone HTML report — a browsable test tree with per-test
+durations, pass/fail filtering, and the captured screenshots:
 
 ```sh
-brew install xcresultparser   # once
-npm run ios:test:report       # writes ios-tests/report.html
+brew install xctesthtmlreport   # once
+npm run ios:test:report         # writes ios-tests/report.html
 ```
 
 `ios:test:report` uses the most recent `.xcresult` from the last run. On CI the
@@ -224,11 +225,10 @@ The streamed log is buffered and unreliable to read live. Trust the process exit
 code, and grep the completed log for `Executed N tests, with 0 failures` and
 `TEST EXECUTE SUCCEEDED`.
 
-**`xcresultparser` errors ("root ID is missing") or produces no report.**
-The parser is finicky about newer Xcode `.xcresult` formats and about bundles
-written with `-resultBundlePath`. `run-tests.sh report` builds the report from
-the `.xcresult` under the derived-data `Logs/Test` directory; on CI the report
-step is `continue-on-error` so a parser hiccup never fails the run. The raw
+**`xchtmlreport` produces no report.**
+`run-tests.sh report` builds the report from the most recent `.xcresult` under
+the derived-data `Logs/Test` directory; on CI the report step is
+`continue-on-error` so a reporting hiccup never fails the run. The raw
 `.xcresult` is always uploaded as an artifact.
 
 **Tests can't launch the app / hang on a blank screen.**

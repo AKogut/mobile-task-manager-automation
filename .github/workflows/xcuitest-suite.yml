@@ -85,7 +85,7 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          brew install xcresultparser
+          brew install xctesthtmlreport
           npm run ios:test:report
 
       - name: Upload HTML report
