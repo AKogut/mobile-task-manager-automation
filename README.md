@@ -163,10 +163,9 @@ npm run ios:test:report  # HTML report → ios-tests/report.html
 ```
 
 ```bash
-# Android native (Espresso) — Metro must be running
-npm run app:start
-adb reverse tcp:8081 tcp:8081  # physical devices only
-npm run android:test           # ./gradlew connectedDebugAndroidTest
+# Android native (Espresso) — emulator only, no Metro needed
+emulator -avd Pixel_9_Pro_15 &
+npm run android:test  # ./gradlew :app:connectedAndroidTest
 ```
 
 See the [Appium README](./appium-tests/README.md),

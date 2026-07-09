@@ -5,6 +5,7 @@ app/vendor/bundle
 app/ios/Pods
 app/android/build
 app/android/.gradle
+.cxx
 coverage
 dist
 build

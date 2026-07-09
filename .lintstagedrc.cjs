@@ -13,5 +13,6 @@ module.exports = {
     `eslint --config eslint.config.mjs --fix --max-warnings 0 ${files.map(f => `"${f}"`).join(' ')}`,
     `prettier --write ${files.map(f => `"${f}"`).join(' ')}`,
   ],
+  'android-tests/**/*.mjs': 'prettier --write',
   '*.{json,md,yml,yaml}': 'prettier --write',
 };

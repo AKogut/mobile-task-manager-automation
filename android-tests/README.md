@@ -12,6 +12,9 @@ android-tests/
     ├── TestIds.kt                  (generated)
     ├── TestIdMatcher.kt
     ├── UiTestSupport.kt
+    ├── DemoCredentials.kt
+    ├── LoginScreen.kt
+    ├── LoginScreenTest.kt
     ├── TestIdMatcherTest.kt
     └── SmokeInstrumentationTest.kt
 ```
@@ -32,32 +35,29 @@ sourceSets {
 
 - JDK 17 and the Android SDK, with `ANDROID_HOME` set
 - App dependencies installed: `npm run setup:android`
-- A connected device or a booted emulator — confirm with `adb devices`
+- A booted emulator — confirm with `adb devices`
 
-The suite builds the **debug** APK, which loads JavaScript from Metro at runtime rather than from a bundled asset. Any test that launches the app therefore needs Metro running.
+The suite targets emulators. No Metro bundler and no `adb reverse` are needed: instrumentation runs against the `uitest` build type, which ships the JavaScript bundle inside the APK.
 
 ### Full run
 
 ```bash
-npm run app:start                       # terminal 1: Metro
-adb reverse tcp:8081 tcp:8081           # physical devices only
-npm run android:test                    # terminal 2
+emulator -avd Pixel_9_Pro_15 &
+npm run android:test
 ```
 
-`npm run android:test` is `./gradlew connectedDebugAndroidTest` from `app/android`.
-
-`SmokeInstrumentationTest` asserts the instrumentation target without launching the app, so it is the one test that passes without Metro.
+`npm run android:test` is `./gradlew :app:connectedAndroidTest` from `app/android`.
 
 ### A single class or test
 
 ```bash
 cd app/android
 
-./gradlew :app:connectedDebugAndroidTest \
-  -Pandroid.testInstrumentationRunnerArguments.class=com.mobiletaskmanager.TestIdMatcherTest
+./gradlew :app:connectedAndroidTest \
+  -Pandroid.testInstrumentationRunnerArguments.class=com.mobiletaskmanager.LoginScreenTest
 
-./gradlew :app:connectedDebugAndroidTest \
-  -Pandroid.testInstrumentationRunnerArguments.class=com.mobiletaskmanager.TestIdMatcherTest#resolvesReactNativeTestIdsOnTheLoginScreen
+./gradlew :app:connectedAndroidTest \
+  -Pandroid.testInstrumentationRunnerArguments.class=com.mobiletaskmanager.LoginScreenTest#TC_AUTH_008_demoCredentialsCardIsVisible
 ```
 
 ### Results
@@ -65,11 +65,29 @@ cd app/android
 Gradle exits non-zero when any test fails, so the exit code is authoritative. Full results land in:
 
 ```text
-app/android/app/build/reports/androidTests/connected/debug/index.html   # HTML report
-app/android/app/build/outputs/androidTest-results/connected/debug/      # JUnit XML + per-test logcat
+app/android/app/build/reports/androidTests/connected/uitest/index.html   # HTML report
+app/android/app/build/outputs/androidTest-results/connected/uitest/      # JUnit XML + per-test logcat
 ```
 
 The per-test logcat files are the fastest way to diagnose a failure — they capture React Native's own output, including the `initialProps` the app was launched with.
+
+## The `uitest` build type
+
+Instrumentation runs against a dedicated build type rather than `debug`:
+
+```groovy
+uitest {
+    initWith debug
+    matchingFallbacks = ["debug"]
+    buildConfigField "boolean", "USE_DEV_SUPPORT", "false"
+}
+```
+
+`MainApplication` passes `BuildConfig.USE_DEV_SUPPORT` to `getDefaultReactHost`, so the app loads `assets/index.android.bundle` instead of connecting to Metro. React Native's Gradle plugin bundles JavaScript for every variant outside `debuggableVariants`, so the `uitest` APK gets the bundle for free.
+
+The variant is still `debuggable`, so instrumentation works as usual. Dropping the dev server also makes the suite roughly 2.5× faster — an app-launching test takes about 1.6 s rather than 5.8 s.
+
+The `debug` build type is untouched: `npm run app:android` still uses Metro and Fast Refresh.
 
 ## Test isolation
 
@@ -130,11 +148,14 @@ npm run android:test:testids
 **`NoActivityResumedException: No activities in stage RESUMED`**
 The device screen is off or locked — an Activity cannot resume behind a dark screen. `launchAppForUiTest()` wakes the device and dismisses the keyguard, so this should only appear if a test launches the app some other way. Confirm with `adb shell dumpsys power | grep mWakefulness`.
 
-**Tests time out waiting for a view, logcat shows `Unable to load script` or `Loading from localhost:8081`**
-Metro is not reachable. Start it with `npm run app:start`, and on a physical device run `adb reverse tcp:8081 tcp:8081`.
+**Tests time out waiting for a view, logcat shows `Loading from localhost:8081`**
+The app was built with dev support on, so it is trying to reach Metro. Check that the run used the `uitest` build type rather than `debug`.
 
 **`npm run lint` fails after an instrumentation run**
 Gradle writes a JavaScript report under `app/android/app/build`. It is excluded in `app/.eslintrc.js`; if a new native build path appears, add it there too.
+
+**`Fatal signal 11 (SIGSEGV)` in thread `mqt_v_js`**
+A native crash on React Native's JavaScript thread. Observed only on a physical Pixel 3 running Android 12, on both build types, roughly once every ten app launches. It has not reproduced on emulators, which are what this suite targets.
 
 **`withContentDescription` finds nothing**
 That is correct behaviour — see [Selecting React Native elements](#selecting-react-native-elements). Use `withTestId`.
@@ -144,4 +165,4 @@ React Native renders some ids twice, such as `task-add-button` in the empty stat
 
 ## Status
 
-Espresso is configured, element lookup by `testID` is verified against the running app, and the launch hook is exercised end to end. Screen objects and the auth, task CRUD, filter, and search flows follow in the **Android automation** milestone.
+Espresso is configured, element lookup by `testID` is verified against the running app, and the Login screen object covers TC-AUTH-006, TC-AUTH-008, and TC-AUTH-012. The remaining screen objects and the auth, task CRUD, filter, and search flows follow in the **Android automation** milestone.

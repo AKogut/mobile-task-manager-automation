@@ -87,11 +87,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: "true"
     }
+    buildFeatures {
+        buildConfig true
+    }
     sourceSets {
         androidTest {
             java.srcDirs += file("$rootDir/../../android-tests/src/androidTest/kotlin")
         }
     }
+    testBuildType "uitest"
     testOptions {
         execution "ANDROIDX_TEST_ORCHESTRATOR"
         animationsDisabled = true
@@ -107,6 +111,14 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            buildConfigField "boolean", "USE_DEV_SUPPORT", "true"
+        }
+        uitest {
+            initWith debug
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ["debug"]
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
+            buildConfigField "boolean", "USE_DEV_SUPPORT", "false"
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -114,6 +126,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            buildConfigField "boolean", "USE_DEV_SUPPORT", "false"
         }
     }
 }

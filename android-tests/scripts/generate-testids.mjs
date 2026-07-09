@@ -15,7 +15,9 @@ const KOTLIN_TYPES = { number: 'Int', string: 'String' };
 
 const contents = readFileSync(SOURCE, 'utf8');
 
-const block = contents.match(/export const TestIds = \{(.+?)\} as const;/s)?.[1];
+const block = contents.match(
+  /export const TestIds = \{(.+?)\} as const;/s,
+)?.[1];
 if (!block) {
   throw new Error(`Could not locate the TestIds object in ${SOURCE}`);
 }
