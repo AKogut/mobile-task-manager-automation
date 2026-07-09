@@ -25,7 +25,8 @@
     "ios:test:build": "ios-tests/scripts/run-tests.sh build",
     "ios:test:run": "ios-tests/scripts/run-tests.sh run",
     "ios:test:report": "ios-tests/scripts/run-tests.sh report",
-    "ios:test": "ios-tests/scripts/run-tests.sh"
+    "ios:test": "ios-tests/scripts/run-tests.sh",
+    "android:test": "cd app/android && JAVA_HOME=\"${JAVA_HOME:-$(/usr/libexec/java_home -v 17 2>/dev/null)}\" ./gradlew connectedDebugAndroidTest"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
