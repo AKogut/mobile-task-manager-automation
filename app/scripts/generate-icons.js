@@ -40,11 +40,11 @@ const IOS_SIZES = [
 const ANDROID_MIPMAP = path.join(ROOT, 'android', 'app', 'src', 'main', 'res');
 
 const ANDROID_SIZES = [
-  { dir: 'mipmap-mdpi',    px: 48 },
-  { dir: 'mipmap-hdpi',    px: 72 },
-  { dir: 'mipmap-xhdpi',  px: 96 },
+  { dir: 'mipmap-mdpi', px: 48 },
+  { dir: 'mipmap-hdpi', px: 72 },
+  { dir: 'mipmap-xhdpi', px: 96 },
   { dir: 'mipmap-xxhdpi', px: 144 },
-  { dir: 'mipmap-xxxhdpi',px: 192 },
+  { dir: 'mipmap-xxxhdpi', px: 192 },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -53,8 +53,8 @@ function circleMask(size) {
   const r = size / 2;
   return Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">` +
-    `<circle cx="${r}" cy="${r}" r="${r}" fill="white"/>` +
-    `</svg>`,
+      `<circle cx="${r}" cy="${r}" r="${r}" fill="white"/>` +
+      `</svg>`,
   );
 }
 
