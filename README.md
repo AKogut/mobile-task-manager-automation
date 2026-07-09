@@ -162,9 +162,17 @@ npm run ios:test         # build + run on the iOS Simulator
 npm run ios:test:report  # HTML report → ios-tests/report.html
 ```
 
-See the [Appium README](./appium-tests/README.md) and
-[iOS README](./ios-tests/README.md) for prerequisites, environment variables,
-and report layout.
+```bash
+# Android native (Espresso) — Metro must be running
+npm run app:start
+adb reverse tcp:8081 tcp:8081  # physical devices only
+npm run android:test           # ./gradlew connectedDebugAndroidTest
+```
+
+See the [Appium README](./appium-tests/README.md),
+[iOS README](./ios-tests/README.md), and
+[Android README](./android-tests/README.md) for prerequisites, environment
+variables, and report layout.
 
 ## Labels
 
