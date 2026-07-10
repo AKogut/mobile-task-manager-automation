@@ -21,12 +21,26 @@ const val UI_TEST_TIMEOUT_MILLIS = 60_000L
 
 private const val POLL_INTERVAL_MILLIS = 100L
 
-fun launchAppForUiTest(): ActivityScenario<MainActivity> {
+private const val EXTRA_UI_TEST = "uitest"
+private const val EXTRA_UI_TEST_AUTHED = "uitest-authed"
+
+fun launchAppForUiTest(): ActivityScenario<MainActivity> = launchApp(authenticated = false)
+
+fun launchHomeForUiTest(): ActivityScenario<MainActivity> {
+  val scenario = launchApp(authenticated = true)
+  HomeScreen.waitForScreen()
+  return scenario
+}
+
+private fun launchApp(authenticated: Boolean): ActivityScenario<MainActivity> {
   wakeDevice()
 
   val intent =
       Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
-          .putExtra("uitest", true)
+          .putExtra(EXTRA_UI_TEST, true)
+  if (authenticated) {
+    intent.putExtra(EXTRA_UI_TEST_AUTHED, true)
+  }
   return ActivityScenario.launch(intent)
 }
 
