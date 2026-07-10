@@ -8,9 +8,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-001 — Create a task with all fields
 
-| Priority | Type  | Platform            |
-| -------- | ----- | ------------------- |
-| Critical | Smoke | Cross-platform, iOS |
+| Priority | Type  | Platform                     |
+| -------- | ----- | ---------------------------- |
+| Critical | Smoke | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -49,9 +49,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-002 — Create a task with minimum required fields
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -87,9 +87,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-003 — Newly created task appears in the task list
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -123,9 +123,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-004 — Task creation blocked when title is empty
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -150,9 +150,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-005 — Task creation blocked when title exceeds 80 characters
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -182,9 +182,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-006 — Task creation blocked when no due date is selected
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -209,9 +209,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-007 — Quick select "Today" sets due date to current date
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -232,9 +232,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-008 — Quick select "Tomorrow" sets due date to tomorrow
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -255,9 +255,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-009 — Quick select "Next week" sets due date 7 days ahead
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 

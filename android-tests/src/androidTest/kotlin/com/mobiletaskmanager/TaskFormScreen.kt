@@ -8,7 +8,6 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import org.hamcrest.Matchers.not
 
 object TaskFormScreen {
 
@@ -51,16 +50,22 @@ object TaskFormScreen {
     onView(withTestId(TestIds.taskDescriptionInput)).check(matches(withText(description)))
   }
 
-  fun assertDueDateNotEmpty() {
-    onView(withTestId(TestIds.taskDueDateInput)).check(matches(not(withText(""))))
+  fun assertDueDateValue(dueDate: String) {
+    onView(withTestId(TestIds.taskDueDateInput)).check(matches(withText(dueDate)))
   }
 
-  fun assertTitleErrorVisible() {
+  fun assertTitleErrorVisible(message: String? = null) {
     waitForTestId(TestIds.taskTitleError).check(matches(isDisplayed()))
+    if (message != null) {
+      onView(withTestId(TestIds.taskTitleError)).check(matches(withText(message)))
+    }
   }
 
-  fun assertDueDateErrorVisible() {
+  fun assertDueDateErrorVisible(message: String? = null) {
     waitForTestId(TestIds.taskDueDateError).check(matches(isDisplayed()))
+    if (message != null) {
+      onView(withTestId(TestIds.taskDueDateError)).check(matches(withText(message)))
+    }
   }
 
   fun fillAndSubmit(
