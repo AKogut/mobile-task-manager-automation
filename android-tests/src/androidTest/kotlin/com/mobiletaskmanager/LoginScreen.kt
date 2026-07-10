@@ -5,6 +5,7 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -49,8 +50,16 @@ object LoginScreen {
     }
   }
 
+  fun assertAuthErrorNotVisible() {
+    onView(withTestId(TestIds.authErrorBanner)).check(doesNotExist())
+  }
+
   fun assertEmailErrorVisible() {
     waitForTestId(TestIds.loginEmailError).check(matches(isDisplayed()))
+  }
+
+  fun assertPasswordErrorVisible() {
+    waitForTestId(TestIds.loginPasswordError).check(matches(isDisplayed()))
   }
 
   fun assertDemoCredentials() {

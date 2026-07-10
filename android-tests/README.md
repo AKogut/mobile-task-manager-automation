@@ -14,6 +14,12 @@ android-tests/
     ├── UiTestSupport.kt
     ├── DemoCredentials.kt
     ├── LoginScreen.kt
+    ├── HomeScreen.kt
+    ├── TaskFormScreen.kt
+    ├── TaskDetailsScreen.kt
+    ├── SettingsScreen.kt
+    ├── TaskFlows.kt
+    ├── AuthFlowTest.kt
     ├── LoginScreenTest.kt
     ├── TestIdMatcherTest.kt
     └── SmokeInstrumentationTest.kt
@@ -141,7 +147,7 @@ npm run android:test:testids
 | `uitest`        | `isUITest`       | Clears persisted auth and task state |
 | `uitest-authed` | `isUITestAuthed` | Starts on Home with the demo session |
 
-`launchAppForUiTest()` passes `uitest`, so every test starts from a clean, logged-out app. The shared harness that consumes these props is `app/src/testing/uiTestHarness.ts`.
+`launchAppForUiTest()` passes `uitest`, so every test starts from a clean, logged-out app. `launchHomeForUiTest()` passes both extras and waits for Home, letting task flows skip the UI login. The shared harness that consumes these props is `app/src/testing/uiTestHarness.ts`.
 
 ## Troubleshooting
 
@@ -161,8 +167,39 @@ A native crash on React Native's JavaScript thread. Observed only on a physical 
 That is correct behaviour — see [Selecting React Native elements](#selecting-react-native-elements). Use `withTestId`.
 
 **A `testID` matches more than one view**
-React Native renders some ids twice, such as `task-add-button` in the empty state. `onView` then throws `AmbiguousViewMatcherException`; narrow the match with `isDisplayed()` or a parent matcher.
+React Native renders some ids twice, such as `task-add-button` in the empty state. `onView` then throws `AmbiguousViewMatcherException`. Narrow the match with `isDisplayed()` and, if both views are visible, with `withContentDescription` on the element's `accessibilityLabel` — the header button is `Add task`, the empty-state call to action is `Add first task`.
+
+Do not reach for `isDescendantOfA` or `hasDescendant`: React Native flattens views, so JSX nesting is not native view nesting. A `uiautomator dump` shows the empty-state call to action as a _sibling_ of `task-empty-state-card`, not a descendant.
+
+**`click()` fails with "does not match one or more of the following constraints"**
+Espresso only clicks views that are at least 90% visible. Task rows sit below the hero cards, so `openTask` and `toggleTask` call `scrollTo()` first.
+
+**A text field is set but the app does not react**
+`replaceText` with the value the field already holds does not fire React Native's `onChangeText`, so state derived from it never updates. Type a genuinely different value, and assert the new value to prove the edit happened.
+
+## Coverage
+
+Authentication is fully covered. `AuthFlowTest` holds the session flows, `LoginScreenTest` the Login screen validation.
+
+| Test case   | Name                                    | Class           |
+| ----------- | --------------------------------------- | --------------- |
+| TC-AUTH-001 | Successful login with valid credentials | AuthFlowTest    |
+| TC-AUTH-002 | Login fails with incorrect password     | AuthFlowTest    |
+| TC-AUTH-003 | Login fails with unregistered email     | AuthFlowTest    |
+| TC-AUTH-004 | Login blocked with empty email field    | LoginScreenTest |
+| TC-AUTH-005 | Login blocked with empty password field | LoginScreenTest |
+| TC-AUTH-006 | Login blocked with invalid email format | LoginScreenTest |
+| TC-AUTH-007 | Error banner disappears on input edit   | LoginScreenTest |
+| TC-AUTH-008 | Demo credentials card is visible        | LoginScreenTest |
+| TC-AUTH-009 | Successful logout clears session        | AuthFlowTest    |
+| TC-AUTH-010 | Settings screen displays account info   | AuthFlowTest    |
+| TC-AUTH-012 | Unauthenticated user lands on Login     | LoginScreenTest |
+
+Two cases are deliberately not automated here:
+
+- **TC-AUTH-011 (session persists after app restart)** — Espresso runs inside the application process, so it cannot stop and relaunch that process; `am force-stop` would kill the test run. Recreating the Activity is not a substitute: the JavaScript stores are module singletons that survive it, so the assertion would pass even if persistence were broken. The Appium suite covers this case, driving the app out of process.
+- **TC-AUTH-013 (loading indicator during login)** — skipped in the Appium suite as well; observing a transient indicator is inherently racy.
 
 ## Status
 
-Espresso is configured, element lookup by `testID` is verified against the running app, and the Login screen object covers TC-AUTH-006, TC-AUTH-008, and TC-AUTH-012. The remaining screen objects and the auth, task CRUD, filter, and search flows follow in the **Android automation** milestone.
+Espresso is configured, element lookup by `testID` is verified against the running app, and the screen objects for Login, Home, the task form, task details, and Settings are in place. Authentication flows are covered. Task CRUD, filter, and search flows follow in the **Android automation** milestone.
