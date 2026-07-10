@@ -26,6 +26,10 @@ object HomeScreen {
     waitForScreen().check(matches(isDisplayed()))
   }
 
+  fun assertNotDisplayed() {
+    onView(withTestId(TestIds.mainScreen)).check(doesNotExist())
+  }
+
   fun tapAddTask() {
     waitForTestId(TestIds.taskAddButton)
     onView(headerAddButton()).perform(click())
