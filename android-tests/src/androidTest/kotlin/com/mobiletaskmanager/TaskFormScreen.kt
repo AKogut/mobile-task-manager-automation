@@ -40,10 +40,6 @@ object TaskFormScreen {
     onView(withTestId(TestIds.taskSubmitButton)).perform(click())
   }
 
-  fun tapBack() {
-    onView(withTestId(TestIds.taskFormBackButton)).perform(click())
-  }
-
   fun assertTitleValue(title: String) {
     onView(withTestId(TestIds.taskTitleInput)).check(matches(withText(title)))
   }

@@ -14,3 +14,15 @@ fun withTestId(testId: String): Matcher<View> =
         description.appendText("with React Native testID: $testId")
       }
     }
+
+fun withTestIdStartingWith(prefix: String): Matcher<View> =
+    object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        val testId = view.getTag(com.facebook.react.R.id.react_test_id) as? String
+        return testId?.startsWith(prefix) == true
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("with React Native testID starting with: $prefix")
+      }
+    }

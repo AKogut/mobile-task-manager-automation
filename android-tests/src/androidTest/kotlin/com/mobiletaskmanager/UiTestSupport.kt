@@ -66,11 +66,55 @@ fun waitForTestIdWithText(
     testId: String,
     text: String,
     timeoutMillis: Long = UI_TEST_TIMEOUT_MILLIS,
+): ViewInteraction = waitForTestIdMatching(testId, withText(text), timeoutMillis)
+
+fun waitForTestIdMatching(
+    testId: String,
+    textMatcher: Matcher<View>,
+    timeoutMillis: Long = UI_TEST_TIMEOUT_MILLIS,
 ): ViewInteraction {
-  val target = allOf(withTestId(testId), withText(text))
+  val target = allOf(withTestId(testId), textMatcher)
   onView(isRoot()).perform(waitForMatch(target, timeoutMillis))
   return onView(target)
 }
+
+fun waitForView(
+    target: Matcher<View>,
+    timeoutMillis: Long = UI_TEST_TIMEOUT_MILLIS,
+): ViewInteraction {
+  onView(isRoot()).perform(waitForMatch(target, timeoutMillis))
+  return onView(target)
+}
+
+fun waitUntilGone(target: Matcher<View>, timeoutMillis: Long = UI_TEST_TIMEOUT_MILLIS) {
+  onView(isRoot()).perform(waitForAbsence(target, timeoutMillis))
+}
+
+private fun waitForAbsence(target: Matcher<View>, timeoutMillis: Long): ViewAction =
+    object : ViewAction {
+      override fun getConstraints(): Matcher<View> = isRoot()
+
+      override fun getDescription(): String = "wait up to $timeoutMillis ms until gone: $target"
+
+      override fun perform(uiController: UiController, view: View) {
+        uiController.loopMainThreadUntilIdle()
+        val deadline = System.currentTimeMillis() + timeoutMillis
+
+        do {
+          val present = TreeIterables.breadthFirstViewTraversal(view).any { target.matches(it) }
+          if (!present) {
+            return
+          }
+          uiController.loopMainThreadForAtLeast(POLL_INTERVAL_MILLIS)
+        } while (System.currentTimeMillis() < deadline)
+
+        throw PerformException.Builder()
+            .withActionDescription(description)
+            .withViewDescription(HumanReadables.describe(view))
+            .withCause(TimeoutException("Still present: $target"))
+            .build()
+      }
+    }
 
 private fun waitForMatch(target: Matcher<View>, timeoutMillis: Long): ViewAction =
     object : ViewAction {

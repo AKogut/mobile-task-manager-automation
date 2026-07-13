@@ -23,6 +23,9 @@ android-tests/
     ├── TaskCreationTest.kt
     ├── TaskEditTest.kt
     ├── TaskDeletionTest.kt
+    ├── TaskCompleteTest.kt
+    ├── TaskFilterTest.kt
+    ├── TaskSearchTest.kt
     ├── LoginScreenTest.kt
     ├── TestIdMatcherTest.kt
     └── SmokeInstrumentationTest.kt
@@ -188,9 +191,20 @@ A green run — even several in a row — does not prove such a race is absent. 
 **Asserting an app view while a dialog is open**
 With a dialog on screen, Espresso's default root is the dialog window, so app views are not found and `NoMatchingViewException` is thrown. Assert app state before opening the dialog, or after dismissing it.
 
+**`isDisplayed()` is the wrong tool for "is this task in the list?"**
+`isDisplayed()` requires the view to be on screen, so a task that is merely scrolled below the fold fails it just as a filtered-out task does. The two states are different and a filter test must tell them apart. Assert presence in the view hierarchy instead, scoped to list rows.
+
+Scoping matters: the hero "Up next" card renders `nextTask.title`, the same string as the row. Matching on the text alone would keep finding a task that the filter had removed from the list. `HomeScreen` therefore matches `withTestIdStartingWith("task-item-title-")` together with the text, so only list rows can satisfy it.
+
 ## Coverage
 
-Authentication and task CRUD are fully covered. `AuthFlowTest` holds the session flows, `LoginScreenTest` the Login screen validation, `TaskCreationTest` the Add Task screen, `TaskEditTest` the Edit Task screen, `TaskDeletionTest` the delete confirmation dialog.
+The suite executes **46 of the 47 cases** that the Appium and XCUITest suites execute, across authentication, task CRUD, completion, filters and search.
+
+| Suite   | Executing cases |
+| ------- | --------------- |
+| Appium  | 47              |
+| iOS     | 47              |
+| Android | 46              |
 
 | Test case   | Name                                           | Class            |
 | ----------- | ---------------------------------------------- | ---------------- |
@@ -212,6 +226,29 @@ Authentication and task CRUD are fully covered. `AuthFlowTest` holds the session
 | TC-TASK-023 | Edit task description and save                 | TaskEditTest     |
 | TC-TASK-024 | Edited task reflects changes in the list       | TaskEditTest     |
 | TC-TASK-025 | Edit blocked when title is cleared             | TaskEditTest     |
+| TC-TASK-013 | Complete a task from Task Details              | TaskCompleteTest |
+| TC-TASK-014 | Reopen a completed task from Task Details      | TaskCompleteTest |
+| TC-TASK-015 | Complete a task via the list checkbox          | TaskCompleteTest |
+| TC-TASK-016 | Reopen a task via the list checkbox            | TaskCompleteTest |
+
+| Test case     | Name                                        | Class          |
+| ------------- | ------------------------------------------- | -------------- |
+| TC-FILTER-001 | Status filter "Open" shows only open tasks  | TaskFilterTest |
+| TC-FILTER-002 | Status filter "Done" shows only completed   | TaskFilterTest |
+| TC-FILTER-003 | Status filter "All" shows all tasks         | TaskFilterTest |
+| TC-FILTER-004 | "Done" with none completed shows no-results | TaskFilterTest |
+| TC-FILTER-005 | Priority filter "High"                      | TaskFilterTest |
+| TC-FILTER-006 | Priority filter "Medium"                    | TaskFilterTest |
+| TC-FILTER-007 | Priority filter "Low"                       | TaskFilterTest |
+
+| Test case     | Name                                         | Class          |
+| ------------- | -------------------------------------------- | -------------- |
+| TC-SEARCH-001 | Search by exact title                        | TaskSearchTest |
+| TC-SEARCH-002 | Search by partial title                      | TaskSearchTest |
+| TC-SEARCH-003 | Search is case-insensitive                   | TaskSearchTest |
+| TC-SEARCH-004 | No matches shows the no-results card         | TaskSearchTest |
+| TC-SEARCH-005 | Clearing search restores the full list       | TaskSearchTest |
+| TC-SEARCH-006 | Search combines with an active status filter | TaskSearchTest |
 
 | Test case   | Name                                    | Class           |
 | ----------- | --------------------------------------- | --------------- |
@@ -234,4 +271,4 @@ Two cases are deliberately not automated here:
 
 ## Status
 
-Espresso is configured, element lookup by `testID` is verified against the running app, and the screen objects for Login, Home, the task form, task details, and Settings are in place. Authentication flows and task CRUD are covered. Task completion, filter, and search flows follow in the **Android automation** milestone.
+The suite is complete. It covers authentication, task CRUD, completion, filters and search — 46 of the 47 cases the Appium and XCUITest suites execute, the exception being TC-AUTH-011, which Espresso cannot reach.

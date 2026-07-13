@@ -6,9 +6,9 @@ Search tasks by title substring.
 
 ### TC-SEARCH-001 — Search by exact title match returns the correct task
 
-| Priority | Type  | Platform            |
-| -------- | ----- | ------------------- |
-| High     | Smoke | Cross-platform, iOS |
+| Priority | Type  | Platform                     |
+| -------- | ----- | ---------------------------- |
+| High     | Smoke | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -37,9 +37,9 @@ Search tasks by title substring.
 
 ### TC-SEARCH-002 — Search by partial title returns matching tasks
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -67,9 +67,9 @@ Search tasks by title substring.
 
 ### TC-SEARCH-003 — Search is case-insensitive
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -96,9 +96,9 @@ Search tasks by title substring.
 
 ### TC-SEARCH-004 — Search with no matches shows no-results card
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -126,9 +126,9 @@ Search tasks by title substring.
 
 ### TC-SEARCH-005 — Clearing the search input restores the full task list
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Regression | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Regression | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -149,9 +149,9 @@ Search tasks by title substring.
 
 ### TC-SEARCH-006 — Search works in combination with an active status filter
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 

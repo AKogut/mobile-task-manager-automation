@@ -349,9 +349,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-013 — Complete a task from Task Details
 
-| Priority | Type  | Platform            |
-| -------- | ----- | ------------------- |
-| Critical | Smoke | Cross-platform, iOS |
+| Priority | Type  | Platform                     |
+| -------- | ----- | ---------------------------- |
+| Critical | Smoke | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -374,9 +374,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-014 — Reopen a completed task from Task Details
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -399,9 +399,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-015 — Complete a task via checkbox on the task list
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -423,9 +423,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-016 — Reopen a completed task via checkbox on the task list
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
