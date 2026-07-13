@@ -7,7 +7,9 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isSelected
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import org.hamcrest.Matchers.not
 
 object TaskFormScreen {
 
@@ -52,6 +54,14 @@ object TaskFormScreen {
 
   fun assertDueDateValue(dueDate: String) {
     onView(withTestId(TestIds.taskDueDateInput)).check(matches(withText(dueDate)))
+  }
+
+  fun assertDueDateNotEmpty() {
+    onView(withTestId(TestIds.taskDueDateInput)).check(matches(not(withText(""))))
+  }
+
+  fun assertPrioritySelected(priority: String) {
+    onView(withTestId(TestIds.testIdForPriority(priority))).check(matches(isSelected()))
   }
 
   fun assertTitleErrorVisible(message: String? = null) {

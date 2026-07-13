@@ -524,9 +524,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-020 — Edit task form is pre-populated with current values
 
-| Priority | Type  | Platform            |
-| -------- | ----- | ------------------- |
-| High     | Smoke | Cross-platform, iOS |
+| Priority | Type  | Platform                     |
+| -------- | ----- | ---------------------------- |
+| High     | Smoke | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -552,9 +552,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-021 — Edit task title and save
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -583,9 +583,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-022 — Edit task priority and save
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -607,9 +607,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-023 — Edit task description and save
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -636,9 +636,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-024 — Edited task reflects changes in the task list
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Regression | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Regression | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -663,9 +663,9 @@ Create, edit, delete, and complete tasks.
 
 ### TC-TASK-025 — Edit task blocked when title is cleared
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 

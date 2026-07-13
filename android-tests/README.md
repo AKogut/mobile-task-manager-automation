@@ -21,6 +21,7 @@ android-tests/
     ├── TaskFlows.kt
     ├── AuthFlowTest.kt
     ├── TaskCreationTest.kt
+    ├── TaskEditTest.kt
     ├── LoginScreenTest.kt
     ├── TestIdMatcherTest.kt
     └── SmokeInstrumentationTest.kt
@@ -180,19 +181,25 @@ Espresso only clicks views that are at least 90% visible. Task rows sit below th
 
 ## Coverage
 
-Authentication and task creation are fully covered. `AuthFlowTest` holds the session flows, `LoginScreenTest` the Login screen validation, `TaskCreationTest` the Add Task screen.
+Authentication, task creation, and task editing are fully covered. `AuthFlowTest` holds the session flows, `LoginScreenTest` the Login screen validation, `TaskCreationTest` the Add Task screen, `TaskEditTest` the Edit Task screen.
 
-| Test case   | Name                                          | Class            |
-| ----------- | --------------------------------------------- | ---------------- |
-| TC-TASK-001 | Create a task with all fields                 | TaskCreationTest |
-| TC-TASK-002 | Create a task with minimum required fields    | TaskCreationTest |
-| TC-TASK-003 | Newly created task appears in the task list   | TaskCreationTest |
-| TC-TASK-004 | Creation blocked when title is empty          | TaskCreationTest |
-| TC-TASK-005 | Creation blocked when title exceeds 80 chars  | TaskCreationTest |
-| TC-TASK-006 | Creation blocked when no due date is selected | TaskCreationTest |
-| TC-TASK-007 | Quick select "Today" sets the current date    | TaskCreationTest |
-| TC-TASK-008 | Quick select "Tomorrow" sets tomorrow         | TaskCreationTest |
-| TC-TASK-009 | Quick select "Next week" sets 7 days ahead    | TaskCreationTest |
+| Test case   | Name                                           | Class            |
+| ----------- | ---------------------------------------------- | ---------------- |
+| TC-TASK-001 | Create a task with all fields                  | TaskCreationTest |
+| TC-TASK-002 | Create a task with minimum required fields     | TaskCreationTest |
+| TC-TASK-003 | Newly created task appears in the task list    | TaskCreationTest |
+| TC-TASK-004 | Creation blocked when title is empty           | TaskCreationTest |
+| TC-TASK-005 | Creation blocked when title exceeds 80 chars   | TaskCreationTest |
+| TC-TASK-006 | Creation blocked when no due date is selected  | TaskCreationTest |
+| TC-TASK-007 | Quick select "Today" sets the current date     | TaskCreationTest |
+| TC-TASK-008 | Quick select "Tomorrow" sets tomorrow          | TaskCreationTest |
+| TC-TASK-009 | Quick select "Next week" sets 7 days ahead     | TaskCreationTest |
+| TC-TASK-020 | Edit form is pre-populated with current values | TaskEditTest     |
+| TC-TASK-021 | Edit task title and save                       | TaskEditTest     |
+| TC-TASK-022 | Edit task priority and save                    | TaskEditTest     |
+| TC-TASK-023 | Edit task description and save                 | TaskEditTest     |
+| TC-TASK-024 | Edited task reflects changes in the list       | TaskEditTest     |
+| TC-TASK-025 | Edit blocked when title is cleared             | TaskEditTest     |
 
 | Test case   | Name                                    | Class           |
 | ----------- | --------------------------------------- | --------------- |
@@ -215,4 +222,4 @@ Two cases are deliberately not automated here:
 
 ## Status
 
-Espresso is configured, element lookup by `testID` is verified against the running app, and the screen objects for Login, Home, the task form, task details, and Settings are in place. Authentication flows and task creation are covered. Task editing, deletion, completion, filter, and search flows follow in the **Android automation** milestone.
+Espresso is configured, element lookup by `testID` is verified against the running app, and the screen objects for Login, Home, the task form, task details, and Settings are in place. Authentication flows, task creation, and task editing are covered. Task deletion, completion, filter, and search flows follow in the **Android automation** milestone.
