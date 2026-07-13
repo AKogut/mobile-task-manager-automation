@@ -305,8 +305,8 @@ launches `MobileTaskManager` as a separate process.
 
 The suite runs as one job of the repository-wide
 [**Nightly E2E**](../.github/workflows/nightly-e2e.yml) orchestrator, which drives
-every suite (Appium iOS, Appium Android, XCUITest) on a shared schedule and
-publishes a single combined
+every suite (Appium iOS, Appium Android, XCUITest, Espresso) on a shared schedule
+and publishes a single combined
 [**live report**](https://akogut.github.io/mobile-task-manager-automation/) to
 GitHub Pages — the XCUITest results appear under the
 [Native iOS](https://akogut.github.io/mobile-task-manager-automation/ios-native/)

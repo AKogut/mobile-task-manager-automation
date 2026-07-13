@@ -18,6 +18,11 @@ on:
         required: false
         default: true
         type: boolean
+      espresso:
+        description: Run native Android Espresso suite
+        required: false
+        default: true
+        type: boolean
   schedule:
     - cron: '0 3 * * *'
 
@@ -49,12 +54,19 @@ jobs:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.xcuitest }}
     uses: ./.github/workflows/xcuitest-suite.yml
 
+  espresso:
+    name: Espresso
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.espresso }}
+    uses: ./.github/workflows/espresso-suite.yml
+
   report:
     name: Aggregate reports
-    needs: [appium, xcuitest]
+    needs: [appium, xcuitest, espresso]
     if: |
       always() &&
-      (needs.appium.result != 'skipped' || needs.xcuitest.result != 'skipped')
+      (needs.appium.result != 'skipped' ||
+       needs.xcuitest.result != 'skipped' ||
+       needs.espresso.result != 'skipped')
     runs-on: ubuntu-latest
     outputs:
       any: ${{ steps.detect.outputs.any }}
@@ -81,20 +93,31 @@ jobs:
           name: xcuitest-report
           path: xcuitest-report
 
+      - name: Download Espresso HTML report
+        continue-on-error: true
+        uses: actions/download-artifact@v5
+        with:
+          name: espresso-report
+          path: espresso-report
+
       - name: Detect available results
         id: detect
         run: |
           ANDROID=false
           IOS=false
           IOS_NATIVE=false
+          ANDROID_NATIVE=false
           ANY=false
           [ -d allure-results/android ] && ANDROID=true
           [ -d allure-results/ios ] && IOS=true
           [ -f xcuitest-report/report.html ] && IOS_NATIVE=true
-          if [ "$ANDROID" = true ] || [ "$IOS" = true ] || [ "$IOS_NATIVE" = true ]; then ANY=true; fi
+          [ -f espresso-report/index.html ] && ANDROID_NATIVE=true
+          if [ "$ANDROID" = true ] || [ "$IOS" = true ] || \
+             [ "$IOS_NATIVE" = true ] || [ "$ANDROID_NATIVE" = true ]; then ANY=true; fi
           echo "android=$ANDROID" >> "$GITHUB_OUTPUT"
           echo "ios=$IOS" >> "$GITHUB_OUTPUT"
           echo "ios_native=$IOS_NATIVE" >> "$GITHUB_OUTPUT"
+          echo "android_native=$ANDROID_NATIVE" >> "$GITHUB_OUTPUT"
           echo "any=$ANY" >> "$GITHUB_OUTPUT"
 
       - name: Set up Java (required by Allure CLI)
@@ -122,17 +145,25 @@ jobs:
           mkdir -p site/ios-native
           cp xcuitest-report/report.html site/ios-native/index.html
 
+      - name: Assemble Espresso report
+        if: steps.detect.outputs.android_native == 'true'
+        run: |
+          mkdir -p site/android-native
+          cp -R espresso-report/. site/android-native/
+
       - name: Build landing page
         if: steps.detect.outputs.any == 'true'
         env:
           ANDROID_RAN: ${{ steps.detect.outputs.android }}
           IOS_RAN: ${{ steps.detect.outputs.ios }}
           IOS_NATIVE_RAN: ${{ steps.detect.outputs.ios_native }}
+          ANDROID_NATIVE_RAN: ${{ steps.detect.outputs.android_native }}
         run: |
           mkdir -p site
           IOS_CARD=""
           ANDROID_CARD=""
           IOS_NATIVE_CARD=""
+          ANDROID_NATIVE_CARD=""
           if [ "$IOS_RAN" = "true" ]; then
             IOS_CARD='<a class="card" href="./ios/"><span class="p">Appium iOS</span><span class="h">XCUITest driver</span></a>'
           fi
@@ -141,6 +172,9 @@ jobs:
           fi
           if [ "$IOS_NATIVE_RAN" = "true" ]; then
             IOS_NATIVE_CARD='<a class="card" href="./ios-native/"><span class="p">Native iOS</span><span class="h">XCUITest</span></a>'
+          fi
+          if [ "$ANDROID_NATIVE_RAN" = "true" ]; then
+            ANDROID_NATIVE_CARD='<a class="card" href="./android-native/"><span class="p">Native Android</span><span class="h">Espresso</span></a>'
           fi
           cat > site/index.html << EOF
           <!doctype html>
@@ -165,7 +199,7 @@ jobs:
               <main>
                 <h1>Mobile Task Manager — E2E Reports</h1>
                 <p>Nightly end-to-end suites</p>
-                <div class="cards">$IOS_CARD$ANDROID_CARD$IOS_NATIVE_CARD</div>
+                <div class="cards">$IOS_CARD$ANDROID_CARD$IOS_NATIVE_CARD$ANDROID_NATIVE_CARD</div>
               </main>
             </body>
           </html>

@@ -140,6 +140,7 @@ GitHub Pages, with a card per driver:
 - [Appium iOS](https://akogut.github.io/mobile-task-manager-automation/ios/) — Allure
 - [Appium Android](https://akogut.github.io/mobile-task-manager-automation/android/) — Allure
 - [Native iOS](https://akogut.github.io/mobile-task-manager-automation/ios-native/) — XCUITest
+- [Native Android](https://akogut.github.io/mobile-task-manager-automation/android-native/) — Espresso
 
 The suite workflows are reusable (`workflow_call`) and can also be dispatched
 on demand; only the nightly orchestrator publishes Pages, so per-suite runs
