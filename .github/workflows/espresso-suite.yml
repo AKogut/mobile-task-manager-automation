@@ -65,7 +65,7 @@ jobs:
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
-          script: cd app/android && ./gradlew :app:connectedAndroidTest --console=plain
+          script: cd app/android && ./gradlew :app:connectedAndroidTest -PreactNativeArchitectures=x86_64 --console=plain
 
       - name: Upload HTML report
         if: always()
