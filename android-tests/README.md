@@ -295,6 +295,14 @@ CI also regenerates `TestIds.kt` and fails if it differs from the committed file
 Without that check, editing `app/src/constants/testIds.ts` without regenerating
 would leave the suite matching stale ids.
 
+The CI run passes `-PreactNativeArchitectures=x86_64`, as the Appium Android job
+does. Without it the APK carries every ABI, and the API 35 `google_apis` image —
+which can translate arm64 — selects `arm64` as the app's primary ABI. The React
+Native `.so` files are then looked for in a directory that holds none, and the app
+dies on launch with `SoLoaderDSONotFoundError: couldn't find DSO to load:
+libreactnative.so` before a single test runs. This cannot reproduce on an Apple
+Silicon machine, whose emulator is arm64 to begin with.
+
 ## Status
 
 The suite is complete. It covers authentication, task CRUD, completion, filters and search — 46 of the 47 cases the Appium and XCUITest suites execute, the exception being TC-AUTH-011, which Espresso cannot reach.
