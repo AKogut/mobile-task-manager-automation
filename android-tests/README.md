@@ -22,6 +22,7 @@ android-tests/
     ├── AuthFlowTest.kt
     ├── TaskCreationTest.kt
     ├── TaskEditTest.kt
+    ├── TaskDeletionTest.kt
     ├── LoginScreenTest.kt
     ├── TestIdMatcherTest.kt
     └── SmokeInstrumentationTest.kt
@@ -179,9 +180,17 @@ Espresso only clicks views that are at least 90% visible. Task rows sit below th
 **A text field is set but the app does not react**
 `replaceText` with the value the field already holds does not fire React Native's `onChangeText`, so state derived from it never updates. Type a genuinely different value, and assert the new value to prove the edit happened.
 
+**An assertion right after a tap reads a stale value**
+Espresso synchronises with the UI thread but knows nothing about the React Native bridge, so a tap that updates JavaScript state has not necessarily re-rendered the view by the time the next line runs. Asserting immediately is a race: it may pass on a fast machine and fail on a slow one. Use `waitForTestIdWithText(testId, expected)` rather than an immediate `check(matches(withText(...)))` whenever the value is a consequence of a tap.
+
+A green run — even several in a row — does not prove such a race is absent. Treat any assert-straight-after-tap as suspect.
+
+**Asserting an app view while a dialog is open**
+With a dialog on screen, Espresso's default root is the dialog window, so app views are not found and `NoMatchingViewException` is thrown. Assert app state before opening the dialog, or after dismissing it.
+
 ## Coverage
 
-Authentication, task creation, and task editing are fully covered. `AuthFlowTest` holds the session flows, `LoginScreenTest` the Login screen validation, `TaskCreationTest` the Add Task screen, `TaskEditTest` the Edit Task screen.
+Authentication and task CRUD are fully covered. `AuthFlowTest` holds the session flows, `LoginScreenTest` the Login screen validation, `TaskCreationTest` the Add Task screen, `TaskEditTest` the Edit Task screen, `TaskDeletionTest` the delete confirmation dialog.
 
 | Test case   | Name                                           | Class            |
 | ----------- | ---------------------------------------------- | ---------------- |
@@ -194,6 +203,9 @@ Authentication, task creation, and task editing are fully covered. `AuthFlowTest
 | TC-TASK-007 | Quick select "Today" sets the current date     | TaskCreationTest |
 | TC-TASK-008 | Quick select "Tomorrow" sets tomorrow          | TaskCreationTest |
 | TC-TASK-009 | Quick select "Next week" sets 7 days ahead     | TaskCreationTest |
+| TC-TASK-017 | Delete shows a confirmation dialog             | TaskDeletionTest |
+| TC-TASK-018 | Confirming delete removes the task             | TaskDeletionTest |
+| TC-TASK-019 | Cancelling delete preserves the task           | TaskDeletionTest |
 | TC-TASK-020 | Edit form is pre-populated with current values | TaskEditTest     |
 | TC-TASK-021 | Edit task title and save                       | TaskEditTest     |
 | TC-TASK-022 | Edit task priority and save                    | TaskEditTest     |
@@ -222,4 +234,4 @@ Two cases are deliberately not automated here:
 
 ## Status
 
-Espresso is configured, element lookup by `testID` is verified against the running app, and the screen objects for Login, Home, the task form, task details, and Settings are in place. Authentication flows, task creation, and task editing are covered. Task deletion, completion, filter, and search flows follow in the **Android automation** milestone.
+Espresso is configured, element lookup by `testID` is verified against the running app, and the screen objects for Login, Home, the task form, task details, and Settings are in place. Authentication flows and task CRUD are covered. Task completion, filter, and search flows follow in the **Android automation** milestone.

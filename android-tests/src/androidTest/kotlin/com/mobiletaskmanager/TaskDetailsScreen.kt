@@ -3,6 +3,7 @@ package com.mobiletaskmanager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -62,6 +63,15 @@ object TaskDetailsScreen {
 
   fun assertDeleteDialogVisible() {
     onView(withText(DELETE_DIALOG_TITLE)).inRoot(isDialog()).check(matches(isDisplayed()))
+  }
+
+  fun assertDeleteDialogOptions() {
+    onView(withText(DELETE_CANCEL)).inRoot(isDialog()).check(matches(isDisplayed()))
+    onView(withText(DELETE_CONFIRM)).inRoot(isDialog()).check(matches(isDisplayed()))
+  }
+
+  fun assertDeleteDialogNotVisible() {
+    onView(withText(DELETE_DIALOG_TITLE)).check(doesNotExist())
   }
 
   fun confirmDelete() {
