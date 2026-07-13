@@ -1,0 +1,16 @@
+name: Espresso Android Tests
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: espresso-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  espresso:
+    name: Espresso
+    uses: ./.github/workflows/espresso-suite.yml

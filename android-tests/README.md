@@ -269,6 +269,32 @@ Two cases are deliberately not automated here:
 - **TC-AUTH-011 (session persists after app restart)** — Espresso runs inside the application process, so it cannot stop and relaunch that process; `am force-stop` would kill the test run. Recreating the Activity is not a substitute: the JavaScript stores are module singletons that survive it, so the assertion would pass even if persistence were broken. The Appium suite covers this case, driving the app out of process.
 - **TC-AUTH-013 (loading indicator during login)** — skipped in the Appium suite as well; observing a transient indicator is inherently racy.
 
+## Continuous integration
+
+The suite runs as one job of the repository-wide
+[**Nightly E2E**](../.github/workflows/nightly-e2e.yml) orchestrator, which drives
+every suite (Appium iOS, Appium Android, XCUITest, Espresso) on a shared schedule
+and publishes a single combined
+[**live report**](https://akogut.github.io/mobile-task-manager-automation/) to
+GitHub Pages — the Espresso results appear under the
+[Native Android](https://akogut.github.io/mobile-task-manager-automation/android-native/)
+card.
+
+The Espresso logic is a reusable workflow
+([`.github/workflows/espresso-suite.yml`](../.github/workflows/espresso-suite.yml),
+`workflow_call`), also exposed as a thin on-demand caller
+([`.github/workflows/espresso-tests.yml`](../.github/workflows/espresso-tests.yml),
+`workflow_dispatch`). It enables KVM, boots an API 35 `google_apis` x86_64
+emulator through `reactivecircus/android-emulator-runner`, runs
+`:app:connectedAndroidTest` against the `uitest` build type — so no Metro is
+needed — and uploads Gradle's HTML report and the JUnit XML with per-test logcat
+as artifacts. Only the nightly orchestrator publishes Pages, so on-demand runs
+never clobber the shared report.
+
+CI also regenerates `TestIds.kt` and fails if it differs from the committed file.
+Without that check, editing `app/src/constants/testIds.ts` without regenerating
+would leave the suite matching stale ids.
+
 ## Status
 
 The suite is complete. It covers authentication, task CRUD, completion, filters and search — 46 of the 47 cases the Appium and XCUITest suites execute, the exception being TC-AUTH-011, which Espresso cannot reach.
