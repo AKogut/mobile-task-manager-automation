@@ -53,7 +53,7 @@ object TaskFormScreen {
   }
 
   fun assertDueDateValue(dueDate: String) {
-    onView(withTestId(TestIds.taskDueDateInput)).check(matches(withText(dueDate)))
+    waitForTestIdWithText(TestIds.taskDueDateInput, dueDate)
   }
 
   fun assertDueDateNotEmpty() {
