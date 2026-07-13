@@ -10,12 +10,14 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import java.util.concurrent.TimeoutException
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 
 const val UI_TEST_TIMEOUT_MILLIS = 60_000L
 
@@ -58,6 +60,16 @@ fun waitForTestId(
 ): ViewInteraction {
   onView(isRoot()).perform(waitForMatch(withTestId(testId), timeoutMillis))
   return onView(withTestId(testId))
+}
+
+fun waitForTestIdWithText(
+    testId: String,
+    text: String,
+    timeoutMillis: Long = UI_TEST_TIMEOUT_MILLIS,
+): ViewInteraction {
+  val target = allOf(withTestId(testId), withText(text))
+  onView(isRoot()).perform(waitForMatch(target, timeoutMillis))
+  return onView(target)
 }
 
 private fun waitForMatch(target: Matcher<View>, timeoutMillis: Long): ViewAction =
