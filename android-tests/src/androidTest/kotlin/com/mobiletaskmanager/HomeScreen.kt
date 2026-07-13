@@ -90,7 +90,8 @@ object HomeScreen {
   }
 
   fun assertEmptyStateVisible() {
-    waitForTestId(TestIds.taskEmptyStateCard).check(matches(isDisplayed()))
+    waitForTestId(TestIds.taskEmptyStateCard)
+    onView(withTestId(TestIds.taskEmptyStateCard)).perform(scrollTo()).check(matches(isDisplayed()))
   }
 
   fun assertEmptyStateNotVisible() {
@@ -98,7 +99,8 @@ object HomeScreen {
   }
 
   fun assertNoResultsVisible() {
-    waitForTestId(TestIds.taskNoResultsCard).check(matches(isDisplayed()))
+    waitForTestId(TestIds.taskNoResultsCard)
+    onView(withTestId(TestIds.taskNoResultsCard)).perform(scrollTo()).check(matches(isDisplayed()))
   }
 
   fun assertNoResultsNotVisible() {
