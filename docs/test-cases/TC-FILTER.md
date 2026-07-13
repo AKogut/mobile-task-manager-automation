@@ -8,9 +8,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-001 — Status filter "Open" shows only open tasks
 
-| Priority | Type  | Platform            |
-| -------- | ----- | ------------------- |
-| High     | Smoke | Cross-platform, iOS |
+| Priority | Type  | Platform                     |
+| -------- | ----- | ---------------------------- |
+| High     | Smoke | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -32,9 +32,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-002 — Status filter "Done" shows only completed tasks
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -56,9 +56,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-003 — Status filter "All" shows all tasks
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -79,9 +79,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-004 — Status filter "Done" with no completed tasks shows no-results card
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| Medium   | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| Medium   | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -105,9 +105,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-005 — Priority filter "High" shows only high priority tasks
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -129,9 +129,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-006 — Priority filter "Medium" shows only medium priority tasks
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 
@@ -152,9 +152,9 @@ Status filter, priority filter, active filter count badge, and clear filters.
 
 ### TC-FILTER-007 — Priority filter "Low" shows only low priority tasks
 
-| Priority | Type       | Platform            |
-| -------- | ---------- | ------------------- |
-| High     | Functional | Cross-platform, iOS |
+| Priority | Type       | Platform                     |
+| -------- | ---------- | ---------------------------- |
+| High     | Functional | Cross-platform, iOS, Android |
 
 **Preconditions**
 

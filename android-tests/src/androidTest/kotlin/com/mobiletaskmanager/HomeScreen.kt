@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.not
 
 object HomeScreen {
 
@@ -40,7 +41,8 @@ object HomeScreen {
   }
 
   fun search(query: String) {
-    onView(withTestId(TestIds.taskSearchInput)).perform(replaceText(query), closeSoftKeyboard())
+    onView(withTestId(TestIds.taskSearchInput))
+        .perform(scrollTo(), replaceText(query), closeSoftKeyboard())
   }
 
   fun clearSearch() {
@@ -48,15 +50,15 @@ object HomeScreen {
   }
 
   fun selectStatusFilter(status: String) {
-    onView(withTestId(TestIds.testIdForStatusFilter(status))).perform(click())
+    onView(withTestId(TestIds.testIdForStatusFilter(status))).perform(scrollTo(), click())
   }
 
   fun selectPriorityFilter(priority: String) {
-    onView(withTestId(TestIds.testIdForPriorityFilter(priority))).perform(click())
+    onView(withTestId(TestIds.testIdForPriorityFilter(priority))).perform(scrollTo(), click())
   }
 
   fun selectSort(sort: String) {
-    onView(withTestId(TestIds.testIdForTaskSort(sort))).perform(click())
+    onView(withTestId(TestIds.testIdForTaskSort(sort))).perform(scrollTo(), click())
   }
 
   fun waitForTask(index: Int): ViewInteraction = waitForTestId(TestIds.testIdForTask(index))
@@ -69,34 +71,52 @@ object HomeScreen {
     onView(withTestId("${TestIds.taskToggleButton}-$index")).perform(scrollTo(), click())
   }
 
+  fun assertSearchValue(query: String) {
+    waitForTestIdWithText(TestIds.taskSearchInput, query)
+  }
+
   fun assertTaskTitle(index: Int, title: String) {
-    onView(withTestId("${TestIds.taskItemTitle}-$index")).check(matches(withText(title)))
+    waitForTestIdWithText("${TestIds.taskItemTitle}-$index", title)
   }
 
   fun assertTaskMetadataContains(index: Int, text: String) {
-    onView(withTestId("${TestIds.taskItemMetadata}-$index"))
-        .check(matches(withText(containsString(text))))
+    waitForTestIdMatching("${TestIds.taskItemMetadata}-$index", withText(containsString(text)))
+  }
+
+  fun assertTaskMetadataDoesNotContain(index: Int, text: String) {
+    waitForTestIdMatching("${TestIds.taskItemMetadata}-$index", not(withText(containsString(text))))
   }
 
   fun assertTaskVisible(title: String) {
-    onView(allOf(withText(title), isDisplayed())).check(matches(isDisplayed()))
+    waitForView(taskListTitle(title))
   }
 
   fun assertTaskNotVisible(title: String) {
-    onView(allOf(withText(title), isDisplayed())).check(doesNotExist())
+    waitUntilGone(taskListTitle(title))
   }
 
   fun assertTaskListSummary(text: String) {
-    onView(withTestId(TestIds.taskListTitle)).check(matches(withText(containsString(text))))
+    waitForTestIdMatching(TestIds.taskListTitle, withText(containsString(text)))
   }
 
   fun assertEmptyStateVisible() {
     waitForTestId(TestIds.taskEmptyStateCard).check(matches(isDisplayed()))
   }
 
+  fun assertEmptyStateNotVisible() {
+    waitUntilGone(withTestId(TestIds.taskEmptyStateCard))
+  }
+
   fun assertNoResultsVisible() {
     waitForTestId(TestIds.taskNoResultsCard).check(matches(isDisplayed()))
   }
+
+  fun assertNoResultsNotVisible() {
+    waitUntilGone(withTestId(TestIds.taskNoResultsCard))
+  }
+
+  private fun taskListTitle(title: String): Matcher<View> =
+      allOf(withTestIdStartingWith("${TestIds.taskItemTitle}-"), withText(title))
 
   private fun headerAddButton(): Matcher<View> =
       allOf(

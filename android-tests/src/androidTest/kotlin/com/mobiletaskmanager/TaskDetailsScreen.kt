@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import org.hamcrest.Matchers.allOf
 
 object TaskDetailsScreen {
 
@@ -33,7 +34,11 @@ object TaskDetailsScreen {
   }
 
   fun assertStatus(status: String) {
-    onView(withTestId(TestIds.taskDetailsStatusText)).check(matches(withText(status)))
+    waitForTestIdWithText(TestIds.taskDetailsStatusText, status)
+  }
+
+  fun assertCompleteButtonLabel(label: String) {
+    waitForView(allOf(withText(label), isDisplayed()))
   }
 
   fun assertPriority(priority: String) {
