@@ -57,12 +57,6 @@ object HomeScreen {
     onView(withTestId(TestIds.testIdForPriorityFilter(priority))).perform(scrollTo(), click())
   }
 
-  fun selectSort(sort: String) {
-    onView(withTestId(TestIds.testIdForTaskSort(sort))).perform(scrollTo(), click())
-  }
-
-  fun waitForTask(index: Int): ViewInteraction = waitForTestId(TestIds.testIdForTask(index))
-
   fun openTask(index: Int) {
     onView(withTestId(TestIds.testIdForTask(index))).perform(scrollTo(), click())
   }
@@ -93,10 +87,6 @@ object HomeScreen {
 
   fun assertTaskNotVisible(title: String) {
     waitUntilGone(taskListTitle(title))
-  }
-
-  fun assertTaskListSummary(text: String) {
-    waitForTestIdMatching(TestIds.taskListTitle, withText(containsString(text)))
   }
 
   fun assertEmptyStateVisible() {
