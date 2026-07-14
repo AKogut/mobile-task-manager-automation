@@ -65,7 +65,22 @@ jobs:
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
-          script: cd app/android && ./gradlew :app:connectedAndroidTest -PreactNativeArchitectures=x86_64 --console=plain
+          script: |
+            echo "Waiting for the package manager..."
+            DEADLINE=$(( $(date +%s) + 120 ))
+            until adb shell pm list packages 2>/dev/null | grep -q "^package:"; do
+              if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+                echo "Package manager still not ready after 120s — continuing anyway"
+                break
+              fi
+              sleep 3
+            done
+
+            adb shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
+            adb shell wm dismiss-keyguard 2>/dev/null || true
+
+            cd app/android
+            ./gradlew :app:connectedAndroidTest -PreactNativeArchitectures=x86_64 --console=plain
 
       - name: Upload HTML report
         if: always()
