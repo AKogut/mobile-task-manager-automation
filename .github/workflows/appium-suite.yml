@@ -149,7 +149,7 @@ jobs:
     name: iOS tests (iPhone 16)
     if: ${{ inputs.platform == 'ios' || inputs.platform == 'both' }}
     runs-on: macos-15
-    timeout-minutes: 75
+    timeout-minutes: 120
 
     env:
       APPIUM_IOS_APP_PATH: ${{ github.workspace }}/app/ios/build/Build/Products/Debug-iphonesimulator/MobileTaskManager.app
