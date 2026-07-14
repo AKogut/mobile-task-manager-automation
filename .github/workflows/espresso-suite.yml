@@ -54,6 +54,34 @@ jobs:
             exit 1
           fi
 
+      - name: Create Espresso runner script
+        run: |
+          cat > /tmp/run-espresso-tests.sh << 'EOF'
+          #!/usr/bin/env bash
+          set -eo pipefail
+
+          echo "Waiting for the package manager..."
+          DEADLINE=$(( $(date +%s) + 120 ))
+          until adb shell pm list packages 2>/dev/null | grep -q "^package:"; do
+            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+              echo "Package manager still not ready after 120s — continuing anyway"
+              break
+            fi
+            sleep 3
+          done
+
+          adb shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
+          adb shell wm dismiss-keyguard 2>/dev/null || true
+
+          adb shell wm size 1280x2856 2>/dev/null || true
+          adb shell wm density 480 2>/dev/null || true
+          echo "Screen: $(adb shell wm size | tail -1) / $(adb shell wm density | tail -1)"
+
+          cd "$GITHUB_WORKSPACE/app/android"
+          ./gradlew :app:connectedAndroidTest -PreactNativeArchitectures=x86_64 --console=plain
+          EOF
+          chmod +x /tmp/run-espresso-tests.sh
+
       - name: Run Espresso suite on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -65,26 +93,7 @@ jobs:
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           disable-animations: true
-          script: |
-            echo "Waiting for the package manager..."
-            DEADLINE=$(( $(date +%s) + 120 ))
-            until adb shell pm list packages 2>/dev/null | grep -q "^package:"; do
-              if [ "$(date +%s)" -ge "$DEADLINE" ]; then
-                echo "Package manager still not ready after 120s — continuing anyway"
-                break
-              fi
-              sleep 3
-            done
-
-            adb shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
-            adb shell wm dismiss-keyguard 2>/dev/null || true
-
-            adb shell wm size 1280x2856 2>/dev/null || true
-            adb shell wm density 480 2>/dev/null || true
-            echo "Screen: $(adb shell wm size | tail -1) $(adb shell wm density | tail -1)"
-
-            cd app/android
-            ./gradlew :app:connectedAndroidTest -PreactNativeArchitectures=x86_64 --console=plain
+          script: bash /tmp/run-espresso-tests.sh
 
       - name: Upload HTML report
         if: always()
