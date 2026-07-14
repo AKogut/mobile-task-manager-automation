@@ -5,6 +5,7 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isSelected
@@ -20,24 +21,25 @@ object TaskFormScreen {
   }
 
   fun setTitle(title: String) {
-    onView(withTestId(TestIds.taskTitleInput)).perform(replaceText(title), closeSoftKeyboard())
+    onView(withTestId(TestIds.taskTitleInput))
+        .perform(scrollTo(), replaceText(title), closeSoftKeyboard())
   }
 
   fun setDescription(description: String) {
     onView(withTestId(TestIds.taskDescriptionInput))
-        .perform(replaceText(description), closeSoftKeyboard())
+        .perform(scrollTo(), replaceText(description), closeSoftKeyboard())
   }
 
   fun selectPriority(priority: String) {
-    onView(withTestId(TestIds.testIdForPriority(priority))).perform(click())
+    onView(withTestId(TestIds.testIdForPriority(priority))).perform(scrollTo(), click())
   }
 
   fun selectQuickDate(option: String) {
-    onView(withTestId(TestIds.testIdForDueDateOption(option))).perform(click())
+    onView(withTestId(TestIds.testIdForDueDateOption(option))).perform(scrollTo(), click())
   }
 
   fun submit() {
-    onView(withTestId(TestIds.taskSubmitButton)).perform(click())
+    onView(withTestId(TestIds.taskSubmitButton)).perform(scrollTo(), click())
   }
 
   fun assertTitleValue(title: String) {

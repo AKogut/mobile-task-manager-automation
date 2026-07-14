@@ -178,7 +178,18 @@ React Native renders some ids twice, such as `task-add-button` in the empty stat
 Do not reach for `isDescendantOfA` or `hasDescendant`: React Native flattens views, so JSX nesting is not native view nesting. A `uiautomator dump` shows the empty-state call to action as a _sibling_ of `task-empty-state-card`, not a descendant.
 
 **`click()` fails with "does not match one or more of the following constraints"**
-Espresso only clicks views that are at least 90% visible. Task rows sit below the hero cards, so `openTask` and `toggleTask` call `scrollTo()` first.
+Espresso only clicks views that are at least 90% visible, and it asserts `isDisplayed()` only for views whose visible rectangle is non-empty. Anything that can sit below the fold must be scrolled to first — the form fields and submit button, the task-details action buttons, the task rows, and the no-results and empty-state cards. The screen objects already do this; keep doing it for anything new.
+
+**Verify on a short screen, not just your own emulator**
+This is the trap that cost a full CI run. Local AVDs such as Pixel 9 are tall — about **952 dp** of height. The CI profile (`Nexus 6`, 1440x2560 at 560 dpi) has about **731 dp**. A suite can be green locally five times in a row and still fail 32 of 49 tests on CI, because the bottom of every screen is off-view there.
+
+Reproduce CI's geometry before opening a pull request:
+
+```bash
+adb shell wm size 1440x2560 && adb shell wm density 560
+npm run android:test
+adb shell wm size reset && adb shell wm density reset
+```
 
 **A text field is set but the app does not react**
 `replaceText` with the value the field already holds does not fire React Native's `onChangeText`, so state derived from it never updates. Type a genuinely different value, and assert the new value to prove the edit happened.

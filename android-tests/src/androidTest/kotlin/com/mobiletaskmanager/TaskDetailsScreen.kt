@@ -3,6 +3,7 @@ package com.mobiletaskmanager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -46,19 +47,19 @@ object TaskDetailsScreen {
   }
 
   fun tapComplete() {
-    onView(withTestId(TestIds.taskDetailsCompleteButton)).perform(click())
+    onView(withTestId(TestIds.taskDetailsCompleteButton)).perform(scrollTo(), click())
   }
 
   fun tapEdit() {
-    onView(withTestId(TestIds.taskDetailsEditButton)).perform(click())
+    onView(withTestId(TestIds.taskDetailsEditButton)).perform(scrollTo(), click())
   }
 
   fun tapHome() {
-    onView(withTestId(TestIds.taskDetailsHomeButton)).perform(click())
+    onView(withTestId(TestIds.taskDetailsHomeButton)).perform(scrollTo(), click())
   }
 
   fun tapDelete() {
-    onView(withTestId(TestIds.taskDetailsDeleteButton)).perform(click())
+    onView(withTestId(TestIds.taskDetailsDeleteButton)).perform(scrollTo(), click())
   }
 
   fun openDeleteDialog() {
