@@ -180,10 +180,19 @@ Do not reach for `isDescendantOfA` or `hasDescendant`: React Native flattens vie
 **`click()` fails with "does not match one or more of the following constraints"**
 Espresso only clicks views that are at least 90% visible, and it asserts `isDisplayed()` only for views whose visible rectangle is non-empty. Anything that can sit below the fold must be scrolled to first — the form fields and submit button, the task-details action buttons, the task rows, and the no-results and empty-state cards. The screen objects already do this; keep doing it for anything new.
 
-**Verify on a short screen, not just your own emulator**
-This is the trap that cost a full CI run. Local AVDs such as Pixel 9 are tall — about **952 dp** of height. The CI profile (`Nexus 6`, 1440x2560 at 560 dpi) has about **731 dp**. A suite can be green locally five times in a row and still fail 32 of 49 tests on CI, because the bottom of every screen is off-view there.
+**Screen geometry: CI is pinned to the local one**
+This once cost a full CI run. The `Nexus 6` emulator profile gives about **731 dp** of usable height, while local AVDs such as Pixel 9 give about **952 dp**. The suite was green locally five runs in a row and still failed 32 of 49 tests on CI, because on the shorter screen the bottom of every form was off-view.
 
-Reproduce CI's geometry before opening a pull request:
+CI therefore forces the same geometry the local emulator uses, right before Gradle runs:
+
+```bash
+adb shell wm size 1280x2856
+adb shell wm density 480
+```
+
+It costs nothing — that is the same pixel count as the profile default — and it means a green local run predicts a green CI run.
+
+The screen objects still scroll before acting, so the suite passes at either geometry. To check a short screen deliberately:
 
 ```bash
 adb shell wm size 1440x2560 && adb shell wm density 560
