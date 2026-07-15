@@ -20,6 +20,7 @@ class MainActivity : ReactActivity() {
                 PROP_IS_UI_TEST_AUTHED,
                 intent?.getBooleanExtra(EXTRA_UI_TEST_AUTHED, false) == true,
             )
+            putString(PROP_UI_TEST_TASKS, intent?.getStringExtra(EXTRA_UI_TEST_TASKS) ?: "")
           }
         }
       }
@@ -27,7 +28,9 @@ class MainActivity : ReactActivity() {
   private companion object {
     const val EXTRA_UI_TEST = "uitest"
     const val EXTRA_UI_TEST_AUTHED = "uitest-authed"
+    const val EXTRA_UI_TEST_TASKS = "uitest-tasks"
     const val PROP_IS_UI_TEST = "isUITest"
     const val PROP_IS_UI_TEST_AUTHED = "isUITestAuthed"
+    const val PROP_UI_TEST_TASKS = "uiTestTasks"
   }
 }

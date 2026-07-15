@@ -27,12 +27,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let isUITest = arguments.contains("-uitest")
     let isUITestAuthed = arguments.contains("-uitest-authed")
 
+    var uiTestTasks = ""
+    if let flagIndex = arguments.firstIndex(of: "-uitest-tasks"),
+       flagIndex + 1 < arguments.count {
+      uiTestTasks = arguments[flagIndex + 1]
+    }
+
     factory.startReactNative(
       withModuleName: "MobileTaskManager",
       in: window,
       initialProperties: [
         "isUITest": isUITest,
         "isUITestAuthed": isUITestAuthed,
+        "uiTestTasks": uiTestTasks,
       ],
       launchOptions: launchOptions
     )

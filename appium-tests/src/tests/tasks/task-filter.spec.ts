@@ -10,15 +10,13 @@ describe('Tasks — Status filter', () => {
   const taskHelper: TaskHelper = new TaskHelper();
 
   before(async () => {
-    await taskHelper.startSession();
-    await taskHelper.prepareCleanHome();
-    await taskHelper.createTasks([
-      STATUS_FILTER_FIXTURES.openOne,
-      STATUS_FILTER_FIXTURES.openTwo,
-      STATUS_FILTER_FIXTURES.completed,
-    ]);
-    await taskHelper.completeTaskByTitle(
-      STATUS_FILTER_FIXTURES.completed.title,
+    await taskHelper.seedTasks(
+      [
+        STATUS_FILTER_FIXTURES.openOne,
+        STATUS_FILTER_FIXTURES.openTwo,
+        STATUS_FILTER_FIXTURES.completed,
+      ],
+      { completedTitles: [STATUS_FILTER_FIXTURES.completed.title] },
     );
   });
 
@@ -64,9 +62,7 @@ describe('Tasks — Status filter without completed tasks', () => {
   const taskHelper: TaskHelper = new TaskHelper();
 
   before(async () => {
-    await taskHelper.startSession();
-    await taskHelper.prepareCleanHome();
-    await taskHelper.createTasks([
+    await taskHelper.seedTasks([
       STATUS_FILTER_FIXTURES.openOne,
       STATUS_FILTER_FIXTURES.openTwo,
     ]);
@@ -85,9 +81,7 @@ describe('Tasks — Priority filter', () => {
   const taskHelper: TaskHelper = new TaskHelper();
 
   before(async () => {
-    await taskHelper.startSession();
-    await taskHelper.prepareCleanHome();
-    await taskHelper.createTasks([
+    await taskHelper.seedTasks([
       PRIORITY_FILTER_FIXTURES.high,
       PRIORITY_FILTER_FIXTURES.medium,
       PRIORITY_FILTER_FIXTURES.low,

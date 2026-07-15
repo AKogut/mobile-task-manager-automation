@@ -2,6 +2,7 @@ import { TestIds } from '@/constants/testIds';
 import { RootNavigator } from '@/navigation/RootNavigator';
 import {
   bootstrapPersistence,
+  getUITestSeedTasks,
   isUITestAuthedRun,
   isUITestRun,
   type RootProps,
@@ -14,10 +15,15 @@ function App(props: RootProps) {
   const isDarkMode = useColorScheme() === 'dark';
   const isUITest = isUITestRun(props);
   const isUITestAuthed = isUITestAuthedRun(props);
+  const uiTestTasks = props.uiTestTasks;
 
   useEffect(() => {
-    bootstrapPersistence(isUITest, isUITestAuthed).catch(() => undefined);
-  }, [isUITest, isUITestAuthed]);
+    bootstrapPersistence(
+      isUITest,
+      isUITestAuthed,
+      getUITestSeedTasks({ uiTestTasks }),
+    ).catch(() => undefined);
+  }, [isUITest, isUITestAuthed, uiTestTasks]);
 
   return (
     <SafeAreaProvider>
