@@ -7,9 +7,7 @@ describe('Tasks — Search', () => {
   const taskHelper: TaskHelper = new TaskHelper();
 
   before(async () => {
-    await taskHelper.startSession();
-    await taskHelper.prepareCleanHome();
-    await taskHelper.createTasks([
+    await taskHelper.seedTasks([
       SEARCH_FIXTURES.groceries,
       SEARCH_FIXTURES.milk,
       SEARCH_FIXTURES.dentist,
@@ -70,14 +68,14 @@ describe('Tasks — Search with an active status filter', () => {
   const taskHelper: TaskHelper = new TaskHelper();
 
   before(async () => {
-    await taskHelper.startSession();
-    await taskHelper.prepareCleanHome();
-    await taskHelper.createTasks([
-      SEARCH_FIXTURES.groceries,
-      SEARCH_FIXTURES.milk,
-      SEARCH_FIXTURES.dentist,
-    ]);
-    await taskHelper.completeTaskByTitle('Buy milk');
+    await taskHelper.seedTasks(
+      [
+        SEARCH_FIXTURES.groceries,
+        SEARCH_FIXTURES.milk,
+        SEARCH_FIXTURES.dentist,
+      ],
+      { completedTitles: ['Buy milk'] },
+    );
   });
 
   it('TC-SEARCH-006 — Search works in combination with an active status filter', async () => {

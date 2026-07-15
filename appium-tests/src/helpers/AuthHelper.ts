@@ -42,6 +42,27 @@ export class AuthHelper {
     await driver.activateApp(appId);
   }
 
+  async relaunchIosWithState(options: {
+    authed?: boolean;
+    tasksJson?: string;
+  }): Promise<void> {
+    const launchArguments = ['-uitest'];
+
+    if (options.authed === true) {
+      launchArguments.push('-uitest-authed');
+    }
+
+    if (options.tasksJson !== undefined && options.tasksJson.length > 0) {
+      launchArguments.push('-uitest-tasks', options.tasksJson);
+    }
+
+    await driver.execute('mobile: terminateApp', { bundleId: IOS_BUNDLE_ID });
+    await driver.execute('mobile: launchApp', {
+      bundleId: IOS_BUNDLE_ID,
+      arguments: launchArguments,
+    });
+  }
+
   async resetToLoginScreen(): Promise<void> {
     await browser.waitUntil(
       async () =>

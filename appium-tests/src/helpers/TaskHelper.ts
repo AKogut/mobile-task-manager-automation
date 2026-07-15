@@ -1,4 +1,6 @@
 import type { TaskFixture } from '../data/taskFixtures';
+import { type SeedOptions, serializeSeededTasks } from '../data/taskSeed';
+import { isIos } from '../utils/platform';
 import { AuthHelper } from './AuthHelper';
 import { HomePage, LoginPage, TaskDetailsPage, TaskFormPage } from '../pages';
 
@@ -59,6 +61,29 @@ export class TaskHelper {
       await this.createTask(fixture);
       await this.taskDetailsPage.tapHomeButton();
       await this.homePage.waitForScreen();
+    }
+  }
+
+  public async seedTasks(
+    fixtures: readonly TaskFixture[],
+    options: SeedOptions = {},
+  ): Promise<void> {
+    if (isIos()) {
+      await this.authHelper.relaunchIosWithState({
+        authed: true,
+        tasksJson: serializeSeededTasks(fixtures, options),
+      });
+      await this.homePage.waitForScreen();
+
+      return;
+    }
+
+    await this.startSession();
+    await this.prepareCleanHome();
+    await this.createTasks(fixtures);
+
+    for (const title of options.completedTitles ?? []) {
+      await this.completeTaskByTitle(title);
     }
   }
 
