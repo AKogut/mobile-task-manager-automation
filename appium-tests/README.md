@@ -1,7 +1,7 @@
 # Appium E2E Tests
 
 Cross-platform end-to-end automation for the Mobile Task Manager app, written
-in TypeScript with **Appium 2**, **WebdriverIO 9**, and **Mocha**. The same
+in TypeScript with **Appium 3**, **WebdriverIO 9**, and **Mocha**. The same
 specs run unchanged on **iOS (XCUITest)** and **Android (UiAutomator2)**, and
 each platform produces its own isolated Allure report.
 
@@ -9,7 +9,7 @@ each platform produces its own isolated Allure report.
 
 | Suite             | Spec files                                       | Test cases        |
 | ----------------- | ------------------------------------------------ | ----------------- |
-| Authentication    | `auth.smoke`, `auth.negative`, `auth.regression` | TC-AUTH-001…013   |
+| Authentication    | `auth.smoke`, `auth.negative`, `auth.regression` | TC-AUTH-001…012   |
 | Task creation     | `task-creation.spec.ts`                          | TC-TASK-001…009   |
 | Complete / reopen | `task-complete.spec.ts`                          | TC-TASK-013…016   |
 | Delete            | `task-delete.spec.ts`                            | TC-TASK-017…019   |
@@ -22,8 +22,8 @@ Full, human-readable test-case definitions live in
 
 ## Prerequisites
 
-- Node.js 22.11 or newer.
-- Appium 2 server reachable on `http://localhost:4723`.
+- Node.js 22.12+ (pinned in `.nvmrc`).
+- Appium 3 server reachable on `http://localhost:4723`.
 - **iOS** — Xcode with the configured simulator.
 - **Android** — Android Studio, SDK, and the configured emulator.
 - Built app binaries at the paths configured in `src/config/` (overridable via
@@ -88,21 +88,27 @@ yarn report:open:android # open it
 A screenshot is captured automatically on every test failure and stored under
 `screenshots/<platform>/`.
 
-### Published reports (GitHub Pages)
+### Continuous integration
 
-The `Appium E2E Tests` workflow runs nightly (03:00 UTC) and on demand
-(`workflow_dispatch`, choosing iOS, Android, or both). It generates a separate
-report per platform and deploys them to GitHub Pages behind a landing page:
+The suite ships as a reusable workflow, [`appium-suite.yml`](../.github/workflows/appium-suite.yml)
+(`workflow_call`), invoked two ways:
+
+- **On demand** — [`appium-tests.yml`](../.github/workflows/appium-tests.yml)
+  (`workflow_dispatch`, choosing iOS, Android, or both). This run uploads Allure
+  results as artifacts but does **not** publish to Pages.
+- **Nightly** — the repo-wide [`nightly-e2e.yml`](../.github/workflows/nightly-e2e.yml)
+  orchestrator (03:00 UTC) runs every suite and publishes a **single combined**
+  report to GitHub Pages, where the Appium runs appear under the shared iOS and
+  Android cards:
 
 ```text
-<pages-url>/          # landing page with iOS / Android cards
-<pages-url>/ios/      # iOS report
-<pages-url>/android/  # Android report
+<pages-url>/         # combined landing page
+<pages-url>/ios/     # Appium iOS (Allure)
+<pages-url>/android/ # Appium Android (Allure)
 ```
 
-Each platform job uploads its own `allure-results/<platform>` artifact; the
-publish job generates `site/ios` and `site/android` independently, so the two
-reports never merge.
+Only the nightly orchestrator deploys Pages, so on-demand per-suite runs never
+overwrite the shared site.
 
 ## Project structure
 
@@ -123,6 +129,7 @@ src/
   data/
     credentials.ts         # demo account
     taskFixtures.ts        # task + search/filter fixtures and queries
+    taskSeed.ts            # fixture -> Task resolver for launch-arg seeding (iOS)
   utils/
     platform.ts            # isIos() / isAndroid()
     ScreenshotHelper.ts    # per-platform failure screenshots
@@ -169,7 +176,12 @@ Tasks persist via the app's local storage, so the suite resets state itself:
 - `TaskHelper.returnToCleanHome()` — return to Home and delete all tasks
   (used by single-dataset task suites).
 - `TaskHelper.prepareCleanHome()` — additionally reset active filters first, so
-  cleanup is never hidden behind an active filter (used by search/filter suites).
+  cleanup is never hidden behind an active filter.
+- `TaskHelper.seedTasks()` — inject a fixture set without the UI. On iOS it
+  relaunches the app with `-uitest-authed` + `-uitest-tasks <json>` (resolved by
+  [`data/taskSeed.ts`](./src/data/taskSeed.ts)) to reach a clean, seeded home
+  instantly; on Android it falls back to the UI path unchanged. Used by the
+  setup-heavy filter and search suites, cutting their per-suite setup by ~78%.
 
 ## Conventions
 

@@ -343,3 +343,7 @@ Login, logout, session persistence, and form validation.
 
 - Loading indicator is briefly visible (`login-submit-loading`)
 - Submit button is disabled while loading
+
+**Automation**
+
+- Documented as a specification only. The ~400 ms loading window is too timing-sensitive to assert reliably across drivers, so this case is not automated; TC-AUTH-001…012 are automated in all three suites.

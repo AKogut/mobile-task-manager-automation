@@ -31,9 +31,9 @@ flowchart TB
   end
 
   subgraph Automation["Test automation"]
-    Appium["appium-tests/\nAppium + WebdriverIO"]
-    XCUITest["ios-tests/\nXCUITest"]
-    Espresso["android-tests/\nEspresso"]
+    Appium["appium-tests/<br/>Appium + WebdriverIO"]
+    XCUITest["ios-tests/<br/>XCUITest"]
+    Espresso["android-tests/<br/>Espresso"]
   end
 
   subgraph CI["GitHub Actions"]
@@ -67,9 +67,9 @@ flowchart TB
 
 ```mermaid
 flowchart BT
-  E2E["Cross-platform E2E\n(Appium)"]
-  Native["Native UI\n(XCUITest / Espresso)"]
-  Unit["Unit & component\n(Jest)"]
+  E2E["Cross-platform E2E<br/>(Appium)"]
+  Native["Native UI<br/>(XCUITest / Espresso)"]
+  Unit["Unit & component<br/>(Jest)"]
 
   Unit --> Native
   Native --> E2E
@@ -77,7 +77,7 @@ flowchart BT
 
 | Layer              | Location                       | Purpose                                      |
 | ------------------ | ------------------------------ | -------------------------------------------- |
-| Unit               | `app/__tests__`                | Business logic, hooks, utilities             |
+| Unit               | `app/src/**/__tests__`         | Business logic, hooks, utilities             |
 | Native UI          | `ios-tests/`, `android-tests/` | Platform-specific flows, fast feedback on CI |
 | Cross-platform E2E | `appium-tests/`                | Full user journeys on both platforms         |
 
@@ -91,16 +91,16 @@ Shared **accessibility identifiers** (`testID` in React Native) are the contract
 
 This keeps tests stable when visual styling changes.
 
-## Application modules (planned)
+## Application modules
 
 ```mermaid
 flowchart LR
   Auth["Authentication"]
   Tasks["Task management"]
-  Profile["Profile & settings"]
+  Settings["Settings"]
 
   Auth --> Tasks
-  Tasks --> Profile
+  Tasks --> Settings
 ```
 
 ### Authentication
@@ -114,12 +114,12 @@ flowchart LR
 - CRUD, completion toggle
 - Search, filter (status, priority), sort (due date)
 
-### Profile & settings
+### Settings
 
-- User profile, theme switcher
-- Clear local data, about screen
+- Account info (name, email)
+- Logout
 
-## CI pipeline (planned)
+## CI pipeline
 
 ```mermaid
 flowchart LR
@@ -129,4 +129,4 @@ flowchart LR
   Tests --> Report["Artifacts & summaries"]
 ```
 
-Jobs will run on GitHub-hosted macOS (iOS Simulator) and Linux (Android Emulator) runners.
+Jobs run on GitHub-hosted macOS (iOS Simulator) and Linux (Android Emulator) runners. See the [workflows](../.github/workflows/) — per-suite reusable workflows plus a nightly orchestrator that publishes a combined report.
