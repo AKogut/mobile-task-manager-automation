@@ -41,6 +41,16 @@ sourceSets {
 }
 ```
 
+## Coverage
+
+The suite executes **46 of the 47 cases** the Appium and XCUITest suites run — authentication, task CRUD, completion, filters, and search. The single gap is TC-AUTH-011 (app-restart persistence), which Espresso cannot reach because it runs inside the app process. Per-case tables are in [Coverage detail](#coverage-detail).
+
+| Suite   | Executing cases |
+| ------- | --------------- |
+| Appium  | 47              |
+| iOS     | 47              |
+| Android | 46              |
+
 ## Running the tests
 
 ### Prerequisites
@@ -180,8 +190,8 @@ Do not reach for `isDescendantOfA` or `hasDescendant`: React Native flattens vie
 **`click()` fails with "does not match one or more of the following constraints"**
 Espresso only clicks views that are at least 90% visible, and it asserts `isDisplayed()` only for views whose visible rectangle is non-empty. Anything that can sit below the fold must be scrolled to first — the form fields and submit button, the task-details action buttons, the task rows, and the no-results and empty-state cards. The screen objects already do this; keep doing it for anything new.
 
-**Screen geometry: CI is pinned to the local one**
-This once cost a full CI run. The `Nexus 6` emulator profile gives about **731 dp** of usable height, while local AVDs such as Pixel 9 give about **952 dp**. The suite was green locally five runs in a row and still failed 32 of 49 tests on CI, because on the shorter screen the bottom of every form was off-view.
+**Screen geometry: CI is pinned to the local emulator's**
+The `Nexus 6` emulator profile gives about **731 dp** of usable height, while local AVDs such as Pixel 9 give about **952 dp**. On the shorter screen the bottom of every form sits off-view, so a suite that is green locally can still fail on CI — an early run failed 32 of 49 tests for exactly this reason.
 
 CI therefore forces the same geometry the local emulator uses, right before Gradle runs:
 
@@ -206,7 +216,7 @@ adb shell wm size reset && adb shell wm density reset
 **An assertion right after a tap reads a stale value**
 Espresso synchronises with the UI thread but knows nothing about the React Native bridge, so a tap that updates JavaScript state has not necessarily re-rendered the view by the time the next line runs. Asserting immediately is a race: it may pass on a fast machine and fail on a slow one. Use `waitForTestIdWithText(testId, expected)` rather than an immediate `check(matches(withText(...)))` whenever the value is a consequence of a tap.
 
-A green run — even several in a row — does not prove such a race is absent. Treat any assert-straight-after-tap as suspect.
+A passing run — even several in a row — does not prove the race is absent, so any assertion placed immediately after a tap should use the wait-based form.
 
 **Asserting an app view while a dialog is open**
 With a dialog on screen, Espresso's default root is the dialog window, so app views are not found and `NoMatchingViewException` is thrown. Assert app state before opening the dialog, or after dismissing it.
@@ -216,15 +226,9 @@ With a dialog on screen, Espresso's default root is the dialog window, so app vi
 
 Scoping matters: the hero "Up next" card renders `nextTask.title`, the same string as the row. Matching on the text alone would keep finding a task that the filter had removed from the list. `HomeScreen` therefore matches `withTestIdStartingWith("task-item-title-")` together with the text, so only list rows can satisfy it.
 
-## Coverage
+## Coverage detail
 
-The suite executes **46 of the 47 cases** that the Appium and XCUITest suites execute, across authentication, task CRUD, completion, filters and search.
-
-| Suite   | Executing cases |
-| ------- | --------------- |
-| Appium  | 47              |
-| iOS     | 47              |
-| Android | 46              |
+Every automated case, by class:
 
 | Test case   | Name                                           | Class            |
 | ----------- | ---------------------------------------------- | ---------------- |
@@ -322,7 +326,3 @@ Native `.so` files are then looked for in a directory that holds none, and the a
 dies on launch with `SoLoaderDSONotFoundError: couldn't find DSO to load:
 libreactnative.so` before a single test runs. This cannot reproduce on an Apple
 Silicon machine, whose emulator is arm64 to begin with.
-
-## Status
-
-The suite is complete. It covers authentication, task CRUD, completion, filters and search — 46 of the 47 cases the Appium and XCUITest suites execute, the exception being TC-AUTH-011, which Espresso cannot reach.

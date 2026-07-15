@@ -4,30 +4,34 @@ This guide explains how to build and run the React Native app locally on iOS and
 
 ## Prerequisites
 
-- Node.js 22.11+
+- Node.js 22.12+ (pinned in `.nvmrc`)
 - npm
+- Ruby 3.2.2 (pinned in `.ruby-version`) with Bundler, for CocoaPods
 - Xcode with iOS Simulator runtime installed
 - CocoaPods
 - Android Studio with Android SDK and emulator
-- JDK supported by React Native (17-20)
+- JDK 17 (pinned in `.java-version`)
 
 ## Install Dependencies
 
-From the repository root:
+From the repository root, one command installs root tooling, the app's
+dependencies, Ruby gems, and iOS CocoaPods:
+
+```bash
+npm run setup        # use "npm run setup:android" to skip the iOS pods
+```
+
+<details>
+<summary>Manual, step by step</summary>
 
 ```bash
 npm install
 cd app && npm install
-```
-
-Install iOS native dependencies:
-
-```bash
-cd app/ios
-bundle install
-bundle exec pod install
+cd ios && bundle install && bundle exec pod install
 cd ../..
 ```
+
+</details>
 
 ## Start Metro
 
@@ -232,7 +236,7 @@ cd app/android
 rm -rf app/.cxx app/build .gradle
 ./gradlew clean
 cd ../..
-npm run android
+npm run app:android
 ```
 
 ### Android: No Devices Found
@@ -264,7 +268,7 @@ cd app/android
 ./gradlew --stop
 ./gradlew clean
 cd ../..
-npm run android
+npm run app:android
 ```
 
 This repo pins the Android JDK major version in `.java-version`, and GitHub Actions reads the same file through `actions/setup-java`. Do not commit `org.gradle.java.home` with a local absolute path; if you need one-off local Gradle overrides, keep them outside version control.

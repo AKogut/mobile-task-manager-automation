@@ -19,20 +19,20 @@ Built as the app under test for the Appium, XCUITest, and Espresso automation su
 
 ```bash
 # Install JS dependencies
-yarn install
+npm install
 
 # iOS — install native dependencies first
-cd ios && bundle exec pod install && cd ..
-yarn ios
+cd ios && bundle install && bundle exec pod install && cd ..
+npm run ios
 
 # Android
-yarn android
+npm run android
 
 # Metro bundler (standalone)
-yarn start
+npm run start
 ```
 
-Node >= 22.11.0 required (see `.nvmrc` at repo root).
+Node 22.12+ (pinned in `.nvmrc` at the repo root).
 
 ## Project structure
 
@@ -129,20 +129,20 @@ The fake auth service simulates a 400ms network delay and returns a fixed sessio
 ## Scripts
 
 ```bash
-yarn start        # Start Metro bundler
-yarn ios          # Run on iOS simulator
-yarn android      # Run on Android emulator
-yarn test         # Run Jest test suite
-yarn lint         # ESLint with zero-warning policy
-yarn typecheck    # TypeScript compiler check (no emit)
+npm run start      # Start Metro bundler
+npm run ios        # Run on iOS simulator
+npm run android    # Run on Android emulator
+npm test           # Run Jest test suite
+npm run lint       # ESLint with zero-warning policy
+npm run typecheck  # TypeScript compiler check (no emit)
 ```
 
 ## Tests
 
 ```bash
-yarn test                                    # All 6 suites
-yarn jest --testPathPattern=taskScreens      # Screen integration tests
-yarn jest --testPathPattern=taskStore        # Store unit tests
+npm test                                     # All 6 suites
+npx jest --testPathPattern=taskScreens       # Screen integration tests
+npx jest --testPathPattern=taskStore         # Store unit tests
 ```
 
 | Suite                     | Coverage                                                             |
@@ -163,7 +163,7 @@ Every interactive and assertion-target element has a `testID` prop. The complete
 React Native maps `testID` to:
 
 - `accessibilityIdentifier` on iOS — used by XCUITest and Appium
-- `content-description` on Android — used by Espresso and Appium
+- the view's **resource-id** on Android (`viewIdResourceName`) — Appium matches it via `resourceId`; Espresso reads the React test-id view tag with a custom `withTestId()` matcher. It is not `content-description` (that carries `accessibilityLabel`).
 
 ### Key testIDs by screen
 

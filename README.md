@@ -1,21 +1,42 @@
 # Mobile Task Manager Automation
 
-[![Node](https://img.shields.io/badge/node-%3E%3D22.11.0-339933?logo=node.js&logoColor=white)](./.nvmrc)
+[![Node](https://img.shields.io/badge/node-22.12-339933?logo=node.js&logoColor=white)](./.nvmrc)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61DAFB?logo=react&logoColor=black)](./app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./app/tsconfig.json)
 [![Nightly E2E](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml/badge.svg)](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml)
 [![E2E report](https://img.shields.io/badge/E2E%20report-live-8A2BE2?logo=githubpages&logoColor=white)](https://akogut.github.io/mobile-task-manager-automation/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-Portfolio-grade **React Native** task manager for **iOS** and **Android**, paired with **cross-platform** and **native** mobile test automation and a **CI/CD** pipeline.
+> A realistic **React Native** task manager for **iOS** and **Android**, built as a single subject to design, implement, and compare three mobile test-automation approaches — cross-platform and native — behind one **CI/CD** pipeline.
 
-## Overview
+**The idea.** Most testing portfolios pair one framework with a throwaway app. This one inverts that: a genuine iOS + Android product — authentication, task CRUD, search, filtering, sorting, and local persistence — becomes the shared subject for three independent automation suites. The same user journeys are verified through **Appium/WebdriverIO** (cross-platform), **XCUITest** (native iOS), and **Espresso** (native Android), so the trade-offs between a WebDriver driver and each platform's own runtime are visible side by side rather than argued in the abstract. One nightly pipeline runs all of them and publishes a single combined report.
 
-This repository demonstrates end-to-end mobile engineering skills:
+## Screenshots
+
+|                  Login                  |                   Home                   |                   Add task                   |                  Task details                  |
+| :-------------------------------------: | :--------------------------------------: | :------------------------------------------: | :--------------------------------------------: |
+| ![Login screen](./docs/media/login.png) | ![Home dashboard](./docs/media/home.png) | ![Add task form](./docs/media/task-form.png) | ![Task details](./docs/media/task-details.png) |
+
+<p align="center">
+  <img src="./docs/media/demo.gif" alt="App walkthrough: open a task, complete it, filter by status, and start a new task" width="300" />
+</p>
+
+<sub>Captured on the iOS Simulator with a seeded UI-test state (`-uitest-authed` + `-uitest-tasks`).</sub>
+
+## Highlights
+
+- **47 cross-platform · 47 native iOS · 46 native Android** test cases, every one traced to a shared, versioned [test-case catalogue](./docs/test-cases/).
+- **The same journeys, three runtimes.** A WebDriver driver (Appium) and each platform's own test runtime (XCUITest, Espresso) validate identical flows, making their trade-offs directly comparable.
+- **One nightly pipeline** orchestrates all four drivers and publishes a single aggregated [live report](https://akogut.github.io/mobile-task-manager-automation/) to GitHub Pages.
+- **Engineering depth, not just green checks.** Launch-argument state seeding cut the heaviest test setup by ~78%; CI failures were root-caused (ABI mismatches, emulator geometry, runner timeouts) rather than papered over.
+- **Strict quality gates** — TypeScript strict mode, ESLint, Prettier, and unit tests enforced on every commit and PR.
+
+## Tech stack
 
 | Area                   | Stack                                                                                   |
 | ---------------------- | --------------------------------------------------------------------------------------- |
 | **App**                | React Native, TypeScript, React Navigation, Zustand, AsyncStorage, React Hook Form, Zod |
-| **Cross-platform E2E** | TypeScript, Appium 2, WebdriverIO 9                                                     |
+| **Cross-platform E2E** | TypeScript, Appium 3, WebdriverIO 9                                                     |
 | **iOS automation**     | Swift, XCUITest                                                                         |
 | **Android automation** | Kotlin, Espresso                                                                        |
 | **CI/CD**              | GitHub Actions, Android Emulator, iOS Simulator                                         |
@@ -62,7 +83,7 @@ See [docs/releases.md](./docs/releases.md) for publishing downloadable Android A
 
 ### Prerequisites
 
-- **Node.js** 22.11+ ([nvm](https://github.com/nvm-sh/nvm): `nvm use`)
+- **Node.js** 22.12+ ([nvm](https://github.com/nvm-sh/nvm): `nvm use` reads `.nvmrc`)
 - **JDK** 17 for Android (`.java-version`)
 - **Ruby** 3.2.2 for CocoaPods (`.ruby-version`)
 - **Xcode** (iOS) with CocoaPods
@@ -120,11 +141,11 @@ Three suites cover the same product behavior from complementary angles — one
 cross-platform driver plus a native suite per platform — all traced back to the
 shared [test cases](./docs/test-cases/):
 
-| Suite          | Stack                    | Path             | Docs                                |
-| -------------- | ------------------------ | ---------------- | ----------------------------------- |
-| Cross-platform | Appium 2 + WebdriverIO 9 | `appium-tests/`  | [README](./appium-tests/README.md)  |
-| iOS native     | Swift + XCUITest         | `ios-tests/`     | [README](./ios-tests/README.md)     |
-| Android native | Kotlin + Espresso        | `android-tests/` | [README](./android-tests/README.md) |
+| Suite          | Stack                    | Cases | Path             | Docs                                |
+| -------------- | ------------------------ | ----- | ---------------- | ----------------------------------- |
+| Cross-platform | Appium 3 + WebdriverIO 9 | 47    | `appium-tests/`  | [README](./appium-tests/README.md)  |
+| iOS native     | Swift + XCUITest         | 47    | `ios-tests/`     | [README](./ios-tests/README.md)     |
+| Android native | Kotlin + Espresso        | 46    | `android-tests/` | [README](./android-tests/README.md) |
 
 The iOS XCUITest suite mirrors the Appium coverage case-for-case (auth, task
 CRUD, complete/reopen, search, and filters), so the same behavior is validated
@@ -174,10 +195,10 @@ See the [Appium README](./appium-tests/README.md),
 [Android README](./android-tests/README.md) for prerequisites, environment
 variables, and report layout.
 
-## Labels
+## Author
 
-Issues use labels such as `epic`, `feature`, `automation`, `ios`, `android`, `appium`, `xcuitest`, `espresso`, `ci`, `documentation`, `tech-debt`, and priority tags.
+**Andrii Kohut** — [GitHub](https://github.com/AKogut) · a.kogut01@gmail.com
 
 ## License
 
-This project is part of a personal portfolio. Add a license file if you open-source the repository publicly.
+Released under the [MIT License](./LICENSE). © 2026 Andrii Kohut.

@@ -137,7 +137,7 @@ git push origin v0.1.0
 
 GitHub Actions will:
 
-1. Install Node.js 22
+1. Install Node.js from `.nvmrc` (22.12.0)
 2. Build the Android debug APK on Linux
 3. Build the iOS Simulator app on macOS
 4. Create/update the GitHub Release for the tag
