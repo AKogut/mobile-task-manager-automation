@@ -1,6 +1,6 @@
 # Mobile Task Manager Automation
 
-[![Node](https://img.shields.io/badge/node-22.12-339933?logo=node.js&logoColor=white)](./.nvmrc)
+[![Node](https://img.shields.io/badge/node-22.22-339933?logo=node.js&logoColor=white)](./.nvmrc)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61DAFB?logo=react&logoColor=black)](./app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./app/tsconfig.json)
 [![Nightly E2E](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml/badge.svg)](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml)
@@ -83,7 +83,7 @@ See [docs/releases.md](./docs/releases.md) for publishing downloadable Android A
 
 ### Prerequisites
 
-- **Node.js** 22.12+ ([nvm](https://github.com/nvm-sh/nvm): `nvm use` reads `.nvmrc`)
+- **Node.js** 22.22+ ([nvm](https://github.com/nvm-sh/nvm): `nvm use` reads `.nvmrc`)
 - **JDK** 17 for Android (`.java-version`)
 - **Ruby** 3.2.2 for CocoaPods (`.ruby-version`)
 - **Xcode** (iOS) with CocoaPods
