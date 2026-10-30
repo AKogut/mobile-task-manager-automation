@@ -1,0 +1,116 @@
+version: 2
+
+# Three npm projects (the root holds the repository tooling, app/ the React
+# Native app, appium-tests/ the cross-platform suite), the app's Ruby toolchain
+# for CocoaPods, and the workflows.
+#
+# Held back on purpose:
+#
+#   React Native   — react-native, react and the packages released in lockstep
+#                    with them (@react-native/*, the community CLI) take patch
+#                    updates only, together in one PR. A React Native minor is a
+#                    migration across the native templates, Pods and Gradle,
+#                    done with the upgrade helper rather than as a bump.
+#   Gradle         — not tracked. The Android build takes its plugin versions
+#                    from React Native's Gradle plugin, so it moves with the
+#                    React Native upgrade, not on its own.
+#   eslint         — majors in app/ wait for React Native: the app lints with
+#                    @react-native/eslint-config's legacy configuration
+#                    (ESLINT_USE_FLAT_CONFIG=false).
+#   @types/node    — majors follow the Node version in .nvmrc.
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      tooling:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: npm
+    directory: /app
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      react-native:
+        patterns:
+          - 'react-native'
+          - 'react'
+          - 'react-test-renderer'
+          - '@react-native/*'
+          - '@react-native-community/cli*'
+      app:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: 'react-native'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'react'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'react-test-renderer'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@react-native/*'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: '@react-native-community/cli*'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: npm
+    directory: /appium-tests
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      appium-tests:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: bundler
+    directory: /app
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      ruby:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: 'ci'
+    groups:
+      github-actions:
+        patterns: ['*']

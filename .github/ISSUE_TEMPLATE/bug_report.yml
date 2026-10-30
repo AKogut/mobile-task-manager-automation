@@ -1,0 +1,51 @@
+name: Bug report
+description: A defect in the app, a test suite or the pipeline
+labels: ['bug']
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - App (React Native)
+        - Appium / WebdriverIO suite
+        - XCUITest suite
+        - Espresso suite
+        - CI / nightly pipeline
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - Android
+        - Both
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Log in
+        2. Add a task with an empty title
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Include the failing test, a log excerpt or a screenshot if you have one.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: 'iPhone 16 simulator, iOS 26 · Pixel 8 emulator, API 36'
