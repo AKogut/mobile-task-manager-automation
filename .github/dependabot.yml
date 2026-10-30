@@ -6,17 +6,24 @@ version: 2
 #
 # Held back on purpose:
 #
-#   React Native   — react-native, react and the packages released in lockstep
-#                    with them (@react-native/*, the community CLI) take patch
-#                    updates only, together in one PR. A React Native minor is a
+#   React Native   — react-native and the packages released in lockstep with it
+#                    (@react-native/*, the community CLI) take patch updates
+#                    only, together in one PR. A React Native minor is a
 #                    migration across the native templates, Pods and Gradle,
 #                    done with the upgrade helper rather than as a bump.
+#   React          — react and react-test-renderer move only with React Native,
+#                    never on their own: React Native bundles its renderer for
+#                    one exact React version and refuses to start with any
+#                    other, even a patch apart.
 #   Gradle         — not tracked. The Android build takes its plugin versions
 #                    from React Native's Gradle plugin, so it moves with the
 #                    React Native upgrade, not on its own.
 #   eslint         — majors in app/ wait for React Native: the app lints with
 #                    @react-native/eslint-config's legacy configuration
 #                    (ESLINT_USE_FLAT_CONFIG=false).
+#   TypeScript     — majors in app/ wait for React Native too: a TypeScript
+#                    outside the range of the typescript-eslint that
+#                    @react-native/eslint-config uses breaks the lint.
 #   @types/node    — majors follow the Node version in .nvmrc.
 
 updates:
@@ -49,8 +56,6 @@ updates:
       react-native:
         patterns:
           - 'react-native'
-          - 'react'
-          - 'react-test-renderer'
           - '@react-native/*'
           - '@react-native-community/cli*'
       app:
@@ -60,11 +65,7 @@ updates:
         update-types:
           ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'react'
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'react-test-renderer'
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: '@react-native/*'
         update-types:
           ['version-update:semver-major', 'version-update:semver-minor']
@@ -72,6 +73,8 @@ updates:
         update-types:
           ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
@@ -86,6 +89,10 @@ updates:
       prefix: 'chore(deps)'
       prefix-development: 'chore(deps-dev)'
     groups:
+      # WebdriverIO releases every package in lockstep, so all of them move in
+      # one PR, majors included. An update lands in the first group it matches.
+      wdio:
+        patterns: ['webdriverio', '@wdio/*']
       appium-tests:
         update-types: [minor, patch]
     ignore:
