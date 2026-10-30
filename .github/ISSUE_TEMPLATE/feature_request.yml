@@ -1,0 +1,23 @@
+name: Test or feature request
+description: A journey to cover, or an app feature to add as a test subject
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: journey
+    attributes:
+      label: The user journey
+      description: What should a user be able to do, and why does it matter for the comparison?
+    validations:
+      required: true
+  - type: checkboxes
+    id: suites
+    attributes:
+      label: Suites that should cover it
+      options:
+        - label: Appium / WebdriverIO (cross-platform)
+        - label: XCUITest (native iOS)
+        - label: Espresso (native Android)
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a vulnerability
+    url: https://github.com/AKogut/mobile-task-manager-automation/security/advisories/new
+    about: Please report security issues privately, not as a public issue.
+  - name: Live test report
+    url: https://akogut.github.io/mobile-task-manager-automation/
+    about: The latest combined report from the nightly pipeline.
