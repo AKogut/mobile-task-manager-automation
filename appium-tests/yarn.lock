@@ -887,6 +887,13 @@
   dependencies:
     undici-types "~6.21.0"
 
+"@types/node@^22.20.4":
+  version "22.20.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.20.5.tgz#afa7bde6da81b8b83ea4e2f020487e9b148c11fd"
+  integrity sha512-U2+DNr+wSjpsTS/wZGYHq7GcwfuSmKiKvoPvK22zwTlRhU91yOniN4qRR5KhIjvif7ysw/dz/hKmfDH0Ris4aA==
+  dependencies:
+    undici-types "~6.21.0"
+
 "@types/normalize-package-data@^2.4.1", "@types/normalize-package-data@^2.4.4":
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.4.tgz#56e2cc26c397c038fab0e3a917a12d5c5909e901"
@@ -1076,15 +1083,15 @@
     convert-source-map "^2.0.0"
     tinyrainbow "^3.1.0"
 
-"@wdio/allure-reporter@^9.27.2":
-  version "9.27.2"
-  resolved "https://registry.yarnpkg.com/@wdio/allure-reporter/-/allure-reporter-9.27.2.tgz#30b2569db0c04fb5aa9a604dfa184990ba7c03c5"
-  integrity sha512-FNcwsmqJOJK1vn/rdf9PVlzSyn8XaBed+Z3emzxzvaDhiULCFq1szcg++1BWiJ0w0GtIt6MCJ7DPyrdfmoGOyQ==
+"@wdio/allure-reporter@^10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@wdio/allure-reporter/-/allure-reporter-10.1.0.tgz#5cfed931a426f4830f0457210249af653ce5070e"
+  integrity sha512-+GRmFuEwVB3O5sNvbuA20qpteSE8Ub86G5FRu+yPoWRFgxu9aRhI0ju5FvgDw5r3FdqKYmzNRfRDM+jWpTxu1g==
   dependencies:
-    "@types/node" "^20.1.0"
-    "@wdio/reporter" "9.27.2"
-    "@wdio/types" "9.27.2"
-    allure-js-commons "^3.3.2"
+    "@types/node" "^22.20.4"
+    "@wdio/reporter" "10.1.0"
+    "@wdio/types" "10.1.0"
+    allure-js-commons "^3.10.0"
     csv-stringify "^6.0.4"
     html-entities "^2.6.0"
     strip-ansi "^7.1.0"
@@ -1193,6 +1200,16 @@
   dependencies:
     "@types/node" "^20.1.0"
 
+"@wdio/reporter@10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-10.1.0.tgz#0f0aeb5a238442d3c82bdf0608a0325b6c5ad8b0"
+  integrity sha512-VijtnGZHgwKFRzWwfGQSTF5WCxtwZLMstTQurKgXFUUh6rJi5ORkfL2515q5/7hbHm9ziMbAeBrfUdiDJCk1dQ==
+  dependencies:
+    "@types/node" "^22.20.4"
+    "@wdio/types" "10.1.0"
+    diff "^9.0.0"
+    object-inspect "^1.12.0"
+
 "@wdio/reporter@9.27.2":
   version "9.27.2"
   resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.27.2.tgz#9c01a7074e40125d43523f1dd68d289fb6a67344"
@@ -1230,6 +1247,13 @@
     chalk "^5.1.2"
     easy-table "^1.2.0"
     pretty-ms "^9.0.0"
+
+"@wdio/types@10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-10.1.0.tgz#f589c2ece3f4c5a4dc6a152d3557e37b6862ab46"
+  integrity sha512-MxGhIjP74w2xaIhqtzBfrtzDc41qyb9cMqvHgdIDC7MbaREJxpUd/paAg8qmouIph7hBp8MruXap/BPKlVXmVA==
+  dependencies:
+    "@types/node" "^22.20.4"
 
 "@wdio/types@9.27.2":
   version "9.27.2"
@@ -1351,10 +1375,10 @@ allure-commandline@^2.42.0:
   resolved "https://registry.yarnpkg.com/allure-commandline/-/allure-commandline-2.42.0.tgz#10798c6fc2a526815e151bd152eaa7b15bc97e70"
   integrity sha512-MLBxpoyZqcunRK+Jx0zvswxs1M7qr4hCu2oaBTHx1QTR2iEZt78Qyzqf+cQHsx1fKhWWfPiNFmbS0cj6Qv6AXQ==
 
-allure-js-commons@^3.3.2:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/allure-js-commons/-/allure-js-commons-3.9.0.tgz#1963c8af932e06469e3d6efb8d48bd073f7c4214"
-  integrity sha512-uVQcGE6MWIvGR/zW1XEUwHXUQa1EJKY0Cah+0TZK1qKuw6ptyhftDr34XE3wExTyCZirRrI98dbRtPeYYuyI+g==
+allure-js-commons@^3.10.0:
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/allure-js-commons/-/allure-js-commons-3.14.0.tgz#3cb2c92295e27c12f78e34079b31b8249de577cb"
+  integrity sha512-Qr/F/tvc+PJv7Q5mniFF2DUJIOvVXmfaFqDZMgSpM2dfzPmSO/D//zGiO8w6kidJMB0VHuPdHPLx5ncLcxj3Gg==
   dependencies:
     md5 "^2.3.0"
 
@@ -2198,7 +2222,7 @@ detect-node@^2.0.4:
   resolved "https://registry.yarnpkg.com/detect-node/-/detect-node-2.1.0.tgz#c9c70775a49c3d03bc2c06d9a73be550f978f8b1"
   integrity sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==
 
-diff@9.0.0:
+diff@9.0.0, diff@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-9.0.0.tgz#297c31cd7c280f13dfe335791ec2063bd4a73a6f"
   integrity sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==
