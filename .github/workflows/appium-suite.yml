@@ -67,7 +67,7 @@ jobs:
 
       - name: Install Appium drivers
         working-directory: appium-tests
-        run: node_modules/.bin/appium driver install uiautomator2
+        run: node_modules/.bin/appium driver install uiautomator2@8.7.3
 
       - name: Create Android test runner script
         run: |
@@ -262,7 +262,7 @@ jobs:
 
       - name: Install Appium drivers
         working-directory: appium-tests
-        run: npx appium driver install xcuitest
+        run: npx appium driver install xcuitest@12.22.8
 
       - name: Pre-build WebDriverAgent
         run: |
