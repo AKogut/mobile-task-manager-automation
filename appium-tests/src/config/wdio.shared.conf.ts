@@ -56,6 +56,9 @@ export function createSharedConfig({
     ],
     specs: [path.resolve(__dirname, '../tests/**/*.spec.ts')],
     maxInstances: 1,
+    // wdio 10 makes `$` throw when a selector matches several elements. Keep
+    // the behaviour the suite was written against.
+    strictSelectors: false,
     logLevel: 'info',
     waitforTimeout: 10000,
     connectionRetryTimeout: 300000,
