@@ -33,14 +33,14 @@ Full, human-readable test-case definitions live in
 
 ```sh
 cd appium-tests
-yarn install
+npm ci
 ```
 
 ## Running tests
 
 ```sh
-yarn test:ios
-yarn test:android
+npm run test:ios
+npm run test:android
 ```
 
 Both commands run the entire spec suite. The app is installed once per session
@@ -78,11 +78,11 @@ automation engine) that surfaces in the report's Environment widget.
 Generate and open a report for the platform you just ran:
 
 ```sh
-yarn report:ios          # generate allure-report/ios
-yarn report:open:ios     # open it
+npm run report:ios          # generate allure-report/ios
+npm run report:open:ios     # open it
 
-yarn report:android      # generate allure-report/android
-yarn report:open:android # open it
+npm run report:android      # generate allure-report/android
+npm run report:open:android # open it
 ```
 
 A screenshot is captured automatically on every test failure and stored under
@@ -214,6 +214,6 @@ Tasks persist via the app's local storage, so the suite resets state itself:
 ## Other commands
 
 ```sh
-yarn typecheck
-yarn lint
+npm run typecheck
+npm run lint
 ```
