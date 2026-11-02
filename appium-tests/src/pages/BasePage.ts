@@ -154,17 +154,15 @@ export abstract class BasePage {
       return this.el(testId).getText();
     }
 
-    return this.el(testId).getValue();
+    // wdio 10's getValue() reads the value property, which the iOS driver does not implement.
+    return (await this.el(testId).getAttribute('value')) ?? '';
   }
 
   private async fieldHasValue(
     testId: string,
     expected: string,
   ): Promise<boolean> {
-    const element = this.el(testId);
-    const actual = this.isAndroid()
-      ? await element.getText()
-      : await element.getValue();
+    const actual = await this.getInputValue(testId);
     if (actual === expected) {
       return true;
     }
