@@ -172,9 +172,9 @@ never clobber the shared site.
 ```bash
 # Cross-platform (Appium)
 cd appium-tests
-yarn install
-yarn test:ios        # or: yarn test:android
-yarn report:open:ios # or: yarn report:open:android
+npm ci
+npm run test:ios        # or: npm run test:android
+npm run report:open:ios # or: npm run report:open:android
 ```
 
 ```bash
