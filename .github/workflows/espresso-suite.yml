@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Enable KVM
         run: |
@@ -23,14 +23,14 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: app/package-lock.json
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version-file: .java-version
@@ -98,7 +98,7 @@ jobs:
       - name: Upload HTML report
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: espresso-report
           path: app/android/app/build/reports/androidTests/connected/uitest
@@ -107,7 +107,7 @@ jobs:
       - name: Upload JUnit results and logcat
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: espresso-results
           path: app/android/app/build/outputs/androidTest-results/connected/uitest
