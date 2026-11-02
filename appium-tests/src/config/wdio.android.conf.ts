@@ -25,6 +25,10 @@ export const config: AppiumConfig = {
     },
   }),
   port: 4723,
+  // Workers reach the emulator through Appium over HTTP, so they need no
+  // display. On ubuntu-26.04 the xvfb-run wrapper wdio adds by default kills
+  // every worker at startup with `write EINVAL`.
+  autoXvfb: false,
   capabilities: [
     {
       platformName: 'Android',
