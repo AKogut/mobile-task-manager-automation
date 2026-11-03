@@ -105,3 +105,20 @@ jobs:
           name: xcuitest-xcresult
           path: app/ios/build/uitests/Logs/Test/*.xcresult
           retention-days: 7
+
+      - name: Summarise the test results
+        if: always()
+        continue-on-error: true
+        run: |
+          bundle=$(find app/ios/build/uitests/Logs/Test -maxdepth 1 -name '*.xcresult' | sort | tail -1)
+          xcrun xcresulttool get test-results tests --path "$bundle" > xcuitest-tests.json
+
+      - name: Upload the test results summary
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: xcuitest-results
+          path: xcuitest-tests.json
+          if-no-files-found: warn
+          retention-days: 90

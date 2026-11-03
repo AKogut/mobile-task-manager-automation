@@ -111,4 +111,4 @@ jobs:
         with:
           name: espresso-results
           path: app/android/app/build/outputs/androidTest-results/connected/uitest
-          retention-days: 7
+          retention-days: 90
