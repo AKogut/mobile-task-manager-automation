@@ -1,6 +1,11 @@
 import XCTest
 
 extension XCUIElement {
+  var enteredText: String {
+    let raw = (value as? String) ?? ""
+    return raw == placeholderValue ? "" : raw
+  }
+
   func replaceText(_ text: String, masked: Bool = false) {
     _ = waitForExistence(timeout: 10)
 
@@ -18,14 +23,13 @@ extension XCUIElement {
   }
 
   private func hasEntered(_ text: String, masked: Bool) -> Bool {
-    let raw = (value as? String) ?? ""
-    let current = raw == placeholderValue ? "" : raw
+    let current = enteredText
     return masked ? current.count == text.count : current == text
   }
 
   private func clearText() {
-    let current = (value as? String) ?? ""
-    guard !current.isEmpty, current != placeholderValue else {
+    let current = enteredText
+    guard !current.isEmpty else {
       return
     }
     typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
