@@ -10,6 +10,7 @@ export class TaskDetailsPage extends BasePage {
   private readonly COMPLETE_BUTTON = 'task-details-complete-button';
   private readonly EDIT_BUTTON = 'task-details-edit-button';
   private readonly DELETE_BUTTON = 'task-details-delete-button';
+  private readonly ADD_BUTTON = 'task-add-button';
 
   private readonly IOS_ALERT =
     '-ios predicate string:type == "XCUIElementTypeAlert"';
@@ -92,6 +93,11 @@ export class TaskDetailsPage extends BasePage {
 
   public async tapEditButton(): Promise<void> {
     await this.tap(this.EDIT_BUTTON);
+  }
+
+  public async tapAddButton(): Promise<void> {
+    await this.scrollIntoView(this.ADD_BUTTON);
+    await this.tap(this.ADD_BUTTON);
   }
 
   public async tapDeleteButton(): Promise<void> {
