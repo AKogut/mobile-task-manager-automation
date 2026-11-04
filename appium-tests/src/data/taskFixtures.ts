@@ -131,6 +131,96 @@ export const PRIORITY_FILTER_FIXTURES = {
   },
 } as const satisfies Record<string, TaskFixture>;
 
+export const SORT_FIXTURES = {
+  taskA: {
+    title: 'Task A',
+    priority: 'low',
+    quickDate: 'tomorrow',
+  },
+  taskB: {
+    title: 'Task B',
+    priority: 'high',
+    quickDate: 'today',
+  },
+  taskC: {
+    title: 'Task C',
+    priority: 'medium',
+    quickDate: 'next-week',
+  },
+} as const satisfies Record<string, TaskFixture>;
+
+export const SORT_STATUS_FIXTURES = {
+  completedFirst: {
+    title: 'Task A',
+    priority: 'medium',
+    quickDate: 'today',
+  },
+  open: {
+    title: 'Task B',
+    priority: 'medium',
+    quickDate: 'next-week',
+  },
+  completedSecond: {
+    title: 'Task C',
+    priority: 'medium',
+    quickDate: 'tomorrow',
+  },
+} as const satisfies Record<string, TaskFixture>;
+
+export const SORT_FILTER_FIXTURES = {
+  openHigh: {
+    title: 'Task A',
+    priority: 'high',
+    quickDate: 'tomorrow',
+  },
+  openLow: {
+    title: 'Task B',
+    priority: 'low',
+    quickDate: 'today',
+  },
+  completedHigh: {
+    title: 'Task C',
+    priority: 'high',
+    quickDate: 'today',
+  },
+} as const satisfies Record<string, TaskFixture>;
+
+export const NAVIGATION_FIXTURES = {
+  existing: {
+    title: 'Review navigation flows',
+    description: 'Walk through every screen',
+    priority: 'high',
+    quickDate: 'tomorrow',
+  },
+  created: {
+    title: 'Test navigation task',
+    priority: 'medium',
+    quickDate: 'today',
+  },
+} as const satisfies Record<string, TaskFixture>;
+
+export const NAVIGATION_EDIT_VALUES = {
+  editedTitle: 'Edited navigation task',
+} as const;
+
+export const PERSISTENCE_FIXTURES = {
+  first: {
+    title: 'Persist task 1',
+    priority: 'medium',
+    quickDate: 'today',
+  },
+  second: {
+    title: 'Persist task 2',
+    priority: 'medium',
+    quickDate: 'today',
+  },
+  completed: {
+    title: 'Persist complete',
+    priority: 'medium',
+    quickDate: 'today',
+  },
+} as const satisfies Record<string, TaskFixture>;
+
 export const SEARCH_QUERIES = {
   exact: 'Pay rent',
   partial: 'Buy',

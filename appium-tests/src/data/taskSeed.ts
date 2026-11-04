@@ -33,7 +33,7 @@ function addDays(date: Date, days: number): Date {
   return next;
 }
 
-function resolveDueDate(quickDate: QuickDate): string {
+export function resolveDueDate(quickDate: QuickDate): string {
   const now = new Date();
 
   if (quickDate === 'tomorrow') {
