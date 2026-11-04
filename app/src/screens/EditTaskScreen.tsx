@@ -61,7 +61,7 @@ export function EditTaskScreen({ navigation, route }: EditTaskScreenProps) {
             accessibilityLabel="Go to home screen"
             accessibilityRole="button"
             onPress={() => {
-              navigation.navigate('Main');
+              navigation.popTo('Main');
             }}
             style={({ pressed }) => [
               styles.notFoundButton,
