@@ -199,7 +199,7 @@ jobs:
               <main>
                 <h1>Mobile Task Manager — E2E Reports</h1>
                 <p>Nightly end-to-end suites</p>
-                <div class="cards">$IOS_CARD$ANDROID_CARD$IOS_NATIVE_CARD$ANDROID_NATIVE_CARD</div>
+                <div class="cards">$IOS_CARD$ANDROID_CARD$IOS_NATIVE_CARD$ANDROID_NATIVE_CARD<a class="card" href="https://akogut.github.io/flakemetry/demo/mobile/flaky.html"><span class="p">Test history</span><span class="h">Flakemetry</span></a></div>
               </main>
             </body>
           </html>

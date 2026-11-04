@@ -5,6 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./app/tsconfig.json)
 [![Nightly E2E](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml/badge.svg)](https://github.com/AKogut/mobile-task-manager-automation/actions/workflows/nightly-e2e.yml)
 [![E2E report](https://img.shields.io/badge/E2E%20report-live-8A2BE2?logo=githubpages&logoColor=white)](https://akogut.github.io/mobile-task-manager-automation/)
+[![Flakemetry](https://img.shields.io/endpoint?url=https%3A%2F%2Fakogut.github.io%2Fflakemetry%2Fdemo%2Fmobile%2Fhealth.json)](https://akogut.github.io/flakemetry/demo/mobile/flaky.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 > A realistic **React Native** task manager for **iOS** and **Android**, built as a single subject to design, implement, and compare three mobile test-automation approaches — cross-platform and native — behind one **CI/CD** pipeline.
@@ -136,6 +137,8 @@ npm run android
 **Git hooks** (Husky + lint-staged) run ESLint and Prettier on staged files before each commit.
 
 ## Test automation
+
+History across runs is public on [Flakemetry](https://akogut.github.io/flakemetry/demo/), including [the same test cases compared across all four runners](https://akogut.github.io/flakemetry/demo/#one-app-four-runners) and the retries each suite would otherwise hide.
 
 Three suites cover the same product behavior from complementary angles — one
 cross-platform driver plus a native suite per platform — all traced back to the
