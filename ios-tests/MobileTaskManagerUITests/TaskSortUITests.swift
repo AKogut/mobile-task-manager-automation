@@ -82,13 +82,7 @@ final class TaskSortUITests: UITestCase {
     details.tapHome()
 
     XCTAssertTrue(home.waitForScreen())
-    guard home.isSortSelected("priority") else {
-      throw XCTSkip(
-        "App defect: task-details-home-button calls navigate('Main'), which pushes a new "
-          + "Home screen under React Navigation 7, so the sort resets to Due date. "
-          + "TC-SORT-005 expects Priority to stay selected and the list to stay sorted by it.",
-      )
-    }
+    XCTAssertTrue(home.isSortSelected("priority"))
     XCTAssertTrue(home.waitForTaskTitles(["Task B", "Task C", "Task A"]))
   }
 
