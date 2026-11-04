@@ -12,6 +12,7 @@ struct TaskDetailsScreen {
   var editButton: XCUIElement { app.element(withId: TestIds.taskDetailsEditButton) }
   var deleteButton: XCUIElement { app.element(withId: TestIds.taskDetailsDeleteButton) }
   var homeButton: XCUIElement { app.element(withId: TestIds.taskDetailsHomeButton) }
+  var addButton: XCUIElement { app.element(withId: TestIds.taskAddButton) }
 
   @discardableResult
   func waitForScreen(timeout: TimeInterval = 30) -> Bool {
@@ -41,6 +42,13 @@ struct TaskDetailsScreen {
 
   func tapHome() {
     homeButton.tap()
+  }
+
+  func tapAddTask() {
+    for _ in 0..<5 where !addButton.isHittable {
+      screen.swipeUp()
+    }
+    addButton.tap()
   }
 
   var deleteAlert: XCUIElement {

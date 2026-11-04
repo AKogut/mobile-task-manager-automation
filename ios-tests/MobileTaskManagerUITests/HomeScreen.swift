@@ -41,6 +41,10 @@ struct HomeScreen {
     app.element(withId: TestIds.testIdForPriorityFilter(value))
   }
 
+  func sortButton(_ value: String) -> XCUIElement {
+    app.element(withId: TestIds.testIdForTaskSort(value))
+  }
+
   func selectStatusFilter(_ value: String) {
     selectSegment(statusFilter(value))
   }
@@ -60,11 +64,11 @@ struct HomeScreen {
   }
 
   func selectSort(_ value: String) {
-    app.element(withId: TestIds.testIdForTaskSort(value)).tap()
+    selectSegment(sortButton(value))
   }
 
-  func taskRow(at index: Int) -> XCUIElement {
-    app.element(withId: TestIds.testIdForTask(index))
+  func isSortSelected(_ value: String) -> Bool {
+    sortButton(value).isSelected
   }
 
   func taskTitle(at index: Int) -> XCUIElement {
@@ -84,7 +88,7 @@ struct HomeScreen {
   }
 
   func openTask(at index: Int) {
-    taskRow(at: index).tap()
+    taskTitle(at: index).tap()
   }
 
   @discardableResult
@@ -114,6 +118,18 @@ struct HomeScreen {
       titles.append(element.label)
     }
     return titles
+  }
+
+  @discardableResult
+  func waitForTaskTitles(_ expected: [String], timeout: TimeInterval = 10) -> Bool {
+    let deadline = Date().addingTimeInterval(timeout)
+    while Date() < deadline {
+      if visibleTaskTitles() == expected {
+        return true
+      }
+      usleep(300_000)
+    }
+    return visibleTaskTitles() == expected
   }
 
   func visibleTaskCount() -> Int {
