@@ -36,7 +36,7 @@
 | Area                   | Stack                                                                                   |
 | ---------------------- | --------------------------------------------------------------------------------------- |
 | **App**                | React Native, TypeScript, React Navigation, Zustand, AsyncStorage, React Hook Form, Zod |
-| **Cross-platform E2E** | TypeScript, Appium 3, WebdriverIO 9                                                     |
+| **Cross-platform E2E** | TypeScript, Appium 3, WebdriverIO 10                                                     |
 | **iOS automation**     | Swift, XCUITest                                                                         |
 | **Android automation** | Kotlin, Espresso                                                                        |
 | **CI/CD**              | GitHub Actions, Android Emulator, iOS Simulator                                         |
@@ -143,7 +143,7 @@ shared [test cases](./docs/test-cases/):
 
 | Suite          | Stack                    | Cases | Path             | Docs                                |
 | -------------- | ------------------------ | ----- | ---------------- | ----------------------------------- |
-| Cross-platform | Appium 3 + WebdriverIO 9 | 47    | `appium-tests/`  | [README](./appium-tests/README.md)  |
+| Cross-platform | Appium 3 + WebdriverIO 10 | 47    | `appium-tests/`  | [README](./appium-tests/README.md)  |
 | iOS native     | Swift + XCUITest         | 47    | `ios-tests/`     | [README](./ios-tests/README.md)     |
 | Android native | Kotlin + Espresso        | 46    | `android-tests/` | [README](./android-tests/README.md) |
 
