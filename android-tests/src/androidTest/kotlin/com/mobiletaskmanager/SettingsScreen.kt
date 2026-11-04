@@ -15,12 +15,20 @@ object SettingsScreen {
     waitForScreen().check(matches(isDisplayed()))
   }
 
+  fun assertNotDisplayed() {
+    waitUntilGone(withTestId(TestIds.settingsScreen))
+  }
+
   fun assertAccountName(name: String) {
     onView(withTestId(TestIds.settingsAccountName)).check(matches(withText(name)))
   }
 
   fun assertAccountEmail(email: String) {
     onView(withTestId(TestIds.settingsAccountEmail)).check(matches(withText(email)))
+  }
+
+  fun tapBack() {
+    onView(withTestId(TestIds.settingsBackButton)).perform(click())
   }
 
   fun tapLogout() {

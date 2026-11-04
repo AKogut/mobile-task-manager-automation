@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isSelected
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 
 object TaskFormScreen {
@@ -40,6 +41,19 @@ object TaskFormScreen {
 
   fun submit() {
     onView(withTestId(TestIds.taskSubmitButton)).perform(scrollTo(), click())
+  }
+
+  fun assertScreenTitle(title: String) {
+    waitForTestIdWithText(TestIds.taskFormTitle, title)
+  }
+
+  fun assertFieldsEmpty() {
+    listOf(TestIds.taskTitleInput, TestIds.taskDescriptionInput, TestIds.taskDueDateInput)
+        .forEach { field ->
+          onView(withTestId(field))
+              .perform(scrollTo())
+              .check(matches(allOf(isDisplayed(), withText(""))))
+        }
   }
 
   fun assertTitleValue(title: String) {
