@@ -71,10 +71,6 @@ struct HomeScreen {
     sortButton(value).isSelected
   }
 
-  func taskRow(at index: Int) -> XCUIElement {
-    app.element(withId: TestIds.testIdForTask(index))
-  }
-
   func taskTitle(at index: Int) -> XCUIElement {
     app.element(withId: "\(TestIds.taskItemTitle)-\(index)")
   }
@@ -92,7 +88,7 @@ struct HomeScreen {
   }
 
   func openTask(at index: Int) {
-    taskRow(at: index).tap()
+    taskTitle(at: index).tap()
   }
 
   @discardableResult
