@@ -52,7 +52,7 @@ describe('Tasks — Sort', () => {
     expect(await homePage.getVisibleTaskTitles()).toEqual(createdOrder);
   });
 
-  it.skip('TC-SORT-005 — Sort selection persists when returning to Home screen', async () => {
+  it('TC-SORT-005 — Sort selection persists when returning to Home screen', async () => {
     await homePage.sortBy('priority');
     await homePage.waitForTaskOrder(priorityOrder);
 
