@@ -1,7 +1,6 @@
 package com.mobiletaskmanager
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -103,10 +102,6 @@ class TaskSortTest {
     }
   }
 
-  @Ignore(
-      "The Task Details Home button pushes a new Home screen, which resets the sort to Due date. " +
-          "TC-SORT-005 expects Priority to stay selected and the list to stay sorted by priority.",
-  )
   @Test
   fun TC_SORT_005_sortSelectionPersistsWhenReturningToHome() {
     launchHomeForUiTest().use {
