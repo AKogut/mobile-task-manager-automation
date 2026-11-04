@@ -1,7 +1,7 @@
 # Appium E2E Tests
 
 Cross-platform end-to-end automation for the Mobile Task Manager app, written
-in TypeScript with **Appium 3**, **WebdriverIO 9**, and **Mocha**. The same
+in TypeScript with **Appium 3**, **WebdriverIO 10**, and **Mocha**. The same
 specs run unchanged on **iOS (XCUITest)** and **Android (UiAutomator2)**, and
 each platform produces its own isolated Allure report.
 
