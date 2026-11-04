@@ -21,6 +21,7 @@ import { HomeScreen } from '@/screens/HomeScreen';
 import { TaskDetailsScreen } from '@/screens/TaskDetailsScreen';
 
 const mockNavigate = jest.fn();
+const mockPopTo = jest.fn();
 const mockReplace = jest.fn();
 const mockGoBack = jest.fn();
 const activeRenderers: ReactTestRenderer[] = [];
@@ -102,6 +103,7 @@ jest.mock('react-native-safe-area-context', () => ({
 const baseNavigation = {
   goBack: mockGoBack,
   navigate: mockNavigate,
+  popTo: mockPopTo,
   replace: mockReplace,
 } as never;
 
@@ -323,7 +325,8 @@ describe('task screen flows', () => {
     });
 
     expect(useTaskStore.getState().tasks).toEqual([]);
-    expect(mockNavigate).toHaveBeenCalledWith('Main');
+    expect(mockPopTo).toHaveBeenCalledWith('Main');
+    expect(mockNavigate).not.toHaveBeenCalledWith('Main');
   });
 
   it('searches, filters, sorts, and completes from the task list', async () => {

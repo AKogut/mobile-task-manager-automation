@@ -94,7 +94,7 @@ export function TaskDetailsScreen({
         style: 'destructive',
         onPress: () => {
           deleteTask(route.params.taskId);
-          navigation.navigate('Main');
+          navigation.popTo('Main');
         },
       },
     ]);
@@ -163,7 +163,7 @@ export function TaskDetailsScreen({
             accessibilityLabel="Go to home screen"
             accessibilityRole="button"
             onPress={() => {
-              navigation.navigate('Main');
+              navigation.popTo('Main');
             }}
             style={({ pressed }) => [
               styles.navButton,
