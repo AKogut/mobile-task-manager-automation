@@ -27,6 +27,13 @@ export class HomePage extends BasePage {
     await this.waitForDisplayed(this.SCREEN, timeout);
   }
 
+  public async waitForScreenHidden(timeout = 10000): Promise<void> {
+    await browser.waitUntil(async () => !(await this.isDisplayed()), {
+      timeout,
+      timeoutMsg: `Home screen (${this.SCREEN}) is still visible`,
+    });
+  }
+
   public async tapAddButton(): Promise<void> {
     await browser.waitUntil(
       async () => {
@@ -277,6 +284,20 @@ export class HomePage extends BasePage {
     );
   }
 
+  public async waitForTaskOrder(expected: readonly string[]): Promise<void> {
+    const expectedOrder = expected.join(', ');
+
+    await browser.waitUntil(
+      async () =>
+        (await this.getVisibleTaskTitles()).join(', ') === expectedOrder,
+      {
+        timeout: 20000,
+        interval: 1000,
+        timeoutMsg: `Task order did not become "${expectedOrder}"`,
+      },
+    );
+  }
+
   public async resetFilters(): Promise<void> {
     await this.resetFilterIfPresent(this.statusFilterId('all'));
     await this.resetFilterIfPresent(this.priorityFilterId('all'));
@@ -323,8 +344,20 @@ export class HomePage extends BasePage {
     return selected === 'true' || selected === '1';
   }
 
-  public async tapSort(value: SortOption): Promise<void> {
-    await this.tap(this.sortButtonId(value));
+  public async sortBy(option: SortOption): Promise<void> {
+    await this.revealSortButton(option);
+    await this.selectSegment(this.sortButtonId(option));
+  }
+
+  public async isSortSelected(option: SortOption): Promise<boolean> {
+    await this.revealSortButton(option);
+
+    return this.isSegmentSelected(this.sortButtonId(option));
+  }
+
+  private async revealSortButton(option: SortOption): Promise<void> {
+    await this.scrollToTop(this.TASK_LIST_TITLE);
+    await this.scrollIntoView(this.sortButtonId(option));
   }
 
   public async tapClearFilters(): Promise<void> {

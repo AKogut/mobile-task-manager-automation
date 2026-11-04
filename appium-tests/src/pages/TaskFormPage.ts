@@ -12,6 +12,7 @@ interface TaskFormData {
 
 export class TaskFormPage extends BasePage {
   private readonly SCREEN = 'task-form-screen';
+  private readonly SCREEN_TITLE = 'task-form-title';
   private readonly TITLE_INPUT = 'task-title-input';
   private readonly DESCRIPTION_INPUT = 'task-description-input';
   private readonly DUE_DATE_INPUT = 'task-due-date-input';
@@ -34,6 +35,10 @@ export class TaskFormPage extends BasePage {
     });
   }
 
+  public async getScreenTitle(): Promise<string> {
+    return this.getText(this.SCREEN_TITLE);
+  }
+
   public async setTitle(text: string): Promise<void> {
     await this.typeText(this.TITLE_INPUT, text);
   }
@@ -46,12 +51,20 @@ export class TaskFormPage extends BasePage {
     return this.getInputValue(this.TITLE_INPUT);
   }
 
+  public async isTitleEmpty(): Promise<boolean> {
+    return this.isInputEmpty(this.TITLE_INPUT);
+  }
+
   public async setDescription(text: string): Promise<void> {
     await this.typeText(this.DESCRIPTION_INPUT, text);
   }
 
   public async getDescriptionValue(): Promise<string> {
     return this.getInputValue(this.DESCRIPTION_INPUT);
+  }
+
+  public async isDescriptionEmpty(): Promise<boolean> {
+    return this.isInputEmpty(this.DESCRIPTION_INPUT);
   }
 
   public async selectPriority(value: Priority): Promise<void> {
@@ -96,6 +109,10 @@ export class TaskFormPage extends BasePage {
 
   public async getDueDateValue(): Promise<string> {
     return this.getInputValue(this.DUE_DATE_INPUT);
+  }
+
+  public async isDueDateEmpty(): Promise<boolean> {
+    return this.isInputEmpty(this.DUE_DATE_INPUT);
   }
 
   public async tapBackButton(): Promise<void> {

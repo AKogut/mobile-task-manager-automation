@@ -158,6 +158,20 @@ export abstract class BasePage {
     return (await this.el(testId).getAttribute('value')) ?? '';
   }
 
+  protected async isInputEmpty(testId: string): Promise<boolean> {
+    const input = this.el(testId);
+
+    if (this.isAndroid()) {
+      return (await input.getAttribute('showing-hint')) === 'true';
+    }
+
+    const value = (await input.getAttribute('value')) ?? '';
+
+    return (
+      value === '' || value === (await input.getAttribute('placeholderValue'))
+    );
+  }
+
   private async fieldHasValue(
     testId: string,
     expected: string,
