@@ -10,6 +10,7 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isSelected
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Matcher
@@ -57,6 +58,10 @@ object HomeScreen {
     onView(withTestId(TestIds.testIdForPriorityFilter(priority))).perform(scrollTo(), click())
   }
 
+  fun selectSort(sort: String) {
+    onView(withTestId(TestIds.testIdForTaskSort(sort))).perform(scrollTo(), click())
+  }
+
   fun openTask(index: Int) {
     onView(withTestId(TestIds.testIdForTask(index))).perform(scrollTo(), click())
   }
@@ -71,6 +76,22 @@ object HomeScreen {
 
   fun assertTaskTitle(index: Int, title: String) {
     waitForTestIdWithText("${TestIds.taskItemTitle}-$index", title)
+  }
+
+  fun assertTaskOrder(vararg titles: String) {
+    titles.forEachIndexed { index, title ->
+      assertTaskTitle(index, title)
+      onView(withTestId(TestIds.testIdForTask(index)))
+          .perform(scrollTo())
+          .check(matches(isDisplayed()))
+    }
+    waitUntilGone(withTestId(TestIds.testIdForTask(titles.size)))
+  }
+
+  fun assertSortSelected(sort: String) {
+    val sortButton = withTestId(TestIds.testIdForTaskSort(sort))
+    waitForView(allOf(sortButton, isSelected()))
+    onView(sortButton).perform(scrollTo()).check(matches(isDisplayed()))
   }
 
   fun assertTaskMetadataContains(index: Int, text: String) {

@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Matchers.allOf
 
@@ -16,6 +17,7 @@ object TaskDetailsScreen {
   const val STATUS_OPEN = "Open"
   const val STATUS_COMPLETED = "Completed"
 
+  private const val NEW_TASK_DESCRIPTION = "Create new task"
   private const val DELETE_DIALOG_TITLE = "Delete task?"
   private const val DELETE_CONFIRM = "Delete"
   private const val DELETE_CANCEL = "Cancel"
@@ -56,6 +58,11 @@ object TaskDetailsScreen {
 
   fun tapHome() {
     onView(withTestId(TestIds.taskDetailsHomeButton)).perform(scrollTo(), click())
+  }
+
+  fun tapNewTask() {
+    onView(allOf(withTestId(TestIds.taskAddButton), withContentDescription(NEW_TASK_DESCRIPTION)))
+        .perform(scrollTo(), click())
   }
 
   fun tapDelete() {
