@@ -43,3 +43,26 @@ jobs:
       - name: Unit tests
         working-directory: app
         run: npm test -- --runInBand
+
+  appium-tests-quality:
+    name: Appium tests install and typecheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: appium-tests/package-lock.json
+
+      - name: Install dependencies
+        working-directory: appium-tests
+        run: npm ci --ignore-scripts
+
+      - name: Typecheck
+        working-directory: appium-tests
+        run: npm run typecheck
