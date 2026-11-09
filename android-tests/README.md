@@ -43,13 +43,13 @@ sourceSets {
 
 ## Coverage
 
-The suite executes **46 of the 47 cases** the Appium and XCUITest suites run — authentication, task CRUD, completion, filters, and search. The single gap is TC-AUTH-011 (app-restart persistence), which Espresso cannot reach because it runs inside the app process. Per-case tables are in [Coverage detail](#coverage-detail).
+The suite executes **60 of the 63 cases** the Appium and XCUITest suites run — authentication, task CRUD, completion, filters, search, sort, and navigation. The gaps are TC-AUTH-011, TC-NAV-009 and TC-NAV-010, which all need an app restart, and Espresso cannot do that because it runs inside the app process. Per-case tables are in [Coverage detail](#coverage-detail).
 
 | Suite   | Executing cases |
 | ------- | --------------- |
-| Appium  | 47              |
-| iOS     | 47              |
-| Android | 46              |
+| Appium  | 63              |
+| iOS     | 63              |
+| Android | 60              |
 
 ## Running the tests
 
@@ -288,9 +288,27 @@ Every automated case, by class:
 | TC-AUTH-010 | Settings screen displays account info   | AuthFlowTest    |
 | TC-AUTH-012 | Unauthenticated user lands on Login     | LoginScreenTest |
 
-Two cases are deliberately not automated here:
+| Test case   | Name                                                       | Class              |
+| ----------- | ---------------------------------------------------------- | ------------------ |
+| TC-SORT-001 | Default sort is by due date ascending                      | TaskSortTest       |
+| TC-SORT-002 | Sort by priority orders High → Medium → Low                | TaskSortTest       |
+| TC-SORT-003 | Sort by status orders Open tasks before Completed          | TaskSortTest       |
+| TC-SORT-004 | Sort by created date orders newest first                   | TaskSortTest       |
+| TC-SORT-005 | Sort selection persists when returning to Home screen      | TaskSortTest       |
+| TC-SORT-006 | Sort works in combination with an active filter            | TaskSortTest       |
+| TC-NAV-001  | Tapping a task card navigates to Task Details              | TaskNavigationTest |
+| TC-NAV-002  | "New task" button on Home navigates to Add Task            | TaskNavigationTest |
+| TC-NAV-003  | "New task" button on Task Details navigates to Add Task    | TaskNavigationTest |
+| TC-NAV-004  | "Edit" button on Task Details navigates to Edit Task       | TaskNavigationTest |
+| TC-NAV-005  | "Home" button on Task Details navigates to Home            | TaskNavigationTest |
+| TC-NAV-006  | Saving a new task navigates to Task Details (not Home)     | TaskNavigationTest |
+| TC-NAV-007  | Saving an edited task navigates to Task Details (not Home) | TaskNavigationTest |
+| TC-NAV-008  | Settings back button returns to Home                       | TaskNavigationTest |
+
+Four cases are deliberately not automated here:
 
 - **TC-AUTH-011 (session persists after app restart)** — Espresso runs inside the application process, so it cannot stop and relaunch that process; `am force-stop` would kill the test run. Recreating the Activity is not a substitute: the JavaScript stores are module singletons that survive it, so the assertion would pass even if persistence were broken. The Appium suite covers this case, driving the app out of process.
+- **TC-NAV-009 and TC-NAV-010 (data persists after app restart)** — they need an app restart too, for the same reason.
 - **TC-AUTH-013 (loading indicator during login)** — skipped in the Appium suite as well; observing a transient indicator is inherently racy.
 
 ## Continuous integration

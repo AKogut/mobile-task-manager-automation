@@ -26,6 +26,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 - Task Details screen is displayed (`task-details-screen`)
 - Title shown in the details matches the tapped task (`task-details-title`)
 
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
+
 ---
 
 ### TC-NAV-002 — "New task" button on Home navigates to Add Task
@@ -46,6 +48,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 
 - Add Task form is displayed (`task-form-screen`)
 - All form fields are empty
+
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
 
 ---
 
@@ -69,6 +73,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 - Add Task form is displayed (`task-form-screen`)
 - All form fields are empty
 
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
+
 ---
 
 ### TC-NAV-004 — "Edit" button on Task Details navigates to Edit Task
@@ -90,6 +96,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 - Edit Task form is displayed (`task-form-screen`)
 - Form fields are pre-populated with the task's existing values
 
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
+
 ---
 
 ### TC-NAV-005 — "Home" button on Task Details navigates to Home
@@ -110,6 +118,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 
 - Home screen is displayed (`main-screen`)
 - Task list is visible
+
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
 
 ---
 
@@ -136,6 +146,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 - Home screen is NOT shown immediately
 - Details show `Test navigation task`
 
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
+
 ---
 
 ### TC-NAV-007 — Saving an edited task navigates to Task Details (not Home)
@@ -159,6 +171,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 - Home screen is NOT shown
 - Title shows `Edited navigation task`
 
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
+
 ---
 
 ### TC-NAV-008 — Settings back button returns to Home
@@ -178,6 +192,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 **Expected result**
 
 - Home screen is displayed (`main-screen`)
+
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests · Espresso — TaskNavigationTest
 
 ---
 
@@ -204,6 +220,8 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 - Home screen shows `Persist task 1` and `Persist task 2`
 - No tasks are lost
 
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests
+
 ---
 
 ### TC-NAV-010 — Task completion state persists after app restart
@@ -227,3 +245,5 @@ Screen-to-screen navigation flows and data persistence across app restarts.
 
 - `Persist complete` is still marked as completed
 - Completion state was not reset by the restart
+
+**Automation:** ✅ Appium — task-nav.spec.ts · XCUITest — NavigationUITests

@@ -26,7 +26,7 @@
 
 ## Highlights
 
-- **47 cross-platform · 47 native iOS · 46 native Android** test cases, every one traced to a shared, versioned [test-case catalogue](./docs/test-cases/).
+- **63 cross-platform · 63 native iOS · 60 native Android** test cases, every one traced to a shared, versioned [test-case catalogue](./docs/test-cases/).
 - **The same journeys, three runtimes.** A WebDriver driver (Appium) and each platform's own test runtime (XCUITest, Espresso) validate identical flows, making their trade-offs directly comparable.
 - **One nightly pipeline** orchestrates all four drivers and publishes a single aggregated [live report](https://akogut.github.io/mobile-task-manager-automation/) to GitHub Pages.
 - **Engineering depth, not just green checks.** Launch-argument state seeding cut the heaviest test setup by ~78%; CI failures were root-caused (ABI mismatches, emulator geometry, runner timeouts) rather than papered over.
@@ -37,7 +37,7 @@
 | Area                   | Stack                                                                                   |
 | ---------------------- | --------------------------------------------------------------------------------------- |
 | **App**                | React Native, TypeScript, React Navigation, Zustand, AsyncStorage, React Hook Form, Zod |
-| **Cross-platform E2E** | TypeScript, Appium 3, WebdriverIO 10                                                     |
+| **Cross-platform E2E** | TypeScript, Appium 3, WebdriverIO 10                                                    |
 | **iOS automation**     | Swift, XCUITest                                                                         |
 | **Android automation** | Kotlin, Espresso                                                                        |
 | **CI/CD**              | GitHub Actions, Android Emulator, iOS Simulator                                         |
@@ -144,11 +144,11 @@ Three suites cover the same product behavior from complementary angles — one
 cross-platform driver plus a native suite per platform — all traced back to the
 shared [test cases](./docs/test-cases/):
 
-| Suite          | Stack                    | Cases | Path             | Docs                                |
-| -------------- | ------------------------ | ----- | ---------------- | ----------------------------------- |
-| Cross-platform | Appium 3 + WebdriverIO 10 | 47    | `appium-tests/`  | [README](./appium-tests/README.md)  |
-| iOS native     | Swift + XCUITest         | 47    | `ios-tests/`     | [README](./ios-tests/README.md)     |
-| Android native | Kotlin + Espresso        | 46    | `android-tests/` | [README](./android-tests/README.md) |
+| Suite          | Stack                     | Cases | Path             | Docs                                |
+| -------------- | ------------------------- | ----- | ---------------- | ----------------------------------- |
+| Cross-platform | Appium 3 + WebdriverIO 10 | 63    | `appium-tests/`  | [README](./appium-tests/README.md)  |
+| iOS native     | Swift + XCUITest          | 63    | `ios-tests/`     | [README](./ios-tests/README.md)     |
+| Android native | Kotlin + Espresso         | 60    | `android-tests/` | [README](./android-tests/README.md) |
 
 The iOS XCUITest suite mirrors the Appium coverage case-for-case (auth, task
 CRUD, complete/reopen, search, and filters), so the same behavior is validated

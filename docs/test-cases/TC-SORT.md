@@ -34,6 +34,8 @@ Sort the task list by due date, priority, status, and creation date.
 
 - Task order from top to bottom: `Task B`, `Task A`, `Task C`
 
+**Automation:** ✅ Appium — task-sort.spec.ts · XCUITest — TaskSortUITests · Espresso — TaskSortTest
+
 ---
 
 ### TC-SORT-002 — Sort by priority orders High → Medium → Low
@@ -57,6 +59,8 @@ Sort the task list by due date, priority, status, and creation date.
 **Expected result**
 
 - Task order from top to bottom: `Task B` (High), `Task C` (Medium), `Task A` (Low)
+
+**Automation:** ✅ Appium — task-sort.spec.ts · XCUITest — TaskSortUITests · Espresso — TaskSortTest
 
 ---
 
@@ -82,6 +86,8 @@ Sort the task list by due date, priority, status, and creation date.
 
 - `Task B` (open) appears before `Task A` and `Task C` (completed)
 
+**Automation:** ✅ Appium — task-sort.spec.ts · XCUITest — TaskSortUITests · Espresso — TaskSortTest
+
 ---
 
 ### TC-SORT-004 — Sort by created date orders newest first
@@ -102,6 +108,8 @@ Sort the task list by due date, priority, status, and creation date.
 **Expected result**
 
 - Task order from top to bottom: `Task C`, `Task B`, `Task A`
+
+**Automation:** ✅ Appium — task-sort.spec.ts · XCUITest — TaskSortUITests · Espresso — TaskSortTest
 
 ---
 
@@ -124,6 +132,8 @@ Sort the task list by due date, priority, status, and creation date.
 
 - `task-sort-button-priority` is still the active sort selection
 - Task list remains sorted by priority
+
+**Automation:** ✅ Appium — task-sort.spec.ts · XCUITest — TaskSortUITests · Espresso — TaskSortTest
 
 ---
 
@@ -150,3 +160,5 @@ Sort the task list by due date, priority, status, and creation date.
 
 - Only `Task A` (High) and `Task B` (Low) are visible
 - `Task A` appears before `Task B`
+
+**Automation:** ✅ Appium — task-sort.spec.ts · XCUITest — TaskSortUITests · Espresso — TaskSortTest
