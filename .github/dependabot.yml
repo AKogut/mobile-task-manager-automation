@@ -23,7 +23,12 @@ version: 2
 #                    (ESLINT_USE_FLAT_CONFIG=false).
 #   TypeScript     — majors in app/ wait for React Native too: a TypeScript
 #                    outside the range of the typescript-eslint that
-#                    @react-native/eslint-config uses breaks the lint.
+#                    @react-native/eslint-config uses breaks the lint. At the
+#                    root and in appium-tests/ they wait for a
+#                    typescript-eslint that accepts the new major.
+#   Babel          — majors in app/ wait for React Native: @babel/core, its
+#                    presets and plugins have to move together, and the tree
+#                    still holds packages that ask for Babel 7.
 #   @types/node    — majors follow the Node version in .nvmrc.
 
 updates:
@@ -40,6 +45,8 @@ updates:
       tooling:
         update-types: [minor, patch]
     ignore:
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
 
@@ -76,6 +83,8 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
+      - dependency-name: '@babel/*'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
 
@@ -96,6 +105,8 @@ updates:
       appium-tests:
         update-types: [minor, patch]
     ignore:
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
 
