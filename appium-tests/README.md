@@ -16,6 +16,8 @@ each platform produces its own isolated Allure report.
 | Edit              | `task-edit.spec.ts`                              | TC-TASK-020…025   |
 | Search            | `task-search.spec.ts`                            | TC-SEARCH-001…006 |
 | Filters           | `task-filter.spec.ts`                            | TC-FILTER-001…007 |
+| Sort              | `task-sort.spec.ts`                              | TC-SORT-001…006   |
+| Navigation        | `task-nav.spec.ts`                               | TC-NAV-001…010    |
 
 Full, human-readable test-case definitions live in
 [`docs/test-cases/`](../docs/test-cases/).
