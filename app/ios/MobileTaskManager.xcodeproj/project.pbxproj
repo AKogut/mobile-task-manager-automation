@@ -31,6 +31,8 @@
 		D9C8BB0E710A07402212F904 /* TaskSearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CC7A4EEC5F868757E4BF97 /* TaskSearchUITests.swift */; };
 		E043C078218E18D660C3EE11 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBCF868A9D4BC84131E57F8 /* Foundation.framework */; };
 		F0D68B693FAF66EDB53648CF /* TaskFilterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2055E0CA445EBDC58C853220 /* TaskFilterUITests.swift */; };
+		F24E4152AC7681E518712955 /* NavigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBB1CDDCCF9455218692CE2 /* NavigationUITests.swift */; };
+		FA72C84C384372FDF22FCCA3 /* TaskSortUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51928FBE01EBBC71E1E1CD0 /* TaskSortUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MobileTaskManager/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = MobileTaskManager/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		2055E0CA445EBDC58C853220 /* TaskFilterUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TaskFilterUITests.swift; sourceTree = "<group>"; };
+		2DBB1CDDCCF9455218692CE2 /* NavigationUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NavigationUITests.swift; sourceTree = "<group>"; };
 		2FBCF868A9D4BC84131E57F8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		3AE664213BF0F39635825A34 /* MobileTaskManagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileTaskManagerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-MobileTaskManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileTaskManager.debug.xcconfig"; path = "Target Support Files/Pods-MobileTaskManager/Pods-MobileTaskManager.debug.xcconfig"; sourceTree = "<group>"; };
@@ -67,6 +70,7 @@
 		9373DE576602287B82953739 /* TestIds.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestIds.swift; sourceTree = "<group>"; };
 		A088F581E5EEC1C2F4A60370 /* MobileTaskManagerUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MobileTaskManagerUITests.swift; sourceTree = "<group>"; };
 		A890C393A8F3FFA10A3BEFA2 /* LoginScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
+		B51928FBE01EBBC71E1E1CD0 /* TaskSortUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TaskSortUITests.swift; sourceTree = "<group>"; };
 		B8AC977CD68F20691F6A2C4D /* XCUIElement+Text.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Text.swift"; sourceTree = "<group>"; };
 		C6CC7A4EEC5F868757E4BF97 /* TaskSearchUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TaskSearchUITests.swift; sourceTree = "<group>"; };
 		E2B40FA28A286CA520DA5D1A /* AuthFlowUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthFlowUITests.swift; sourceTree = "<group>"; };
@@ -187,6 +191,8 @@
 				7179ACCDE07A6F4B7A497E3C /* TaskCompleteUITests.swift */,
 				2055E0CA445EBDC58C853220 /* TaskFilterUITests.swift */,
 				C6CC7A4EEC5F868757E4BF97 /* TaskSearchUITests.swift */,
+				2DBB1CDDCCF9455218692CE2 /* NavigationUITests.swift */,
+				B51928FBE01EBBC71E1E1CD0 /* TaskSortUITests.swift */,
 			);
 			name = MobileTaskManagerUITests;
 			path = "../../ios-tests/MobileTaskManagerUITests";
@@ -392,6 +398,8 @@
 				B8B092FD8DF1FAB067064CA2 /* TaskCompleteUITests.swift in Sources */,
 				F0D68B693FAF66EDB53648CF /* TaskFilterUITests.swift in Sources */,
 				D9C8BB0E710A07402212F904 /* TaskSearchUITests.swift in Sources */,
+				F24E4152AC7681E518712955 /* NavigationUITests.swift in Sources */,
+				FA72C84C384372FDF22FCCA3 /* TaskSortUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

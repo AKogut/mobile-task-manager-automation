@@ -16,6 +16,12 @@ class UITestCase: XCTestCase {
     app.launch()
   }
 
+  func restartApp() {
+    app.terminate()
+    app.launchArguments = []
+    app.launch()
+  }
+
   override func tearDownWithError() throws {
     if let testRun, testRun.failureCount > 0 {
       let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
@@ -35,6 +41,38 @@ class UITestCase: XCTestCase {
     XCTAssertTrue(
       home.waitForScreen(),
       "Expected the Home screen after signing in.",
+      file: file,
+      line: line,
+    )
+    return home
+  }
+
+  @discardableResult
+  func launchWithSeededTasks(
+    _ tasks: [SeededTask],
+    file: StaticString = #filePath,
+    line: UInt = #line,
+  ) throws -> HomeScreen {
+    let seed = try JSONEncoder().encode(tasks)
+    app.terminate()
+    app.launchArguments = [
+      "-uitest",
+      "-uitest-authed",
+      "-uitest-tasks",
+      String(decoding: seed, as: UTF8.self),
+    ]
+    app.launch()
+
+    let home = HomeScreen(app: app)
+    XCTAssertTrue(
+      home.waitForScreen(),
+      "Expected the Home screen after a seeded launch.",
+      file: file,
+      line: line,
+    )
+    XCTAssertTrue(
+      home.waitForVisibleTaskCount(tasks.count),
+      "Expected every seeded task in the list.",
       file: file,
       line: line,
     )
@@ -108,4 +146,31 @@ struct TaskSpec {
   let priority: String
   var quickDate: String = "today"
   var completed: Bool = false
+}
+
+struct SeededTask: Encodable {
+  let id: String
+  let title: String
+  let description: String
+  let priority: String
+  let dueDate: String
+  let completed: Bool
+  let createdAt: String
+
+  init(
+    title: String,
+    description: String = "",
+    priority: String = "medium",
+    dueDate: String = "2026-06-01",
+    completed: Bool = false,
+    createdAt: String = "2026-01-01T09:00:00.000Z",
+  ) {
+    id = "seed-\(title)"
+    self.title = title
+    self.description = description
+    self.priority = priority
+    self.dueDate = dueDate
+    self.completed = completed
+    self.createdAt = createdAt
+  }
 }

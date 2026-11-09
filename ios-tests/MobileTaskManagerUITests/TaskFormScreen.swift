@@ -4,6 +4,7 @@ struct TaskFormScreen {
   let app: XCUIApplication
 
   var screen: XCUIElement { app.element(withId: TestIds.taskFormScreen) }
+  var formTitle: XCUIElement { app.element(withId: TestIds.taskFormTitle) }
   var titleField: XCUIElement { app.element(withId: TestIds.taskTitleInput) }
   var descriptionField: XCUIElement { app.element(withId: TestIds.taskDescriptionInput) }
   var dueDateField: XCUIElement { app.element(withId: TestIds.taskDueDateInput) }
@@ -26,15 +27,15 @@ struct TaskFormScreen {
   }
 
   func titleValue() -> String {
-    titleField.value as? String ?? ""
+    titleField.enteredText
   }
 
   func descriptionValue() -> String {
-    descriptionField.value as? String ?? ""
+    descriptionField.enteredText
   }
 
   func dueDateValue() -> String {
-    dueDateField.value as? String ?? ""
+    dueDateField.enteredText
   }
 
   func selectPriority(_ value: String) {
