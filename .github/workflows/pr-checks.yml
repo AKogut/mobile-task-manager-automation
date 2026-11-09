@@ -45,7 +45,7 @@ jobs:
         run: npm test -- --runInBand
 
   appium-tests-quality:
-    name: Appium tests install and typecheck
+    name: Appium tests lint and typecheck
     runs-on: ubuntu-latest
 
     steps:
@@ -57,11 +57,19 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: appium-tests/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            appium-tests/package-lock.json
 
-      - name: Install dependencies
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install Appium test dependencies
         working-directory: appium-tests
         run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npx eslint --config eslint.config.mjs --max-warnings 0 "appium-tests/**/*.ts"
 
       - name: Typecheck
         working-directory: appium-tests
