@@ -33,6 +33,14 @@
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   },
+  "overrides": {
+    "@appium/support": {
+      "glob": "^14.0.2"
+    },
+    "mocha": {
+      "glob": "^14.0.2"
+    }
+  },
   "engines": {
     "node": ">=22.19.0"
   }
