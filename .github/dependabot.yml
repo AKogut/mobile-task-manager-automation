@@ -29,6 +29,11 @@ version: 2
 #   Babel          — majors in app/ wait for React Native: @babel/core, its
 #                    presets and plugins have to move together, and the tree
 #                    still holds packages that ask for Babel 7.
+#   Appium         — majors in appium-tests/ wait for WebdriverIO and the
+#                    drivers: @wdio/session, which @wdio/cli brings in, accepts
+#                    only Appium 3 as a peer, and the uiautomator2 and xcuitest
+#                    drivers the suite installs are built for Appium 3. Appium,
+#                    WebdriverIO and both driver pins move together, in one PR.
 #   @types/node    — majors follow the Node version in .nvmrc.
 
 updates:
@@ -105,6 +110,8 @@ updates:
       appium-tests:
         update-types: [minor, patch]
     ignore:
+      - dependency-name: 'appium'
+        update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
