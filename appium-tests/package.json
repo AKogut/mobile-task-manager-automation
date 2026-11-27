@@ -27,7 +27,7 @@
     "@typescript-eslint/parser": "^8.60.0",
     "@wdio/allure-reporter": "^10.2.0",
     "allure-commandline": "^2.46.1",
-    "appium": "^3.9.0",
+    "appium": "^4.0.1",
     "eslint": "^10.15.0",
     "prettier": "^3.10.1",
     "ts-node": "^10.9.2",
